@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Header from '../../modules/Header/components/Header'
@@ -12,6 +13,11 @@ const useStyles = makeStyles({
 
 const MainPageView = () => {
   const classes = useStyles()
+  const childRef = useRef()
+
+  const filterPostes = tagArr => {
+    childRef.current.filterPosts(tagArr)
+  }
 
   return (
     <div className={classes.element}>
@@ -20,10 +26,10 @@ const MainPageView = () => {
           <Header />
         </Grid>
         <Grid item xs={3} className={classes.element}>
-          <Sidebar />
+          <Sidebar updateFilter={filterPostes} />
         </Grid>
         <Grid item xs={9} className={classes.element}>
-          <MainContent />
+          <MainContent ref={childRef} />
         </Grid>
       </Grid>
     </div>

@@ -5,7 +5,8 @@ import Typography from '@material-ui/core/Typography'
 import { List, ListItem } from '@material-ui/core'
 import useStyles from './styles'
 
-const Sidebar = () => {
+// eslint-disable-next-line react/prop-types
+const Sidebar = ({ updateFilter }) => {
   const classes = useStyles()
   const chipData = [
     { id: 0, label: 'Angular' },
@@ -23,12 +24,12 @@ const Sidebar = () => {
       const arr = [...selectedValues]
       arr.splice(index, 1)
       updateSelectedValues(arr)
-      // updateFilter(arr)
+      updateFilter(arr)
     } else {
       const arr = [...selectedValues]
       arr.push(clickedValue)
       updateSelectedValues(arr)
-      // updateFilter(arr)
+      updateFilter(arr)
     }
   }
 
