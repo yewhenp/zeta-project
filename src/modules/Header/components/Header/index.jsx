@@ -1,5 +1,5 @@
 import SvgIcon from '@material-ui/core/SvgIcon'
-import React from 'react'
+import React, { useRef } from 'react'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -11,12 +11,15 @@ import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
+
+import CreatePost from '../CreatePost'
+
 import { styles, theme } from './styles'
 
 const useStyles = makeStyles(styles)
 
 const Header = () => {
-  const logined = false
+  const logined = true
 
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -29,6 +32,11 @@ const Header = () => {
 
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const childRef = useRef()
+  const onClickCreatePost = () => {
+    childRef.current.handleClickOpen()
   }
 
   const menuId = 'primary-search-account-menu'
@@ -69,6 +77,7 @@ const Header = () => {
 
             {logined && (
               <Button
+                onClick={onClickCreatePost}
                 variant="contained"
                 color="secondary"
                 endIcon={<AddIcon />}
@@ -100,6 +109,7 @@ const Header = () => {
               <AccountCircle />
             </IconButton>
           </Toolbar>
+          <CreatePost ref={childRef} />
         </AppBar>
         {renderMenu}
       </ThemeProvider>
