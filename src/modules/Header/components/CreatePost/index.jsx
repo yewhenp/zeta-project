@@ -52,7 +52,6 @@ const CreatePost = forwardRef((props, ref) => {
     setTitle(event.target.value)
   }
 
-
   useImperativeHandle(ref, () => ({
     handleClickOpen() {
       setOpen(true)
@@ -171,6 +170,6 @@ const CreatePost = forwardRef((props, ref) => {
       </DialogActions>
     </Dialog>
   )
-})
+})  
 
 export default CreatePost

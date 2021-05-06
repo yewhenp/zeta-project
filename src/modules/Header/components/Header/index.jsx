@@ -13,13 +13,14 @@ import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 
 import CreatePost from '../CreatePost'
+import LoginForm from '../../../Auth/components/LoginForm'
 
 import { styles, theme } from './styles'
 
 const useStyles = makeStyles(styles)
 
 const Header = () => {
-  const logined = true
+  const logined = false
 
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -34,9 +35,14 @@ const Header = () => {
     setAnchorEl(event.currentTarget)
   }
 
-  const childRef = useRef()
+  const childRefCreatePost = useRef()
   const onClickCreatePost = () => {
-    childRef.current.handleClickOpen()
+    childRefCreatePost.current.handleClickOpen()
+  }
+
+  const childRefLogin = useRef()
+  const onClickHandleLogin = () => {
+    childRefLogin.current.handleClickOpen()
   }
 
   const menuId = 'primary-search-account-menu'
@@ -51,7 +57,7 @@ const Header = () => {
       onClose={handleMenuClose}
     >
       {logined && <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>}
-      {!logined && <MenuItem onClick={handleMenuClose}>Log In</MenuItem>}
+      {!logined && <MenuItem onClick={onClickHandleLogin}>Log In</MenuItem>}
       {!logined && <MenuItem onClick={handleMenuClose}>Register</MenuItem>}
     </Menu>
   )
@@ -109,7 +115,8 @@ const Header = () => {
               <AccountCircle />
             </IconButton>
           </Toolbar>
-          <CreatePost ref={childRef} />
+          <CreatePost ref={childRefCreatePost} />
+          <LoginForm ref={childRefLogin} />
         </AppBar>
         {renderMenu}
       </ThemeProvider>
