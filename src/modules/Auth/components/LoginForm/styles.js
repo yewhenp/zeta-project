@@ -6,6 +6,11 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1),
     },
   },
+  inputForm: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+  },
 }))
 
 export default useStyles

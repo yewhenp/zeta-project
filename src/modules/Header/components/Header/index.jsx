@@ -20,10 +20,11 @@ import { styles, theme } from './styles'
 const useStyles = makeStyles(styles)
 
 const Header = () => {
-  const logined = false
+  // const logined = false
 
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [logined, setLogin] = React.useState(false)
 
   const isMenuOpen = Boolean(anchorEl)
 
@@ -45,6 +46,14 @@ const Header = () => {
     childRefLogin.current.handleClickOpen()
   }
 
+  const handleLogin = () => {
+    setLogin(true)
+  }
+
+  const handleLogout = () => {
+    setLogin(false)
+  }
+
   const menuId = 'primary-search-account-menu'
   const renderMenu = (
     <Menu
@@ -56,7 +65,7 @@ const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {logined && <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>}
+      {logined && <MenuItem onClick={handleLogout}>Log Out</MenuItem>}
       {!logined && <MenuItem onClick={onClickHandleLogin}>Log In</MenuItem>}
       {!logined && <MenuItem onClick={handleMenuClose}>Register</MenuItem>}
     </Menu>
@@ -116,7 +125,7 @@ const Header = () => {
             </IconButton>
           </Toolbar>
           <CreatePost ref={childRefCreatePost} />
-          <LoginForm ref={childRefLogin} />
+          <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
         </AppBar>
         {renderMenu}
       </ThemeProvider>
