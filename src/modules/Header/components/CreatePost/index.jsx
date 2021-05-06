@@ -1,24 +1,42 @@
 import React, { useImperativeHandle, forwardRef } from 'react'
+import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+
+// Dialog relared stuff
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Typography from '@material-ui/core/Typography'
 
+// Form related stuff
 import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
-
-import Grid from '@material-ui/core/Grid'
 
 // markdown
 import ReactMde from 'react-mde'
 import * as Showdown from 'showdown'
 import 'react-mde/lib/styles/css/react-mde-all.css'
 
+// Tags related stuff
+// import Chip from '@material-ui/core/Chip'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import TextField from '@material-ui/core/TextField'
+// import Chip from '@material-ui/core/Chip'
+
 // my exports
 import useStyles from './styles'
+
+// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
+const allTags = [
+  { id: 0, label: 'Angular' },
+  { id: 1, label: 'jQuery' },
+  { id: 2, label: 'Polymer' },
+  { id: 3, label: 'React' },
+  { id: 4, label: 'Vue.js' },
+  { id: 5, label: 'StepanJS The Best Framework Ever' },
+]
 
 const CreatePost = forwardRef((props, ref) => {
   // States
@@ -26,8 +44,6 @@ const CreatePost = forwardRef((props, ref) => {
   const [value, setValue] = React.useState('**Hello world!!!**')
   const [selectedTab, setSelectedTab] = React.useState('write')
   const [title, setTitle] = React.useState('')
-  const [tags, setTags] = React.useState('')
-
 
   const classes = useStyles()
 
@@ -36,9 +52,6 @@ const CreatePost = forwardRef((props, ref) => {
     setTitle(event.target.value)
   }
 
-  const handleTagsChangeTitle = event => {
-    setTags(event.target.value)
-  }
 
   useImperativeHandle(ref, () => ({
     handleClickOpen() {
@@ -85,8 +98,8 @@ const CreatePost = forwardRef((props, ref) => {
           tabIndex={-1}
         >
           <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <form className={classes.root} noValidate autoComplete="off">
+            <Grid item xs={6} className={classes.root}>
+              <form noValidate autoComplete="off">
                 <Typography
                   variant="h5"
                   gutterBottom
@@ -104,24 +117,26 @@ const CreatePost = forwardRef((props, ref) => {
                 </FormControl>
               </form>
             </Grid>
-            <Grid item xs={6}>
-              <form className={classes.root} noValidate autoComplete="off">
-                <Typography
-                  variant="h5"
-                  gutterBottom
-                  className={classes.heading}
-                >
-                  Tags
-                </Typography>
-                <FormControl variant="outlined" className={classes.inputForm}>
-                  <OutlinedInput
-                    id="component-outlined"
-                    value={tags}
-                    onChange={handleTagsChangeTitle}
+            <Grid item xs={6} className={classes.root}>
+              <Typography variant="h5" gutterBottom className={classes.heading}>
+                Tags
+              </Typography>
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={allTags}
+                getOptionLabel={option => option.label}
+                filterSelectedOptions
+                className={classes.inputForm}
+                renderInput={params => (
+                  <TextField
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    {...params}
+                    variant="outlined"
                     placeholder="Type question-related tags"
                   />
-                </FormControl>
-              </form>
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h5" gutterBottom className={classes.heading}>
@@ -135,12 +150,12 @@ const CreatePost = forwardRef((props, ref) => {
                 generateMarkdownPreview={markdown =>
                   Promise.resolve(converter.makeHtml(markdown))
                 }
-                // loadSuggestions={loadSuggestions}
                 childProps={{
                   writeButton: {
                     tabIndex: -1,
                   },
                 }}
+                minEditorHeight={150}
               />
             </Grid>
           </Grid>

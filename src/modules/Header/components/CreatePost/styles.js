@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 const useStyles = makeStyles(theme => ({
   heading: {
     marginBottom: theme.spacing(1),
-    paddingTop: theme.spacing(4),
+    paddingTop: theme.spacing(2),
   },
 
   form: {
