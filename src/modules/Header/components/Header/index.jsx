@@ -6,8 +6,8 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
-import MenuItem from '@material-ui/core/MenuItem'
-import Menu from '@material-ui/core/Menu'
+// import MenuItem from '@material-ui/core/MenuItem'
+// import Menu from '@material-ui/core/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Button from '@material-ui/core/Button'
@@ -15,7 +15,7 @@ import AddIcon from '@material-ui/icons/Add'
 
 import CreatePost from '../CreatePost'
 import LoginForm from '../../../Auth/components/LoginForm'
-import RegisterForm from '../../../Auth/components/RegisterForm'
+// import RegisterForm from '../../../Auth/components/RegisterForm'
 
 import { styles, theme } from './styles'
 
@@ -29,18 +29,7 @@ const Header = () => {
   }
 
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState(null)
   const [logined, setLogin] = React.useState(false)
-
-  const isMenuOpen = Boolean(anchorEl)
-
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
-
-  const handleProfileMenuOpen = event => {
-    setAnchorEl(event.currentTarget)
-  }
 
   const childRefCreatePost = useRef()
   const onClickCreatePost = () => {
@@ -52,14 +41,9 @@ const Header = () => {
     childRefLogin.current.handleClickOpen()
   }
 
-  const childRefRegister = useRef()
-  const onClickHandleRegister = () => {
-    childRefRegister.current.handleClickOpen()
-  }
-
   const handleLogin = () => {
     setLogin(true)
-    handleMenuClose()
+    // handleMenuClose()
   }
 
   const handleLogout = () => {
@@ -67,23 +51,6 @@ const Header = () => {
   }
 
   const menuId = 'primary-search-account-menu'
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      {logined && <MenuItem onClick={handleLogout}>Log Out</MenuItem>}
-      {!logined && <MenuItem onClick={onClickHandleLogin}>Log In</MenuItem>}
-      {!logined && (
-        <MenuItem onClick={onClickHandleRegister}>Register</MenuItem>
-      )}
-    </Menu>
-  )
 
   return (
     <div className={classes.grow}>
@@ -104,7 +71,6 @@ const Header = () => {
               <LogoIcon edge="start" style={{ fontSize: 80 }} />
             </IconButton>
             <div className={classes.grow} />
-
             {logined && (
               <Button
                 onClick={onClickCreatePost}
@@ -128,22 +94,36 @@ const Header = () => {
                 inputProps={{ 'aria-label': 'search' }}
               />
             </div>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            {logined && (
+              <IconButton
+                edge="end"
+                aria-label="Logout button"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleLogout}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            )}
+            {!logined && (
+              <IconButton
+                edge="end"
+                aria-label="Login button"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={onClickHandleLogin}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            )}
           </Toolbar>
           <CreatePost ref={childRefCreatePost} />
           <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
-          <RegisterForm ref={childRefRegister} loginHandle={handleLogin} />
+          {/* <RegisterForm ref={childRefRegister} loginHandle={handleLogin} /> */}
         </AppBar>
-        {renderMenu}
+        {/* {renderMenu} */}
       </ThemeProvider>
     </div>
   )

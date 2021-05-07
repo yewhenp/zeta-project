@@ -1,11 +1,15 @@
-import React, { forwardRef, useImperativeHandle } from 'react'
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import Link from '@material-ui/core/Link'
 // import TextField from '@material-ui/core/TextField'
 
 // dialog related stuff
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
 // Form related stuff
 import FormControl from '@material-ui/core/FormControl'
@@ -15,6 +19,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 
 import useStyles from './styles'
+import RegisterForm from '../RegisterForm'
 
 const LoginForm = forwardRef((props, ref) => {
   const [formState, setFormState] = React.useState({
@@ -32,6 +37,7 @@ const LoginForm = forwardRef((props, ref) => {
   })
 
   const classes = useStyles()
+  const refForRegister = useRef()
 
   // text change handlers
   const handleChangeEmail = event => {
@@ -87,8 +93,17 @@ const LoginForm = forwardRef((props, ref) => {
         open: false,
         password: '',
         email: '',
+        rememberMe: false,
       })
     }
+  }
+
+  const handleOnClickClickHere = () => {
+    setFormState({
+      ...formState,
+      open: false,
+    })
+    refForRegister.current.handleClickOpen()
   }
 
   // checkbox
@@ -105,10 +120,11 @@ const LoginForm = forwardRef((props, ref) => {
         open={formState.open}
         onClose={handleClose}
         scroll="paper"
-        aria-labelledby="scroll-dialog-title"
+        aria-labelledby="login-title"
         aria-describedby="scroll-dialog-description"
         maxWidth="xs"
       >
+        <DialogTitle id="login-title">Log In</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -172,9 +188,30 @@ const LoginForm = forwardRef((props, ref) => {
                 Log in
               </Button>
             </Grid>
+            <Grid item xs={12}>
+              <Typography
+                variant="body2"
+                gutterBottom
+                className={classes.heading}
+                align="center"
+              >
+                Not registered yet?{' '}
+                <Link
+                  className={classes.clickHere}
+                  display="inline"
+                  variant="body2"
+                  href="#"
+                  onClick={handleOnClickClickHere}
+                >
+                  click here
+                </Link>{' '}
+                to create new account
+              </Typography>
+            </Grid>
           </Grid>
         </DialogContent>
       </Dialog>
+      <RegisterForm ref={refForRegister} />
     </form>
   )
 })

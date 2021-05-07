@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { green } from '@material-ui/core/colors'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -10,6 +11,12 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     width: '100%',
+  },
+  checkBox: {
+    color: green[400],
+    '&$checked': {
+      color: green[600],
+    },
   },
 }))
 

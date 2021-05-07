@@ -1,16 +1,20 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
+import Checkbox from '@material-ui/core/Checkbox'
+
 // import TextField from '@material-ui/core/TextField'
 
 // dialog related stuff
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
 // Form related stuff
 import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputLabel from '@material-ui/core/InputLabel'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 import useStyles from './styles'
 
@@ -33,6 +37,8 @@ const RegisterForm = forwardRef((props, ref) => {
     password2: '',
     passwordError2: false,
     passwordLabel2: 'Repeat password',
+
+    accept: false,
   })
 
   const classes = useStyles()
@@ -101,7 +107,7 @@ const RegisterForm = forwardRef((props, ref) => {
         })
       } else {
         // eslint-disable-next-line react/prop-types
-        props.loginHandle()
+        // props.loginHandle()
         setFormState({
           ...formState,
           open: false,
@@ -133,6 +139,12 @@ const RegisterForm = forwardRef((props, ref) => {
       }
     }
   }
+  const handleCheckBox = event => {
+    setFormState(prevState => ({
+      ...prevState,
+      accept: event.target.checked,
+    }))
+  }
 
   return (
     <form>
@@ -144,6 +156,7 @@ const RegisterForm = forwardRef((props, ref) => {
         aria-describedby="scroll-dialog-description"
         maxWidth="xs"
       >
+        <DialogTitle id="login-title">Register</DialogTitle>
         <DialogContent dividers>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -217,12 +230,26 @@ const RegisterForm = forwardRef((props, ref) => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formState.rememberMe}
+                    onChange={handleCheckBox}
+                    name="checkedG"
+                    className={classes.checkBox}
+                  />
+                }
+                label="I accept terms of usage"
+              />
+            </Grid>
+            <Grid item xs={12}>
               <Button
                 color="primary"
                 fullWidth
                 type="submit"
                 variant="contained"
                 onClick={handleOnClickRegister}
+                disabled={!formState.accept}
               >
                 Register
               </Button>
