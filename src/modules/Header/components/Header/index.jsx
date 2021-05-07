@@ -6,16 +6,15 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
-// import MenuItem from '@material-ui/core/MenuItem'
-// import Menu from '@material-ui/core/Menu'
+
 import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 
 import CreatePost from '../CreatePost'
 import LoginForm from '../../../Auth/components/LoginForm'
-// import RegisterForm from '../../../Auth/components/RegisterForm'
 
 import { styles, theme } from './styles'
 
@@ -103,7 +102,7 @@ const Header = () => {
                 onClick={handleLogout}
                 color="inherit"
               >
-                <AccountCircle />
+                <ExitToAppIcon />
               </IconButton>
             )}
             {!logined && (
