@@ -170,6 +170,6 @@ const CreatePost = forwardRef((props, ref) => {
       </DialogActions>
     </Dialog>
   )
-})  
+})
 
 export default CreatePost

@@ -1,5 +1,6 @@
 import SvgIcon from '@material-ui/core/SvgIcon'
 import React, { useRef } from 'react'
+import { useHistory } from 'react-router-dom'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -21,7 +22,11 @@ import { styles, theme } from './styles'
 const useStyles = makeStyles(styles)
 
 const Header = () => {
-  // const logined = false
+  const history = useHistory()
+
+  const redirectToMain = () => {
+    history.replace('/')
+  }
 
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -94,6 +99,7 @@ const Header = () => {
               className={classes.logoButton}
               color="inherit"
               aria-label="Zeta project"
+              onClick={redirectToMain}
             >
               <LogoIcon edge="start" style={{ fontSize: 80 }} />
             </IconButton>
