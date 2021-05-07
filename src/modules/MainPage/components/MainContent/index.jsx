@@ -48,16 +48,20 @@ const MainPage = forwardRef((props, ref) => {
         })
       } else {
         arr.forEach(element => {
-          let vall = false
+          let counter = 0
           for (let i = 0; i < tagArr.length; i += 1) {
+            let vall = false
             for (let j = 0; j < element.tags.length; j += 1) {
               if (tagArr[i] === element.tags[j].label) {
                 vall = true
               }
             }
+            if (vall) {
+              counter += 1
+            }
           }
           // eslint-disable-next-line no-param-reassign
-          element.show = vall
+          element.show = counter === tagArr.length
         })
       }
 

@@ -1,5 +1,5 @@
 import SvgIcon from '@material-ui/core/SvgIcon'
-import React from 'react'
+import React, { useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
@@ -12,6 +12,10 @@ import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
+
+import CreatePost from '../CreatePost'
+import LoginForm from '../../../Auth/components/LoginForm'
+
 import { styles, theme } from './styles'
 
 const useStyles = makeStyles(styles)
@@ -22,10 +26,10 @@ const Header = () => {
   const redirectToMain = () => {
     history.replace('/')
   }
-  const logined = false
 
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [logined, setLogin] = React.useState(false)
 
   const isMenuOpen = Boolean(anchorEl)
 
@@ -35,6 +39,24 @@ const Header = () => {
 
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const childRefCreatePost = useRef()
+  const onClickCreatePost = () => {
+    childRefCreatePost.current.handleClickOpen()
+  }
+
+  const childRefLogin = useRef()
+  const onClickHandleLogin = () => {
+    childRefLogin.current.handleClickOpen()
+  }
+
+  const handleLogin = () => {
+    setLogin(true)
+  }
+
+  const handleLogout = () => {
+    setLogin(false)
   }
 
   const menuId = 'primary-search-account-menu'
@@ -48,8 +70,8 @@ const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {logined && <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>}
-      {!logined && <MenuItem onClick={handleMenuClose}>Log In</MenuItem>}
+      {logined && <MenuItem onClick={handleLogout}>Log Out</MenuItem>}
+      {!logined && <MenuItem onClick={onClickHandleLogin}>Log In</MenuItem>}
       {!logined && <MenuItem onClick={handleMenuClose}>Register</MenuItem>}
     </Menu>
   )
@@ -76,6 +98,7 @@ const Header = () => {
 
             {logined && (
               <Button
+                onClick={onClickCreatePost}
                 variant="contained"
                 color="secondary"
                 endIcon={<AddIcon />}
@@ -107,6 +130,8 @@ const Header = () => {
               <AccountCircle />
             </IconButton>
           </Toolbar>
+          <CreatePost ref={childRefCreatePost} />
+          <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
         </AppBar>
         {renderMenu}
       </ThemeProvider>
