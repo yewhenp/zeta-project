@@ -14,6 +14,7 @@ import AddIcon from '@material-ui/icons/Add'
 
 import CreatePost from '../CreatePost'
 import LoginForm from '../../../Auth/components/LoginForm'
+import RegisterForm from '../../../Auth/components/RegisterForm'
 
 import { styles, theme } from './styles'
 
@@ -46,8 +47,14 @@ const Header = () => {
     childRefLogin.current.handleClickOpen()
   }
 
+  const childRefRegister = useRef()
+  const onClickHandleRegister = () => {
+    childRefRegister.current.handleClickOpen()
+  }
+
   const handleLogin = () => {
     setLogin(true)
+    handleMenuClose()
   }
 
   const handleLogout = () => {
@@ -67,7 +74,9 @@ const Header = () => {
     >
       {logined && <MenuItem onClick={handleLogout}>Log Out</MenuItem>}
       {!logined && <MenuItem onClick={onClickHandleLogin}>Log In</MenuItem>}
-      {!logined && <MenuItem onClick={handleMenuClose}>Register</MenuItem>}
+      {!logined && (
+        <MenuItem onClick={onClickHandleRegister}>Register</MenuItem>
+      )}
     </Menu>
   )
 
@@ -126,6 +135,7 @@ const Header = () => {
           </Toolbar>
           <CreatePost ref={childRefCreatePost} />
           <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
+          <RegisterForm ref={childRefRegister} loginHandle={handleLogin} />
         </AppBar>
         {renderMenu}
       </ThemeProvider>
