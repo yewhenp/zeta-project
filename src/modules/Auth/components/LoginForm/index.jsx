@@ -11,6 +11,8 @@ import DialogContent from '@material-ui/core/DialogContent'
 import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputLabel from '@material-ui/core/InputLabel'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 
 import useStyles from './styles'
 
@@ -25,6 +27,8 @@ const LoginForm = forwardRef((props, ref) => {
     password: '',
     passwordError: false,
     passwordLabel: 'Password',
+
+    rememberMe: false,
   })
 
   const classes = useStyles()
@@ -87,6 +91,14 @@ const LoginForm = forwardRef((props, ref) => {
     }
   }
 
+  // checkbox
+  const handleCheckBox = event => {
+    setFormState(prevState => ({
+      ...prevState,
+      rememberMe: event.target.checked,
+    }))
+  }
+
   return (
     <form>
       <Dialog
@@ -133,6 +145,21 @@ const LoginForm = forwardRef((props, ref) => {
                   label={formState.passwordLabel}
                 />
               </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    disabled={!formState.email || !formState.password}
+                    checked={formState.rememberMe}
+                    onChange={handleCheckBox}
+                    name="checkedG"
+                    className={classes.checkBox}
+                  />
+                }
+                label="Remember me"
+              />
             </Grid>
             <Grid item xs={12}>
               <Button
