@@ -39,80 +39,75 @@ const RegisterForm = forwardRef((props, ref) => {
 
   // text handlers
   const handleChangeUsername = event => {
-    setFormState(prevState => ({
-      ...prevState,
+    setFormState({
+      ...formState,
       username: event.target.value,
       usernameError: false,
-      usernameLabel: 'Email',
-    }))
+      usernameLabel: 'Uusername',
+    })
   }
 
   const handleChangeEmail = event => {
-    setFormState(prevState => ({
-      ...prevState,
+    setFormState({
+      ...formState,
       email: event.target.value,
       emailError: false,
       emailLabel: 'Email',
-    }))
+    })
   }
 
   const handleChangePassword = type => {
     if (type === 1) {
       return event => {
-        setFormState(prevState => ({
-          ...prevState,
+        setFormState({
+          ...formState,
           password: event.target.value,
           passwordError: false,
           passwordLabel: 'Password',
-        }))
+        })
       }
     }
     return event => {
-      setFormState(prevState => ({
-        ...prevState,
+      setFormState({
+        ...formState,
         password2: event.target.value,
         passwordError2: false,
         passwordLabel2: 'Repeat password',
-      }))
+      })
     }
   }
 
   // close/open handlers
   const handleClose = () => {
-    setFormState(prevState => ({
-      ...prevState,
-      open: false,
-    }))
+    setFormState({ ...formState, open: false })
   }
 
   useImperativeHandle(ref, () => ({
     handleClickOpen() {
-      setFormState(prevState => ({
-        ...prevState,
-        open: true,
-      }))
+      setFormState({ ...formState, open: true })
     },
   }))
 
+  // button
   const handleOnClickRegister = () => {
-    if (formState.email && formState.password) {
+    if (formState.email && formState.password && formState.username) {
       if (formState.password !== formState.password2) {
-        setFormState(prevState => ({
-          ...prevState,
+        setFormState({
+          ...formState,
           passwordError: true,
           passwordError2: true,
           passwordLabel: "Passwords don't match",
           passwordLabel2: "Passwords don't match",
-        }))
+        })
       } else {
         // eslint-disable-next-line react/prop-types
         props.loginHandle()
-        setFormState(prevState => ({
-          ...prevState,
+        setFormState({
+          ...formState,
           open: false,
           password: '',
           email: '',
-        }))
+        })
       }
     } else {
       if (!formState.username) {
