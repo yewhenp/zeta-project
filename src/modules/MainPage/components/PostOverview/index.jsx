@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router-dom'
 import { Grid, Typography } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
@@ -21,9 +22,14 @@ const PostOverview = ({ postHeading, postText, postTags, postIcon }) => {
   }
 
   const classes = useStyles()
+  const history = useHistory()
+
+  const redirectToPost = () => {
+    history.replace('/post')
+  }
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.container} onClick={redirectToPost}>
       <Grid container spacing={3} className={classes.gridContainer}>
         <Grid item xs={7}>
           <Grid container spacing={3} className={classes.gridContainer}>

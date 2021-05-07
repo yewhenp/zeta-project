@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import MainPageView from './views/MainPage'
+import PostView from './views/PostView'
 
 const theme = createMuiTheme({
   overrides: {
@@ -29,6 +30,9 @@ ReactDOM.render(
       <CssBaseline />
       <Router>
         <Switch>
+          <Route path="/post">
+            <PostView />
+          </Route>
           <Route path="/">
             <MainPageView />
           </Route>
