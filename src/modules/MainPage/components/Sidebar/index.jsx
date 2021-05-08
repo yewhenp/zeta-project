@@ -44,6 +44,7 @@ const Sidebar = ({ updateFilter }) => {
             <Chip
               label={data.label}
               className={classes.chip}
+              color="primary"
               variant={
                 selectedValues.find(e => e === data.label)
                   ? 'default'

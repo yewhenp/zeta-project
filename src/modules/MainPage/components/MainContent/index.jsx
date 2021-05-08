@@ -1,4 +1,5 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
+import { Divider } from '@material-ui/core'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import PostOverview from '../PostOverview'
@@ -9,31 +10,51 @@ const MainPage = forwardRef((props, ref) => {
   const [postData, updatePostData] = useState([
     {
       id: 0,
-      heading: 'Post 0',
-      text: 'some interesting pots 0',
+      heading:
+        'How to scrape a data from a dynamic website containing Javascript using Python?',
+      text:
+        ' am trying to scrape data from https://www.doordash.com/food-delivery/chicago-il-restaurants/ The idea is to scrape all the data regarding the different restaurant listings on the website.',
       tags: [
         { id: 0, label: 'Angular' },
         { id: 3, label: 'React' },
         { id: 4, label: 'Vue.js' },
       ],
+      votes: 100,
+      answers: 2,
+      views: 1637,
       icon:
         'https://i.pinimg.com/736x/67/5f/34/675f34b5fd6bcdf14e93f507e76e6ec4.jpg',
+      username: 'Anton Antonov',
+      userrating: 1000,
       show: true,
     },
     {
       id: 1,
-      heading: 'Post 1',
-      text: 'some interesting pots 1',
+      heading: 'Type error:argument of type of type is not iterable',
+      text:
+        '#please give correct code class unique: dict = {} def __init__(self,sen): self.sen=sen def u(self): for i in self.sen.split():',
       tags: [{ id: 5, label: 'StepanJS The Best Framework Ever' }],
+      votes: -23,
+      answers: 5,
+      views: 16,
       icon: '',
+      username: 'Serhiy Serhiiv',
+      userrating: 3000,
       show: true,
     },
     {
       id: 2,
-      heading: 'Post 2',
-      text: 'some interesting pots 2',
+      heading:
+        'How do I set a value using Mockito to my private final String variable preset in class',
+      text:
+        'Here is explained in details. I have below one field in my class and I need to change this filed value. I need to change it to 100 while running test case using Mockito or PowerMockito.',
       tags: [{ id: 3, label: 'React' }],
+      votes: 2,
+      answers: 0,
+      views: 88,
       icon: 'https://data.whicdn.com/images/341606254/original.jpg',
+      username: 'Makar Makarov',
+      userrating: 6000,
       show: true,
     },
   ])
@@ -70,21 +91,31 @@ const MainPage = forwardRef((props, ref) => {
   }))
 
   return (
-    <List className={classes.root}>
-      {postData.map(
-        data =>
-          data.show && (
-            <ListItem key={data.id} role={undefined} dense>
-              <PostOverview
-                postHeading={data.heading}
-                postText={data.text}
-                postTags={data.tags}
-                postIcon={data.icon}
-              />
-            </ListItem>
-          ),
-      )}
-    </List>
+    <div className={classes.root}>
+      <List>
+        {postData.map(
+          data =>
+            data.show && (
+              <div>
+                <ListItem key={data.id} className={classes.postItem}>
+                  <PostOverview
+                    postHeading={data.heading}
+                    postText={data.text}
+                    postTags={data.tags}
+                    postIcon={data.icon}
+                    postViews={data.views}
+                    postAnswers={data.answers}
+                    postVotes={data.votes}
+                    userName={data.username}
+                    userRating={data.userrating}
+                  />
+                </ListItem>
+                <Divider />
+              </div>
+            ),
+        )}
+      </List>
+    </div>
   )
 })
 

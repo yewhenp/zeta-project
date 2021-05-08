@@ -1,14 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles'
 
+// eslint-disable-next-line no-unused-vars
 const useStyles = makeStyles(theme => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    listStyle: 'none',
-    padding: theme.spacing(0.5),
-    margin: 0,
+  postItem: {
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  root: {
+    height: '100%',
+    backgroundColor: theme.palette.background.paper,
   },
 }))
 

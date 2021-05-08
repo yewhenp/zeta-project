@@ -25,10 +25,10 @@ const MainPageView = () => {
         <Grid item xs={12}>
           <Header />
         </Grid>
-        <Grid item xs={3} className={classes.element}>
+        <Grid item xs={2} className={classes.element}>
           <Sidebar updateFilter={filterPostes} />
         </Grid>
-        <Grid item xs={9} className={classes.element}>
+        <Grid item xs={8} className={classes.element}>
           <MainContent ref={childRef} />
         </Grid>
       </Grid>
