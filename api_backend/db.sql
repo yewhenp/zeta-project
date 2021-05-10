@@ -1,6 +1,14 @@
 create table users(
 	id serial primary key,
-	userName varchar(30) not null,
+	username varchar(30) not null unique,
 	email varchar(50) not null unique,
-	hashed_password integer not null,
+	hashed text not null
 );
+
+insert into users(username, email, hashed) values
+('Vitya', 'vitya1@gmail.com', '1234'),
+('Misha', 'misha1@gmail.com', '4321');
+
+drop table if exists users;
+
+select * from users;
