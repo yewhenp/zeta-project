@@ -19,6 +19,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import useStyles from './styles'
 
 const RegisterForm = forwardRef((props, ref) => {
+  const BASE_API = 'http://127.0.0.1:5000'
   const [formState, setFormState] = React.useState({
     open: false,
 
@@ -49,7 +50,7 @@ const RegisterForm = forwardRef((props, ref) => {
       ...formState,
       username: event.target.value,
       usernameError: false,
-      usernameLabel: 'Uusername',
+      usernameLabel: 'Username',
     })
   }
 
@@ -85,7 +86,14 @@ const RegisterForm = forwardRef((props, ref) => {
 
   // close/open handlers
   const handleClose = () => {
-    setFormState({ ...formState, open: false })
+    setFormState({
+      ...formState,
+      open: false,
+      username: '',
+      email: '',
+      password: '',
+      password2: '',
+    })
   }
 
   useImperativeHandle(ref, () => ({
@@ -95,7 +103,7 @@ const RegisterForm = forwardRef((props, ref) => {
   }))
 
   // button
-  const handleOnClickRegister = () => {
+  const handleOnClickRegister = async () => {
     if (formState.email && formState.password && formState.username) {
       if (formState.password !== formState.password2) {
         setFormState({
@@ -106,14 +114,39 @@ const RegisterForm = forwardRef((props, ref) => {
           passwordLabel2: "Passwords don't match",
         })
       } else {
-        // eslint-disable-next-line react/prop-types
-        // props.loginHandle()
-        setFormState({
-          ...formState,
-          open: false,
-          password: '',
-          email: '',
+        const requestData = {
+          username: formState.username,
+          email: formState.email,
+          hashed: formState.password,
+        }
+        const resp = await fetch(`${BASE_API}/users/${formState.username}`, {
+          method: 'PUT',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
         })
+        if (resp.status === 201) {
+          // eslint-disable-next-line react/prop-types
+          props.registerHandle()
+          setFormState({
+            ...formState,
+            open: false,
+            password: '',
+            email: '',
+          })
+        } else {
+          const message = await resp.json()
+          setFormState({
+            ...formState,
+            username: '',
+            password: '',
+            email: '',
+
+            usernameError: true,
+            usernameLabel: message.message,
+          })
+        }
       }
     } else {
       if (!formState.username) {

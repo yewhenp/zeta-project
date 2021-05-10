@@ -22,12 +22,13 @@ import useStyles from './styles'
 import RegisterForm from '../RegisterForm'
 
 const LoginForm = forwardRef((props, ref) => {
+  const BASE_API = 'http://127.0.0.1:5000'
   const [formState, setFormState] = React.useState({
     open: false,
 
-    email: '',
-    emailError: false,
-    emailLabel: 'Email',
+    username: '',
+    usernameError: false,
+    usernameLabel: 'Username',
 
     password: '',
     passwordError: false,
@@ -40,12 +41,12 @@ const LoginForm = forwardRef((props, ref) => {
   const refForRegister = useRef()
 
   // text change handlers
-  const handleChangeEmail = event => {
+  const handleChangeUsername = event => {
     setFormState({
       ...formState,
-      email: event.target.value,
-      emailError: false,
-      emailLabel: 'Email',
+      username: event.target.value,
+      usernameError: false,
+      usernameLabel: 'Username',
     })
   }
 
@@ -70,12 +71,12 @@ const LoginForm = forwardRef((props, ref) => {
   }))
 
   // button
-  const handleOnClickLogin = () => {
-    if (!formState.email) {
+  const handleOnClickLogin = async () => {
+    if (!formState.username) {
       setFormState(prevState => ({
         ...prevState,
-        emailError: true,
-        emailLabel: "Email can't be empty!",
+        usernameError: true,
+        usernameLabel: "Username can't be empty!",
       }))
     }
     if (!formState.password) {
@@ -85,16 +86,29 @@ const LoginForm = forwardRef((props, ref) => {
         passwordLabel: "Password can't be empty!",
       }))
     }
-    if (formState.password && formState.email) {
-      // eslint-disable-next-line react/prop-types
-      props.loginHandle()
-      setFormState({
-        ...formState,
-        open: false,
-        password: '',
-        email: '',
-        rememberMe: false,
-      })
+    if (formState.password && formState.username) {
+      const resp = await fetch(
+        `${BASE_API}/users/${formState.username}?hashed=${formState.password}`,
+      )
+      if (resp.status === 200) {
+        // eslint-disable-next-line react/prop-types
+        props.loginHandle()
+        setFormState({
+          ...formState,
+          open: false,
+          password: '',
+          username: '',
+          rememberMe: false,
+        })
+      } else {
+        setFormState({
+          ...formState,
+          password: '',
+          username: '',
+          usernameError: true,
+          usernameLabel: 'Username or password is incorrect',
+        })
+      }
     }
   }
 
@@ -111,6 +125,14 @@ const LoginForm = forwardRef((props, ref) => {
     setFormState(prevState => ({
       ...prevState,
       rememberMe: event.target.checked,
+    }))
+  }
+
+  // should be called after successfull register to come back to login page
+  const handleRegister = () => {
+    setFormState(prevState => ({
+      ...prevState,
+      open: true,
     }))
   }
 
@@ -131,16 +153,16 @@ const LoginForm = forwardRef((props, ref) => {
               <FormControl
                 variant="outlined"
                 className={classes.inputForm}
-                error={formState.emailError}
+                error={formState.usernameError}
               >
-                <InputLabel htmlFor="email-component-outlined">
-                  {formState.emailLabel}
+                <InputLabel htmlFor="username-component-outlined">
+                  {formState.usernameLabel}
                 </InputLabel>
                 <OutlinedInput
-                  id="email-component-outlined"
-                  value={formState.email}
-                  onChange={handleChangeEmail}
-                  label={formState.emailLabel}
+                  id="username-component-outlined"
+                  value={formState.username}
+                  onChange={handleChangeUsername}
+                  label={formState.usernameLabel}
                 />
               </FormControl>
             </Grid>
@@ -167,7 +189,7 @@ const LoginForm = forwardRef((props, ref) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    disabled={!formState.email || !formState.password}
+                    disabled={!formState.username || !formState.password}
                     checked={formState.rememberMe}
                     onChange={handleCheckBox}
                     name="checkedG"
@@ -211,7 +233,7 @@ const LoginForm = forwardRef((props, ref) => {
           </Grid>
         </DialogContent>
       </Dialog>
-      <RegisterForm ref={refForRegister} />
+      <RegisterForm ref={refForRegister} registerHandle={handleRegister} />
     </form>
   )
 })
