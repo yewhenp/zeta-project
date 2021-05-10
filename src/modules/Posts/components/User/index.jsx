@@ -1,22 +1,31 @@
 import { Grid, Typography } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
-
+import { PropTypes } from 'prop-types'
+import StarOutlineIcon from '@material-ui/icons/StarOutline'
 import useStyles from './styles'
 
-const User = () => {
+const User = ({ nickname, avatarIcon, userRating }) => {
+  User.propTypes = {
+    nickname: PropTypes.string.isRequired,
+    avatarIcon: PropTypes.string.isRequired,
+    userRating: PropTypes.number.isRequired,
+  }
   const classes = useStyles()
 
-  const postIcon = 'https://data.whicdn.com/images/341606254/original.jpg'
-  const userName = 'John Johnson'
-
   return (
-    <Grid container className={classes.gridContainer}>
-      <Grid item xs={12}>
-        <Avatar alt="User" src={postIcon} className={classes.jojoIcon} />
+    <Grid container spacing={2}>
+      <Grid item xs={1.3}>
+        <Avatar alt="User" src={avatarIcon} className={classes.jojoIcon} />
       </Grid>
-      <Typography item xs={12}>
-        {userName}
-      </Typography>
+      <Grid item xs>
+        <Typography variant="subtitle2">{nickname}</Typography>
+        <div className={classes.chipContent}>
+          <StarOutlineIcon fontSize="small" />
+          <Typography variant="subtitle2" className={classes.typographyBlock}>
+            {userRating}
+          </Typography>
+        </div>
+      </Grid>
     </Grid>
   )
 }

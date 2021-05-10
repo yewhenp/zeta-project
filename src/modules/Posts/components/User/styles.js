@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
   textElement: {
     padding: theme.spacing(1),
   },
+  typographyBlock: {
+    display: 'inline-block',
+  },
 }))
 
 export default useStyles

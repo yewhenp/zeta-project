@@ -6,13 +6,9 @@ const useStyles = makeStyles(theme => ({
     justify: 'space-around',
     alignItems: 'center',
   },
-
-  gridItem: {
-    padding: 0,
-  },
   container: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    width: '100%',
+    padding: theme.spacing(0.5),
   },
   title: {
     textAlign: 'center',
@@ -20,20 +16,6 @@ const useStyles = makeStyles(theme => ({
   paper: {
     width: '100%',
     height: '100%',
-  },
-
-  toolbar: {
-    display: 'none !important',
-  },
-
-  reactMde: {
-    border: 'none !important',
-  },
-  preview: {
-    height: '100%',
-  },
-  user: {
-    paddingTop: '10px',
   },
 }))
 

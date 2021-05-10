@@ -10,6 +10,7 @@ import 'react-mde/lib/styles/css/react-mde-all.css'
 
 import Sidebar from '../Sidebar'
 import Tags from '../Tags'
+import User from '../User'
 
 import useStyles from './styles'
 
@@ -20,38 +21,66 @@ const converter = new Showdown.Converter({
   tasklists: true,
 })
 
-const Content = ({ tags }) => {
-  const classes = useStyles()
-  const [value, setValue] = useState('**Hello world!!!**')
-
+const Content = ({ votes, author, tags, content }) => {
   Content.propTypes = {
-    tags: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    content: PropTypes.string.isRequired,
+    author: PropTypes.shape({
+      nickname: PropTypes.string.isRequired,
+      avatarIcon: PropTypes.string.isRequired,
+      userRating: PropTypes.number.isRequired,
+    }).isRequired,
+    votes: PropTypes.number.isRequired,
+    tags: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
   }
 
-  return (
-    <Grid container spacing={2} className={classes.gridContainer}>
-      <Grid item xs={1} className={classes.gridItem}>
-        <Sidebar />
-      </Grid>
-      <Divider orientation="vertical" flexItem />
-      <Grid item xs className={classes.gridItem}>
-        <div className={classes.container}>
-          <Tags tags={tags} />
+  const classes = useStyles()
+  const [value, setValue] = useState(content)
 
+  return (
+    <Grid container className={classes.gridContainer}>
+      <Grid item xs={1} className={classes.gridItem}>
+        <Sidebar votes={votes} />
+      </Grid>
+      <Grid item xs={11} className={classes.gridItem}>
+        <div className={classes.container}>
           <ReactMde
             value={value}
-            classes={{ toolbar: classes.toolbar, preview: classes.preview }}
-            minPreviewHeight={300}
+            classes={{
+              toolbar: classes.toolbar,
+              preview: classes.preview,
+              reactMde: classes.reactMde,
+            }}
+            minPreviewHeight={0}
             onChange={setValue}
             selectedTab="preview"
             generateMarkdownPreview={markdown =>
               Promise.resolve(converter.makeHtml(markdown))
             }
           />
+          <Divider variant="middle" />
+          <Tags tags={tags} />
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="center"
+          >
+            <Grid item className={classes.user}>
+              <User
+                nickname={author.nickname}
+                avatarIcon={author.avatarIcon}
+                userRating={author.userRating}
+              />
+            </Grid>
+          </Grid>
         </div>
       </Grid>
     </Grid>
   )
 }
-
 export default Content
