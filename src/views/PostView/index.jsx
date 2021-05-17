@@ -1,4 +1,5 @@
-// import { useRef } from 'react'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Header from '../../modules/Header/components/Header'
@@ -31,7 +32,13 @@ const useStyles = makeStyles({
 
 const PostView = () => {
   const classes = useStyles()
-  const postData = {
+
+  const { ID } = useParams()
+
+  // will be used by requesting data from backend
+  // eslint-disable-next-line no-unused-vars
+  const [postData, updatePostData] = useState({
+    id: ID,
     title: 'What is a NullPointerException, and how do I fix it?',
     content: text,
     timeCreated: '2008-10-20',
@@ -54,7 +61,62 @@ const PostView = () => {
       { id: 7, label: 'C++' },
       { id: 8, label: 'Python' },
     ],
-  }
+  })
+
+  // will be used by requesting data from backend
+  // eslint-disable-next-line no-unused-vars
+  const [commentsData, updateCommentsData] = useState([
+    {
+      id: ID + 1,
+      title: 'What is a NullPointerException, and how do I fix it?',
+      content: text,
+      timeCreated: '2008-10-20',
+      timeLastActive: '2021-04-25',
+      views: 3298407,
+      author: {
+        nickname: 'Anton Antonov',
+        avatarIcon: 'https://data.whicdn.com/images/341606254/original.jpg',
+        userRating: 4000,
+      },
+      votes: 10,
+      tags: [
+        { id: 0, label: 'Angular' },
+        { id: 1, label: 'jQuery' },
+        { id: 2, label: 'Polymer' },
+        { id: 3, label: 'React' },
+        { id: 4, label: 'Vue.js' },
+        { id: 5, label: 'StepanJS The Best Framework Ever' },
+        { id: 6, label: 'JavaScrip' },
+        { id: 7, label: 'C++' },
+        { id: 8, label: 'Python' },
+      ],
+    },
+    {
+      id: ID + 2,
+      title: 'What is a NullPointerException, and how do I fix it?',
+      content: text,
+      timeCreated: '2008-10-20',
+      timeLastActive: '2021-04-25',
+      views: 3298407,
+      author: {
+        nickname: 'Anton Antonov',
+        avatarIcon: 'https://data.whicdn.com/images/341606254/original.jpg',
+        userRating: 4000,
+      },
+      votes: 10,
+      tags: [
+        { id: 0, label: 'Angular' },
+        { id: 1, label: 'jQuery' },
+        { id: 2, label: 'Polymer' },
+        { id: 3, label: 'React' },
+        { id: 4, label: 'Vue.js' },
+        { id: 5, label: 'StepanJS The Best Framework Ever' },
+        { id: 6, label: 'JavaScrip' },
+        { id: 7, label: 'C++' },
+        { id: 8, label: 'Python' },
+      ],
+    },
+  ])
   return (
     <Grid container justify="center" alignItems="center">
       <Grid item xs={12}>
@@ -70,15 +132,11 @@ const PostView = () => {
         <Grid item xs={8} className={classes.element}>
           <Post postData={postData} />
         </Grid>
-        <Grid item xs={8} className={classes.element}>
-          <Comment commentData={postData} />
-        </Grid>
-        <Grid item xs={8} className={classes.element}>
-          <Comment commentData={postData} />
-        </Grid>
-        <Grid item xs={8} className={classes.element}>
-          <Comment commentData={postData} />
-        </Grid>
+        {commentsData.map(data => (
+          <Grid key={data.id} item xs={8} className={classes.element}>
+            <Comment commentData={data} />
+          </Grid>
+        ))}
       </Grid>
     </Grid>
   )

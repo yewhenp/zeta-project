@@ -137,104 +137,106 @@ const LoginForm = forwardRef((props, ref) => {
   }
 
   return (
-    <form>
-      <Dialog
-        open={formState.open}
-        onClose={handleClose}
-        scroll="paper"
-        aria-labelledby="login-title"
-        aria-describedby="scroll-dialog-description"
-        maxWidth="xs"
-      >
-        <DialogTitle id="login-title">Log In</DialogTitle>
-        <DialogContent dividers>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <FormControl
-                variant="outlined"
-                className={classes.inputForm}
-                error={formState.usernameError}
-              >
-                <InputLabel htmlFor="username-component-outlined">
-                  {formState.usernameLabel}
-                </InputLabel>
-                <OutlinedInput
-                  id="username-component-outlined"
-                  value={formState.username}
-                  onChange={handleChangeUsername}
-                  label={formState.usernameLabel}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl
-                variant="outlined"
-                className={classes.inputForm}
-                error={formState.passwordError}
-              >
-                <InputLabel htmlFor="password-component-outlined">
-                  {formState.passwordLabel}
-                </InputLabel>
-                <OutlinedInput
-                  id="password-component-outlined"
-                  value={formState.password}
-                  onChange={handleChangePassword}
-                  type="password"
-                  label={formState.passwordLabel}
-                />
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled={!formState.username || !formState.password}
-                    checked={formState.rememberMe}
-                    onChange={handleCheckBox}
-                    name="checkedG"
-                    className={classes.checkBox}
-                  />
-                }
-                label="Remember me"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                color="primary"
-                fullWidth
-                type="submit"
-                variant="contained"
-                onClick={handleOnClickLogin}
-              >
-                Log in
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography
-                variant="body2"
-                gutterBottom
-                className={classes.heading}
-                align="center"
-              >
-                Not registered yet?{' '}
-                <Link
-                  className={classes.clickHere}
-                  display="inline"
-                  variant="body2"
-                  href="#"
-                  onClick={handleOnClickClickHere}
+    <div>
+      <form>
+        <Dialog
+          open={formState.open}
+          onClose={handleClose}
+          scroll="paper"
+          aria-labelledby="login-title"
+          aria-describedby="scroll-dialog-description"
+          maxWidth="xs"
+        >
+          <DialogTitle id="login-title">Log In</DialogTitle>
+          <DialogContent dividers>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <FormControl
+                  variant="outlined"
+                  className={classes.inputForm}
+                  error={formState.usernameError}
                 >
-                  click here
-                </Link>{' '}
-                to create new account
-              </Typography>
+                  <InputLabel htmlFor="username-component-outlined">
+                    {formState.usernameLabel}
+                  </InputLabel>
+                  <OutlinedInput
+                    id="username-component-outlined"
+                    value={formState.username}
+                    onChange={handleChangeUsername}
+                    label={formState.usernameLabel}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl
+                  variant="outlined"
+                  className={classes.inputForm}
+                  error={formState.passwordError}
+                >
+                  <InputLabel htmlFor="password-component-outlined">
+                    {formState.passwordLabel}
+                  </InputLabel>
+                  <OutlinedInput
+                    id="password-component-outlined"
+                    value={formState.password}
+                    onChange={handleChangePassword}
+                    type="password"
+                    label={formState.passwordLabel}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      disabled={!formState.username || !formState.password}
+                      checked={formState.rememberMe}
+                      onChange={handleCheckBox}
+                      name="checkedG"
+                      className={classes.checkBox}
+                    />
+                  }
+                  label="Remember me"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  color="primary"
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  onClick={handleOnClickLogin}
+                >
+                  Log in
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography
+                  variant="body2"
+                  gutterBottom
+                  className={classes.heading}
+                  align="center"
+                >
+                  Not registered yet?{' '}
+                  <Link
+                    className={classes.clickHere}
+                    display="inline"
+                    variant="body2"
+                    href="#"
+                    onClick={handleOnClickClickHere}
+                  >
+                    click here
+                  </Link>{' '}
+                  to create new account
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      </form>
       <RegisterForm ref={refForRegister} registerHandle={handleRegister} />
-    </form>
+    </div>
   )
 })
 

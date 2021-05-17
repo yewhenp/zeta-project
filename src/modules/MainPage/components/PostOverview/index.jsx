@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
-// import { useHistory } from 'react-router-dom'
 import { Container, Grid, Typography } from '@material-ui/core'
-// import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 import List from '@material-ui/core/List'
@@ -12,6 +9,7 @@ import StarOutlineIcon from '@material-ui/icons/StarOutline'
 import useStyles from './styles'
 
 const PostOverview = ({
+  postId,
   postHeading,
   postText,
   postTags,
@@ -23,6 +21,7 @@ const PostOverview = ({
   userRating,
 }) => {
   PostOverview.propTypes = {
+    postId: PropTypes.number.isRequired,
     postHeading: PropTypes.string.isRequired,
     postText: PropTypes.string.isRequired,
     postTags: PropTypes.arrayOf(
@@ -44,7 +43,7 @@ const PostOverview = ({
   return (
     <div className={classes.container}>
       <Grid container spacing={4}>
-        <Grid item xs={1}>
+        <Grid item xs="auto">
           <Grid
             container
             direction="column"
@@ -107,7 +106,7 @@ const PostOverview = ({
             alignItems="center"
           />
           <Grid item xs className={classes.grigFullWigthItem}>
-            <Link href="/post">
+            <Link href={`/post/${postId}`}>
               <Typography variant="h6">{postHeading}</Typography>
             </Link>
           </Grid>
@@ -140,7 +139,7 @@ const PostOverview = ({
               </Grid>
               <Grid item xs={3}>
                 <Grid container spacing={2}>
-                  <Grid item xs={1.3}>
+                  <Grid item xs="auto">
                     <Avatar
                       alt="User"
                       src={postIcon}

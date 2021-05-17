@@ -1,4 +1,7 @@
-import { fade, createMuiTheme } from '@material-ui/core/styles'
+import {
+  fade,
+  unstable_createMuiStrictModeTheme as createMuiTheme,
+} from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
   palette: {

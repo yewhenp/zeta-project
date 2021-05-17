@@ -14,9 +14,6 @@ const useStyles = makeStyles(theme => ({
   },
   checkBox: {
     color: green[400],
-    '&$checked': {
-      color: green[600],
-    },
   },
 }))
 

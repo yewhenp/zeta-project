@@ -15,7 +15,13 @@ const Tags = ({ tags }) => {
   const classes = useStyles()
   const content = tags.map(data => (
     <ListItem key={data.id} className={classes.chipLi}>
-      <Chip clickable="true" label={data.label} className={classes.chip} />
+      <Chip
+        clickable
+        color="primary"
+        variant="outlined"
+        label={data.label}
+        className={classes.chip}
+      />
     </ListItem>
   ))
 

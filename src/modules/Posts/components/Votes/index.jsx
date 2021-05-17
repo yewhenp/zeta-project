@@ -28,15 +28,16 @@ const Votes = props => {
       orientation="vertical"
       color="primary"
       aria-label="vertical outlined primary button group"
+      variant="text"
     >
-      <IconButton
+      <Button
         color="primary"
-        size="large"
+        size="medium"
         className={classes.button}
         onClick={() => setCount(count + 1)}
       >
         <i className={classes.upVote} />
-      </IconButton>
+      </Button>
       <Button
         size="small"
         variant="text"
@@ -45,14 +46,14 @@ const Votes = props => {
       >
         {count}
       </Button>
-      <IconButton
+      <Button
         color="primary"
-        size="large"
+        size="medium"
         className={classes.button}
         onClick={() => setCount(count - 1)}
       >
         <i className={classes.downVote} />
-      </IconButton>
+      </Button>
     </ButtonGroup>
   )
 }
