@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
+// import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
 // Form related stuff
@@ -90,74 +90,64 @@ const CreatePost = forwardRef((props, ref) => {
     >
       <DialogTitle id="scroll-dialog-title">Post creation</DialogTitle>
       <DialogContent dividers>
-        <DialogContentText
-          id="scroll-dialog-description"
-          ref={descriptionElementRef}
-          tabIndex={-1}
-        >
-          <Grid container spacing={1}>
-            <Grid item xs={6} className={classes.root}>
-              <form noValidate autoComplete="off">
-                <Typography
-                  variant="h5"
-                  gutterBottom
-                  className={classes.heading}
-                >
-                  Title
-                </Typography>
-                <FormControl variant="outlined" className={classes.inputForm}>
-                  <OutlinedInput
-                    id="component-outlined"
-                    value={title}
-                    onChange={handleTextChangeTitle}
-                    placeholder="What's your problem?"
-                  />
-                </FormControl>
-              </form>
-            </Grid>
-            <Grid item xs={6} className={classes.root}>
+        <Grid container spacing={1}>
+          <Grid item xs={6} className={classes.root}>
+            <form noValidate autoComplete="off">
               <Typography variant="h5" gutterBottom className={classes.heading}>
-                Tags
+                Title
               </Typography>
-              <Autocomplete
-                multiple
-                id="tags-outlined"
-                options={allTags}
-                getOptionLabel={option => option.label}
-                filterSelectedOptions
-                className={classes.inputForm}
-                renderInput={params => (
-                  <TextField
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...params}
-                    variant="outlined"
-                    placeholder="Type question-related tags"
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h5" gutterBottom className={classes.heading}>
-                Question
-              </Typography>
-              <ReactMde
-                value={value}
-                onChange={setValue}
-                selectedTab={selectedTab}
-                onTabChange={setSelectedTab}
-                generateMarkdownPreview={markdown =>
-                  Promise.resolve(converter.makeHtml(markdown))
-                }
-                childProps={{
-                  writeButton: {
-                    tabIndex: -1,
-                  },
-                }}
-                minEditorHeight={150}
-              />
-            </Grid>
+              <FormControl variant="outlined" className={classes.inputForm}>
+                <OutlinedInput
+                  id="component-outlined"
+                  value={title}
+                  onChange={handleTextChangeTitle}
+                  placeholder="What's your problem?"
+                />
+              </FormControl>
+            </form>
           </Grid>
-        </DialogContentText>
+          <Grid item xs={6} className={classes.root}>
+            <Typography variant="h5" gutterBottom className={classes.heading}>
+              Tags
+            </Typography>
+            <Autocomplete
+              multiple
+              id="tags-outlined"
+              options={allTags}
+              getOptionLabel={option => option.label}
+              filterSelectedOptions
+              className={classes.inputForm}
+              renderInput={params => (
+                <TextField
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...params}
+                  variant="outlined"
+                  placeholder="Type question-related tags"
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h5" gutterBottom className={classes.heading}>
+              Question
+            </Typography>
+            <ReactMde
+              value={value}
+              onChange={setValue}
+              selectedTab={selectedTab}
+              onTabChange={setSelectedTab}
+              generateMarkdownPreview={markdown =>
+                Promise.resolve(converter.makeHtml(markdown))
+              }
+              childProps={{
+                writeButton: {
+                  tabIndex: -1,
+                },
+              }}
+              minEditorHeight={150}
+            />
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogButton}>
         <Button onClick={handleClose} color="primary">
