@@ -18,11 +18,15 @@ import InputLabel from '@material-ui/core/InputLabel'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 
+// import env from 'react-dotenv'
+
 import useStyles from './styles'
 import RegisterForm from '../RegisterForm'
 
 const LoginForm = forwardRef((props, ref) => {
-  const BASE_API = 'http://127.0.0.1:5000'
+  // const BASE_API = env?.ZETA_API_BASE
+  // const BASE_API = '127.0.0.1:5000'
+  const BASE_API = process.env.REACT_APP_BASE_URL
   const [formState, setFormState] = React.useState({
     open: false,
 
