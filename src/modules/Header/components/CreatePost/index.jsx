@@ -28,7 +28,6 @@ import TextField from '@material-ui/core/TextField'
 // my exports
 import useStyles from './styles'
 
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const allTags = [
   { id: 0, label: 'Angular' },
   { id: 1, label: 'jQuery' },
