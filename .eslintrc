@@ -16,5 +16,8 @@
                 "some": ["nesting", "id"]
             }
         }]
+    },
+    "globals": {
+        "fetch": false
     }
 }
