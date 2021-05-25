@@ -1,14 +1,18 @@
-import { useState, useImperativeHandle, forwardRef } from 'react'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+
 import { Divider } from '@material-ui/core'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import PostOverview from '../PostOverview'
 import useStyles from './styles'
 
-const MainPage = forwardRef((props, ref) => {
+const MainPage = () => {
   const classes = useStyles()
+  const selectedValues = useSelector(state => state.selectedValues)
 
   // will be used by requesting data from backend
+  // eslint-disable-next-line no-unused-vars
   const [postData, updatePostData] = useState([
     {
       id: 0,
@@ -28,7 +32,6 @@ const MainPage = forwardRef((props, ref) => {
         'https://i.pinimg.com/736x/67/5f/34/675f34b5fd6bcdf14e93f507e76e6ec4.jpg',
       username: 'Anton Antonov',
       userrating: 1000,
-      show: true,
     },
     {
       id: 1,
@@ -42,7 +45,6 @@ const MainPage = forwardRef((props, ref) => {
       icon: '',
       username: 'Serhiy Serhiiv',
       userrating: 3000,
-      show: true,
     },
     {
       id: 2,
@@ -57,47 +59,31 @@ const MainPage = forwardRef((props, ref) => {
       icon: 'https://data.whicdn.com/images/341606254/original.jpg',
       username: 'Makar Makarov',
       userrating: 6000,
-      show: true,
     },
   ])
 
-  useImperativeHandle(ref, () => ({
-    filterPosts(tagArr) {
-      const arr = [...postData]
-      if (tagArr.length === 0) {
-        arr.forEach(element => {
-          // eslint-disable-next-line no-param-reassign
-          element.show = true
-        })
-      } else {
-        arr.forEach(element => {
-          let counter = 0
-          for (let i = 0; i < tagArr.length; i += 1) {
-            let vall = false
-            for (let j = 0; j < element.tags.length; j += 1) {
-              if (tagArr[i] === element.tags[j].label) {
-                vall = true
-              }
-            }
-            if (vall) {
-              counter += 1
-            }
-          }
-          // eslint-disable-next-line no-param-reassign
-          element.show = counter === tagArr.length
-        })
+  const includedInSelected = tags => {
+    let containAllTags = true
+    selectedValues.forEach(elem => {
+      let subContainSomeTag = false
+      tags.forEach(el => {
+        if (el.id === elem.id) {
+          subContainSomeTag = true
+        }
+      })
+      if (subContainSomeTag === false) {
+        containAllTags = false
       }
-
-      updatePostData(arr)
-    },
-  }))
+    })
+    return containAllTags
+  }
 
   return (
     <div className={classes.root}>
       <List>
         {postData.map(
           data =>
-            data.show && (
+            (selectedValues.length === 0 || includedInSelected(data.tags)) && (
               <div key={data.id}>
                 <ListItem className={classes.postItem}>
                   <PostOverview
@@ -120,6 +106,6 @@ const MainPage = forwardRef((props, ref) => {
       </List>
     </div>
   )
-})
+}
 
 export default MainPage
