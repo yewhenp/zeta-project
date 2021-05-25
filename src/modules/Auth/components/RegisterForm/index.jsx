@@ -20,7 +20,7 @@ import useStyles from './styles'
 
 const RegisterForm = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
-  const [formState, setFormState] = React.useState({
+  const defaultState = {
     open: false,
 
     username: '',
@@ -40,9 +40,37 @@ const RegisterForm = forwardRef((props, ref) => {
     passwordLabel2: 'Repeat password',
 
     accept: false,
-  })
+  }
 
+  const defaultState2 = {
+    open: false,
+
+    username: '',
+    usernameError: false,
+    usernameLabel: 'Username',
+
+    email: '',
+    emailError: false,
+    emailLabel: 'Email',
+
+    password: '',
+    passwordError: false,
+    passwordLabel: 'Password',
+
+    password2: '',
+    passwordError2: false,
+    passwordLabel2: 'Repeat password',
+
+    accept: false,
+  }
+
+  const [formState, setFormState] = React.useState(defaultState)
   const classes = useStyles()
+
+  const validateEmail = email => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+  }
 
   // text handlers
   const handleChangeUsername = event => {
@@ -86,14 +114,7 @@ const RegisterForm = forwardRef((props, ref) => {
 
   // close/open handlers
   const handleClose = () => {
-    setFormState({
-      ...formState,
-      open: false,
-      username: '',
-      email: '',
-      password: '',
-      password2: '',
-    })
+    setFormState({ ...defaultState2 })
   }
 
   useImperativeHandle(ref, () => ({
@@ -104,15 +125,23 @@ const RegisterForm = forwardRef((props, ref) => {
 
   // button
   const handleOnClickRegister = async () => {
+    let updateStateFields = {}
+
     if (formState.email && formState.password && formState.username) {
       if (formState.password !== formState.password2) {
-        setFormState({
-          ...formState,
+        updateStateFields = {
+          ...updateStateFields,
           passwordError: true,
           passwordError2: true,
           passwordLabel: "Passwords don't match",
           passwordLabel2: "Passwords don't match",
-        })
+        }
+      } else if (!validateEmail(formState.email)) {
+        updateStateFields = {
+          ...updateStateFields,
+          emailError: true,
+          emailLabel: 'Email validation is not passed',
+        }
       } else {
         const requestData = {
           username: formState.username,
@@ -126,51 +155,50 @@ const RegisterForm = forwardRef((props, ref) => {
           },
           body: JSON.stringify(requestData),
         })
+        updateStateFields = {
+          ...updateStateFields,
+          username: '',
+          password: '',
+          password2: '',
+          email: '',
+        }
         if (resp.status === 201) {
           // eslint-disable-next-line react/prop-types
           props.registerHandle()
-          setFormState({
-            ...formState,
+          updateStateFields = {
+            ...updateStateFields,
             open: false,
-            password: '',
-            email: '',
-          })
+          }
         } else {
           const message = await resp.json()
-          setFormState({
-            ...formState,
-            username: '',
-            password: '',
-            email: '',
-
+          updateStateFields = {
+            ...updateStateFields,
             usernameError: true,
             usernameLabel: message.message,
-          })
+          }
         }
       }
     } else {
-      if (!formState.username) {
-        setFormState(prevState => ({
-          ...prevState,
-          usernameError: true,
-          usernameLabel: "Username can't be empty!",
-        }))
-      }
-      if (!formState.email) {
-        setFormState(prevState => ({
-          ...prevState,
-          emailError: true,
-          emailLabel: "Email can't be empty!",
-        }))
-      }
-      if (!formState.password) {
-        setFormState(prevState => ({
-          ...prevState,
-          passwordError: true,
-          passwordLabel: "Password can't be empty!",
-        }))
+      updateStateFields = {
+        ...updateStateFields,
+        usernameError: !formState.username,
+        emailError: !formState.email,
+        passwordError: !formState.password,
+        usernameLabel: !formState.username
+          ? "Username can't be empty!"
+          : formState.usernameLabel,
+        emailLabel: !formState.email
+          ? "Email can't be empty!"
+          : formState.emailLabel,
+        passwordLabel: !formState.password
+          ? "Password can't be empty!"
+          : formState.passwordLabel,
       }
     }
+    setFormState(prevState => ({
+      ...prevState,
+      ...updateStateFields,
+    }))
   }
   const handleCheckBox = event => {
     setFormState(prevState => ({

@@ -24,7 +24,7 @@ import RegisterForm from '../RegisterForm'
 
 const LoginForm = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
-  const [formState, setFormState] = React.useState({
+  const defaultState = {
     open: false,
 
     username: '',
@@ -38,7 +38,8 @@ const LoginForm = forwardRef((props, ref) => {
     rememberMe: false,
 
     invalidUserNameOrPassword: false,
-  })
+  }
+  const [formState, setFormState] = React.useState(defaultState)
 
   const classes = useStyles()
   const refForRegister = useRef()
@@ -66,7 +67,7 @@ const LoginForm = forwardRef((props, ref) => {
 
   // close/open handlers
   const handleClose = () => {
-    setFormState({ ...formState, open: false })
+    setFormState(defaultState)
   }
 
   // handler for dashboard to open the login page
@@ -78,19 +79,7 @@ const LoginForm = forwardRef((props, ref) => {
 
   // login button
   const handleOnClickLogin = async () => {
-    let updatedFields = {}
-    if (!formState.username)
-      updatedFields = {
-        usernameError: true,
-        usernameLabel: "Username can't be empty!",
-      }
-    if (!formState.password) {
-      updatedFields = {
-        ...updatedFields,
-        passwordError: true,
-        passwordLabel: "Password can't be empty!",
-      }
-    }
+    let updateStateFields = {}
     if (formState.password && formState.username) {
       const resp = await fetch(
         `${BASE_API}/users/${formState.username}?hashed=${formState.password}`,
@@ -98,22 +87,34 @@ const LoginForm = forwardRef((props, ref) => {
       if (resp.status === 200) {
         // eslint-disable-next-line react/prop-types
         props.loginHandle()
-        updatedFields = {
-          ...updatedFields,
+        updateStateFields = {
+          ...updateStateFields,
           open: false,
           password: '',
           username: '',
         }
       } else {
-        updatedFields = {
-          ...updatedFields,
+        updateStateFields = {
+          ...updateStateFields,
           invalidUserNameOrPassword: true,
         }
+      }
+    } else {
+      updateStateFields = {
+        ...updateStateFields,
+        usernameError: !formState.username,
+        passwordError: !formState.password,
+        usernameLabel: !formState.username
+          ? "Username can't be empty!"
+          : formState.usernameLabel,
+        passwordLabel: !formState.password
+          ? "Password can't be empty!"
+          : formState.passwordLabel,
       }
     }
     setFormState(prevState => ({
       ...prevState,
-      ...updatedFields,
+      ...updateStateFields,
     }))
   }
 
