@@ -5,6 +5,8 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Link from '@material-ui/core/Link'
 
+import { verify } from 'password-hash'
+
 // dialog related stuff
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -81,10 +83,9 @@ const LoginForm = forwardRef((props, ref) => {
   const handleOnClickLogin = async () => {
     let updateStateFields = {}
     if (formState.password && formState.username) {
-      const resp = await fetch(
-        `${BASE_API}/users/${formState.username}?hashed=${formState.password}`,
-      )
-      if (resp.status === 200) {
+      const resp = await fetch(`${BASE_API}/users/${formState.username}`)
+      const hashed = await resp.json()
+      if (verify(formState.password, hashed.response)) {
         // eslint-disable-next-line react/prop-types
         props.loginHandle()
         updateStateFields = {

@@ -21,17 +21,45 @@ class UsersAPI(Resource):
         resp.headers['Access-Control-Allow-Origin'] = '*'
         if q_res:
             user = q_res[0]
-            args = self.parser.parse_args()
-            if user.hashed == args.hashed:
-                resp.status = '200'
-            else:
-                resp.status = '403'
+            resp.data = '{"response": "' + user.hashed + '"}'
+            resp. status = '200'
             return resp
+            # args = self.parser.parse_args()
+            # if user.hashed == args.hashed:
+            #     resp.status = '200'
+            # else:
+            #     resp.status = '403'
+            # return resp
         else:
             resp.status = '404'
             resp.data = '{"message": "There is no user with username: ' + username + '"}'
             return resp
             # abort(404, message=f"There is no user with username: {username}")
+    # parser = reqparse.RequestParser()
+    # parser.add_argument("username", type=str, help="user name of user required", required=False)
+    # parser.add_argument("hashed", type=str, help="hashed password of the user", required=False)
+    # parser.add_argument("email", type=str, help="Last name", required=False)
+    #
+    # # for login
+    # def get(self, username):
+    #     q_res = db_session.query(Users).filter(Users.username == username).all()
+    #
+    #     # resp = make_response("login_approve")
+    #     resp = Response('login_approve')
+    #     resp.headers['Access-Control-Allow-Origin'] = '*'
+    #     if q_res:
+    #         user = q_res[0]
+    #         args = self.parser.parse_args()
+    #         if user.hashed == args.hashed:
+    #             resp.status = '200'
+    #         else:
+    #             resp.status = '403'
+    #         return resp
+    #     else:
+    #         resp.status = '404'
+    #         resp.data = '{"message": "There is no user with username: ' + username + '"}'
+    #         return resp
+    #         # abort(404, message=f"There is no user with username: {username}")
 
     # for registering
     def put(self, username):
@@ -69,3 +97,7 @@ class UsersAPI(Resource):
         # resp.allow = ['OPTIONS', 'GET', 'HEAD', 'POST', 'PUT']
         resp.status = '204'
         return resp
+
+
+class PostAPI(Resource):
+    pass
