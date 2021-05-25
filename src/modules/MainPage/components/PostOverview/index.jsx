@@ -1,10 +1,11 @@
+import { Link as RouterLink } from 'react-router-dom'
+
 import { Container, Grid, Typography } from '@material-ui/core'
 import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import { PropTypes } from 'prop-types'
-import Link from '@material-ui/core/Link'
 import StarOutlineIcon from '@material-ui/icons/StarOutline'
 import useStyles from './styles'
 
@@ -106,9 +107,13 @@ const PostOverview = ({
             alignItems="center"
           />
           <Grid item xs className={classes.grigFullWigthItem}>
-            <Link href={`/post/${postId}`}>
-              <Typography variant="h6">{postHeading}</Typography>
-            </Link>
+            <Typography
+              variant="h6"
+              component={RouterLink}
+              to={`/post/${postId}`}
+            >
+              {postHeading}
+            </Typography>
           </Grid>
           <Grid item xs className={classes.grigFullWigthItem}>
             <Typography variant="body2">{postText}</Typography>
