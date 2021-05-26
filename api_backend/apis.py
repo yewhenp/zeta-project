@@ -252,10 +252,15 @@ class CommentAPI(Resource):
         resp_data = {"response": {
             "id": comment.id,
             "post_id": comment.post_id,
-            "author_id": comment.author_id,
             "content": comment.content,
             "votes": comment.votes,
         }}
+        user = db_session.query(Users).filter(Users.id == comment.author_id).all()[0]
+        resp_data['author'] = {
+            'icon': user.avatat_icon,
+            'username': user.username,
+            'userrating': user.user_rating
+        }
         resp_data = str(resp_data).replace("'", "\"")
         resp.data = resp_data
         resp.status = '200'
