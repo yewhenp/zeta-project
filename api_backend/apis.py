@@ -1,5 +1,6 @@
 from flask_restful import Api, Resource, reqparse, abort
 from flask import Response, make_response
+from sqlalchemy import func
 from database import *
 
 
@@ -95,8 +96,15 @@ class PostAPI(Resource):
     def get(self, num_id):
         args = self.parser.parse_args()
         if args["many"] is None:
-            q_res = db_session.query(Posts).filter(Posts.id == num_id).all()
-            post = q_res[0]
+            resp = Response('post information')
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            try:
+                q_res = db_session.query(Posts).filter(Posts.id == num_id).all()
+                post = q_res[0]
+            except Exception:
+                resp.status = '404'
+                resp.data = '{"response": "There is no id ' + str(num_id) + '"'
+                return resp
             q_res = db_session.query(PostsTags).filter(PostsTags.post_id == num_id).all()
             tags_ids = [tag.tag_id for tag in q_res]
             tags = [tag.content for tag in
@@ -106,8 +114,7 @@ class PostAPI(Resource):
             q_res = db_session.query(Comments).filter(Comments.post_id == num_id).all()
             comments = [comment.id for comment in q_res]
 
-            resp = Response('post information')
-            resp.headers['Access-Control-Allow-Origin'] = '*'
+
             resp_data = {"response": {
                 "title": post.title,
                 "content": post.content,
@@ -136,10 +143,14 @@ class PostAPI(Resource):
         resp.status = '200'
         return resp
 
-    # def post(self, num_id):
-    #     args = self.parser.parse_args()
+    def post(self, num_id):
+        args = self.parser.parse_args()
+        not_none_args = {k: v for k, v in args.items() if v is not None}
+        new_entry = Posts()
+        post_id = db_session.query(func.max(new_entry.id)).scalar() + 1
+        new_entry.__dict__ |= not_none_args | {'id': post_id}
 
-
+        print(new_entry)
 
     def options(self, username):
         resp = Response("allowed-methods")
