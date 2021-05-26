@@ -9,17 +9,17 @@ import useStyles from './styles'
 
 const Tags = ({ tags }) => {
   Tags.propTypes = {
-    tags: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   }
 
   const classes = useStyles()
-  const content = tags.map(data => (
-    <ListItem key={data.id} className={classes.chipLi}>
+  const content = tags.map(label => (
+    <ListItem key={label} className={classes.chipLi}>
       <Chip
         clickable
         color="primary"
         variant="outlined"
-        label={data.label}
+        label={label}
         className={classes.chip}
       />
     </ListItem>

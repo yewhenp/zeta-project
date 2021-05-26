@@ -1,4 +1,4 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { Grid } from '@material-ui/core'
 import { PropTypes } from 'prop-types'
 
@@ -8,13 +8,15 @@ import Votes from '../Votes'
 
 import useStyles from './styles'
 
-const Sidebar = ({ votes }) => {
+const Sidebar = ({ votes, setVotes }) => {
   const classes = useStyles()
   Sidebar.propTypes = {
     votes: PropTypes.number.isRequired,
+    setVotes: PropTypes.func.isRequired,
   }
 
-  const [count, setCount] = useState(votes)
+  // const [count, setCount] = useState(votes)
+  console.log(setVotes)
   return (
     <Grid
       container
@@ -25,7 +27,7 @@ const Sidebar = ({ votes }) => {
       className={classes.container}
     >
       <Grid item xs={12}>
-        <Votes state={{ count: [count, setCount] }} />
+        <Votes state={{ count: [votes, setVotes] }} />
       </Grid>
       <Grid item xs={12}>
         <BookmarksIcon htmlColor="#cecece" />

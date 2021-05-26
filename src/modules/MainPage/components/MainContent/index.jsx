@@ -15,7 +15,7 @@ const MainPage = () => {
   // eslint-disable-next-line no-unused-vars
   const [postData, updatePostData] = useState([
     {
-      id: 0,
+      id: 1,
       heading:
         'How to scrape a data from a dynamic website containing Javascript using Python?',
       text:
@@ -34,7 +34,7 @@ const MainPage = () => {
       userrating: 1000,
     },
     {
-      id: 1,
+      id: 2,
       heading: 'Type error:argument of type of type is not iterable',
       text:
         '#please give correct code class unique: dict = {} def __init__(self,sen): self.sen=sen def u(self): for i in self.sen.split():',
@@ -47,7 +47,7 @@ const MainPage = () => {
       userrating: 3000,
     },
     {
-      id: 2,
+      id: 3,
       heading:
         'How do I set a value using Mockito to my private final String variable preset in class',
       text:
