@@ -104,7 +104,7 @@ const CreatePost = forwardRef((props, ref) => {
           },
           body: JSON.stringify({ tags }),
         })
-        if (resp2.status === 200) {
+        if (resp2.status === 201) {
           setMystate({ defaultState })
         } else {
           setMystate({ ...mystate, title: 'Something went wrong' })

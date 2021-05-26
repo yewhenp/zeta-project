@@ -343,7 +343,7 @@ class TagAPI(Resource):
             resp.status = '201'
             return resp
 
-    def options(self, username):
+    def options(self, post_id):
         resp = Response("allowed-methods")
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
