@@ -115,7 +115,7 @@ const PostOverview = ({
               {postHeading}
             </Typography>
           </Grid>
-          <Grid item xs className={classes.grigFullWigthItem}>
+          <Grid item xs noWrap className={classes.grigFullWigthItem}>
             <Typography variant="body2">{postText}</Typography>
           </Grid>
           <Grid item xs className={classes.grigFullWigthItem}>
