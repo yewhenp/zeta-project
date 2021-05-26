@@ -132,9 +132,9 @@ class PostAPI(Resource):
             }}
             user = db_session.query(Users).filter(Users.id == post.author_id).all()[0]
             resp_data['response']['author'] = {
-                'icon': user.avatat_icon,
-                'username': user.username,
-                'userrating': user.user_rating
+                'avatarIcon': user.avatat_icon,
+                'nickname': user.username,
+                'userRating': user.user_rating
             }
 
             resp_data = str(resp_data).replace("'", "\"")
@@ -257,9 +257,9 @@ class CommentAPI(Resource):
         }}
         user = db_session.query(Users).filter(Users.id == comment.author_id).all()[0]
         resp_data['response']['author'] = {
-            'icon': user.avatat_icon,
-            'username': user.username,
-            'userrating': user.user_rating
+            'avatarIcon': user.avatat_icon,
+            'nickname': user.username,
+            'userRating': user.user_rating
         }
         resp_data = str(resp_data).replace("'", "\"")
         resp.data = resp_data
