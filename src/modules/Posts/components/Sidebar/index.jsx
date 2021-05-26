@@ -1,4 +1,3 @@
-// import { useState } from 'react'
 import { Grid } from '@material-ui/core'
 import { PropTypes } from 'prop-types'
 
@@ -15,8 +14,6 @@ const Sidebar = ({ votes, setVotes }) => {
     setVotes: PropTypes.func.isRequired,
   }
 
-  // const [count, setCount] = useState(votes)
-  console.log(setVotes)
   return (
     <Grid
       container
