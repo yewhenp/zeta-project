@@ -1,4 +1,6 @@
 import React, { useImperativeHandle, forwardRef } from 'react'
+import { useSelector } from 'react-redux'
+
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -38,38 +40,62 @@ const allTags = [
 ]
 
 const CreatePost = forwardRef((props, ref) => {
-  // States
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState('**Hello world!!!**')
-  const [selectedTab, setSelectedTab] = React.useState('write')
-  const [title, setTitle] = React.useState('')
+  const BASE_API = process.env.REACT_APP_BASE_URL
+  const defaultState = {
+    open: false,
+    value: '**Hello world!!!**',
+    selectedTab: 'write',
+    title: '',
+  }
+  // State
+  const [mystate, setMystate] = React.useState({ defaultState })
+  const userID = useSelector(state => state.userID)
 
   const classes = useStyles()
 
   // handlers
   const handleTextChangeTitle = event => {
-    setTitle(event.target.value)
+    setMystate({ ...mystate, title: event.target.value })
+    // setTitle(event.target.value)
   }
 
   useImperativeHandle(ref, () => ({
     handleClickOpen() {
-      setOpen(true)
+      setMystate({ ...mystate, open: true })
+      // setOpen(true)
     },
   }))
 
   const handleClose = () => {
-    setOpen(false)
+    setMystate({ ...mystate, open: false })
+    // setOpen(false)
+  }
+
+  const handleCreatePost = async () => {
+    if (!mystate.title || !mystate.value) {
+      setMystate({ ...mystate, title: 'Something went wrong' })
+    } else {
+      const resp = await fetch(
+        `${BASE_API}/posts/0?title=${mystate.title}&content=${mystate.value}&author_id=${userID}`,
+        { method: 'POST' },
+      )
+      if (resp.status === 201) {
+        setMystate({ defaultState })
+      } else {
+        setMystate({ ...mystate, title: 'Something went wrong' })
+      }
+    }
   }
 
   const descriptionElementRef = React.useRef(null)
   React.useEffect(() => {
-    if (open) {
+    if (mystate.open) {
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
         descriptionElement.focus()
       }
     }
-  }, [open])
+  }, [mystate.open])
 
   const converter = new Showdown.Converter({
     tables: true,
@@ -80,7 +106,7 @@ const CreatePost = forwardRef((props, ref) => {
 
   return (
     <Dialog
-      open={open}
+      open={mystate.open}
       onClose={handleClose}
       scroll="paper"
       aria-labelledby="scroll-dialog-title"
@@ -99,7 +125,7 @@ const CreatePost = forwardRef((props, ref) => {
               <FormControl variant="outlined" className={classes.inputForm}>
                 <OutlinedInput
                   id="component-outlined"
-                  value={title}
+                  value={mystate.title}
                   onChange={handleTextChangeTitle}
                   placeholder="What's your problem?"
                 />
@@ -132,10 +158,14 @@ const CreatePost = forwardRef((props, ref) => {
               Question
             </Typography>
             <ReactMde
-              value={value}
-              onChange={setValue}
-              selectedTab={selectedTab}
-              onTabChange={setSelectedTab}
+              value={mystate.value}
+              onChange={value_ => {
+                setMystate({ ...mystate, value: value_ })
+              }}
+              selectedTab={mystate.selectedTab}
+              onTabChange={tab => {
+                setMystate({ ...mystate, selectedTab: tab })
+              }}
               generateMarkdownPreview={markdown =>
                 Promise.resolve(converter.makeHtml(markdown))
               }
@@ -150,7 +180,7 @@ const CreatePost = forwardRef((props, ref) => {
         </Grid>
       </DialogContent>
       <DialogActions className={classes.dialogButton}>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleCreatePost} color="primary">
           Add post
         </Button>
         <Button onClick={handleClose} color="primary">

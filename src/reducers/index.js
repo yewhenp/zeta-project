@@ -3,6 +3,8 @@ import { RUN_FILTER, LOGIN, LOGOUT } from '../actions'
 const initialState = {
   selectedValues: [],
   isLogined: false,
+  username: '',
+  userID: null,
 }
 
 const filterReducer = (state = initialState, action) => {
@@ -17,12 +19,16 @@ const filterReducer = (state = initialState, action) => {
       return {
         ...state,
         isLogined: true,
+        username: action.payload.username,
+        userID: action.payload.userID,
       }
     }
     case LOGOUT: {
       return {
         ...state,
         isLogined: false,
+        username: '',
+        userID: null,
       }
     }
     default:

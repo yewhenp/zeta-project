@@ -85,9 +85,12 @@ const LoginForm = forwardRef((props, ref) => {
     if (formState.password && formState.username) {
       const resp = await fetch(`${BASE_API}/users/${formState.username}`)
       const hashed = await resp.json()
-      if (verify(formState.password, hashed.response.hashed)) {
+      if (
+        resp.status === 200 &&
+        verify(formState.password, hashed.response.hashed)
+      ) {
         // eslint-disable-next-line react/prop-types
-        props.loginHandle()
+        props.loginHandle(formState.username, hashed.response.id)
         updateStateFields = {
           ...updateStateFields,
           open: false,
