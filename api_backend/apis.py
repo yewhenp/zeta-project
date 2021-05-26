@@ -1,8 +1,9 @@
 from flask_restful import Api, Resource, reqparse, abort
-from flask import Response, make_response
+from flask import Response, make_response, request
 from sqlalchemy import func
 import datetime
 from database import *
+import json
 
 
 db_session = loadSession()
@@ -297,6 +298,9 @@ class CommentAPI(Resource):
 
 class TagAPI(Resource):
     parser = reqparse.RequestParser()
+    parser.add_argument("tags", help="new tags", required=False)
+    parser.add_argument("aa", help="new tags", required=False)
+
 
     def get(self, post_id):
         resp = Response("All tags response")
@@ -310,3 +314,9 @@ class TagAPI(Resource):
         resp.data = str(resp_data).replace("'", "\"")
         resp.status = '200'
         return resp
+
+    def post(self, post_id):
+        args = self.parser.parse_args()
+        posted_data = json.load(request.files['datas'])
+
+        print(args, posted_data)
