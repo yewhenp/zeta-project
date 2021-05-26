@@ -1,6 +1,7 @@
 from flask_restful import Api, Resource, reqparse, abort
 from flask import Response, make_response
 from sqlalchemy import func
+import datetime
 from database import *
 
 
@@ -96,7 +97,7 @@ class PostAPI(Resource):
     parser.add_argument("author_id", type=str, help="author_id", required=False)
 
     post_required_args = [
-        "title", "content", "time_created", "time_last_active", "author_id"
+        "title", "content", "author_id"
     ]
 
     def get(self, num_id):
@@ -131,10 +132,10 @@ class PostAPI(Resource):
                 "comments": comments
             }}
             user = db_session.query(Users).filter(Users.id == post.author_id).all()[0]
-            resp_data['author'] = {
-                'icon': user.avatat_icon,
-                'username': user.username,
-                'userrating': user.user_rating
+            resp_data['response']['author'] = {
+                'avatarIcon': user.avatat_icon,
+                'nickname': user.username,
+                'userRating': user.user_rating
             }
 
             resp_data = str(resp_data).replace("'", "\"")
@@ -205,6 +206,11 @@ select * from posts where id > {from_} AND id < {to_}
 
         args = self.parser.parse_args()
         not_none_args = {k: v for k, v in args.items() if v is not None}
+        not_none_args["time_created"] = not_none_args["time_created"] \
+            if "time_created" in not_none_args else datetime.date.today().strftime("%m-%d-%Y")
+        not_none_args["time_last_active"] = not_none_args["time_last_active"] \
+            if "time_last_active" in not_none_args else datetime.date.today().strftime("%m-%d-%Y")
+
         for arg in self.post_required_args:
             if arg not in not_none_args:
                 resp.status = '404'
@@ -214,6 +220,7 @@ select * from posts where id > {from_} AND id < {to_}
         new_entry = Posts()
         post_id = db_session.query(func.max(Posts.id)).scalar() + 1
         new_entry.__dict__ |= not_none_args | {'id': post_id}
+        print(new_entry)
         try:
             db_session.add(new_entry)
             db_session.commit()
@@ -256,10 +263,10 @@ class CommentAPI(Resource):
             "votes": comment.votes,
         }}
         user = db_session.query(Users).filter(Users.id == comment.author_id).all()[0]
-        resp_data['author'] = {
-            'icon': user.avatat_icon,
-            'username': user.username,
-            'userrating': user.user_rating
+        resp_data['response']['author'] = {
+            'avatarIcon': user.avatat_icon,
+            'nickname': user.username,
+            'userRating': user.user_rating
         }
         resp_data = str(resp_data).replace("'", "\"")
         resp.data = resp_data
@@ -285,4 +292,21 @@ class CommentAPI(Resource):
         resp.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
         resp.headers['Access-Control-Allow-Headers'] = 'content-type'
         resp.status = '204'
+        return resp
+
+
+class TagAPI(Resource):
+    parser = reqparse.RequestParser()
+
+    def get(self, post_id):
+        resp = Response("All tags response")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        q_res = db_session.query(Tags).all()
+        resp_data = {
+            "response": []
+        }
+        for tag in q_res:
+            resp_data["response"].append({"id": tag.id, "content": tag.content})
+        resp.data = str(resp_data).replace("'", "\"")
+        resp.status = '200'
         return resp

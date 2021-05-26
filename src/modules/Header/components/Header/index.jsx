@@ -39,11 +39,14 @@ const Header = () => {
     childRefLogin.current.handleClickOpen()
   }
 
-  const handleLogin = () => {
+  const handleLogin = (username, userID) => {
     dispatch({
       type: LOGIN,
+      payload: {
+        username,
+        userID,
+      },
     })
-    // handleMenuClose()
   }
 
   const handleLogout = () => {
