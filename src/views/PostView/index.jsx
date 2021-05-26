@@ -49,7 +49,7 @@ const PostView = () => {
   }, [])
   const updateVotes = count => {
     updatePostData({ ...postData, votes: count })
-    fetch(`${BASE_API}/posts/${ID}?votes=${count}`)
+    fetch(`${BASE_API}/posts/${ID}?votes=${count}`, { method: 'PUT' })
   }
   const updateContent = text => updatePostData({ ...postData, content: text })
   const updateCommentVotes = index => count => {
@@ -57,7 +57,9 @@ const PostView = () => {
     newCommentsData[index] = { ...newCommentsData[index], votes: count }
     newCommentsData.sort((a, b) => b.votes - a.votes)
     updateCommentsData(newCommentsData)
-    fetch(`${BASE_API}/comments/${newCommentsData[index].id}?votes=${count}`)
+    fetch(`${BASE_API}/comments/${newCommentsData[index].id}?votes=${count}`, {
+      method: 'PUT',
+    })
   }
   const updateCommentContent = index => text => {
     const newCommentsData = [...commentsData]
