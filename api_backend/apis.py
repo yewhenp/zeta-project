@@ -130,6 +130,13 @@ class PostAPI(Resource):
                 "tags": tags,
                 "comments": comments
             }}
+            user = db_session.query(Users).filter(Users.id == post.author_id).all()[0]
+            resp_data['author'] = {
+                'icon': user.avatat_icon,
+                'username': user.username,
+                'userrating': user.user_rating
+            }
+
             resp_data = str(resp_data).replace("'", "\"")
             resp.data = resp_data
             resp.status = '200'
