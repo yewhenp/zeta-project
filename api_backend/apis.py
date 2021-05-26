@@ -241,7 +241,7 @@ select * from posts where id > {from_} AND id < {to_}
         resp.data = '{"response": ' + str(post_id) + '}'
         return resp
 
-    def options(self, username):
+    def options(self, num_id):
         resp = Response("allowed-methods")
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
