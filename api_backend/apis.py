@@ -164,7 +164,16 @@ select * from posts where id > {from_} AND id < {to_}
 
                 q_res = db_session.query(PostsTags).filter(PostsTags.post_id == row[0]).all()
                 tags_ids = [tag.tag_id for tag in q_res]
-                entry["tags"] = tags_ids
+                tags = [tag.content for tag in
+                        [db_session.query(Tags).filter(Tags.id == tag_id).all()[0] for tag_id in tags_ids]
+                        ]
+                entry["tags"] = []
+                for idx, tag_id in enumerate(tags_ids):
+                    entry["tags"].append({'id': tag_id, 'label': tags[idx]})
+
+                q_res = db_session.query(Comments).filter(Comments.post_id == row[0]).all()
+                comments = [comment.id for comment in q_res]
+                entry["comments"] = comments
                 resp_data["response"].append(entry)
             resp.data = str(resp_data).replace("'", "\"")
             resp.status = '200'
