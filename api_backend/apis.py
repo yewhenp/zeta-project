@@ -131,7 +131,7 @@ class PostAPI(Resource):
                 "comments": comments
             }}
             user = db_session.query(Users).filter(Users.id == post.author_id).all()[0]
-            resp_data['author'] = {
+            resp_data['response']['author'] = {
                 'icon': user.avatat_icon,
                 'username': user.username,
                 'userrating': user.user_rating
@@ -256,7 +256,7 @@ class CommentAPI(Resource):
             "votes": comment.votes,
         }}
         user = db_session.query(Users).filter(Users.id == comment.author_id).all()[0]
-        resp_data['author'] = {
+        resp_data['response']['author'] = {
             'icon': user.avatat_icon,
             'username': user.username,
             'userrating': user.user_rating
