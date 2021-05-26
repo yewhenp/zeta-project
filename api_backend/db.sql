@@ -34,7 +34,7 @@ create table post_tags (
 		foreign key (post_id) references posts(id) on delete cascade,
 	constraint tag_FK
 		foreign key (tag_id) references tags(id) on delete cascade
-)
+);
 
 create table comments (
 	id serial primary key,
@@ -42,13 +42,13 @@ create table comments (
 	author_id integer not null,
 	content text,
 	votes integer
-)
+);
 
 insert into users(username, email, hashed) values
 ('Pasha', 'pasha@gmail.com', 'sha1$7a4e8ecc$1$339f4c437a6b860194a0d86ac880d84d8526f53b'), -- password 123
-('Misha', 'misha@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'); -- password 321
-('Anton_Antonov', 'Anton_Antonov@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'); -- password 321
-('Serhiy_Serhiiv', 'Serhiy_Serhiiv@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'); -- password 321
+('Misha', 'misha@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'), -- password 321
+('Anton_Antonov', 'Anton_Antonov@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'), -- password 321
+('Serhiy_Serhiiv', 'Serhiy_Serhiiv@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'), -- password 321
 ('Makar_Makarov', 'Makar_Makarov@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'); -- password 321
 
 insert into comments(post_id, author_id, content, votes) values 
@@ -81,11 +81,7 @@ Acetaminophen is another name for paracetamol.
 
 Glucoronyl is an example of a chemical group added onto a drug during conjugation.
 
-N-acetyl cysteine is used to treat paracetamol overdose to replenish glutathione levels.', 15)
-
-insert into tags(content) values ('Angular'),('jQuery'),('Polymer'),('React'), ('Vue.js'),('StepanJS The Best Framework Ever');
-
-insert into post_tags(post_id, tag_id) values (1, 2), (1, 4), (1, 5);
+N-acetyl cysteine is used to treat paracetamol overdose to replenish glutathione levels.', 15);
 
 insert into posts(title, content, votes, time_created, time_last_active, views, author_id) values ('What is a NullPointerExceptio
  n, and how do I fix it?', 'Explanation
@@ -106,4 +102,9 @@ insert into posts(title, content, votes, time_created, time_last_active, views, 
  
  Glucoronyl is an example of a chemical group added onto a drug during conjugation.
  
- N-acetyl cysteine is used to treat paracetamol overdose to replenish glutathione levels.', 10, 'October 20, 2008', 'April 25, 2021', 3300000, 1)
+ N-acetyl cysteine is used to treat paracetamol overdose to replenish glutathione levels.', 10, 'October 20, 2008', 'April 25, 2021', 3300000, 1);
+
+insert into tags(content) values ('Angular'),('jQuery'),('Polymer'),('React'), ('Vue.js'),('StepanJS The Best Framework Ever');
+
+insert into post_tags(post_id, tag_id) values (1, 2), (1, 4), (1, 5);
+
