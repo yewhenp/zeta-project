@@ -310,7 +310,7 @@ class TagAPI(Resource):
             "response": []
         }
         for tag in q_res:
-            resp_data["response"].append({"id": tag.id, "content": tag.content})
+            resp_data["response"].append({"id": tag.id, "label": tag.content})
         resp.data = str(resp_data).replace("'", "\"")
         resp.status = '200'
         return resp
