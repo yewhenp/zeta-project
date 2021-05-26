@@ -41,12 +41,7 @@ const allTags = [
 
 const CreatePost = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
-  const defaultState = {
-    open: false,
-    value: '**Hello world!!!**',
-    selectedTab: 'write',
-    title: '',
-  }
+
   // State
   const [mystate, setMystate] = React.useState({
     open: false,
@@ -85,7 +80,12 @@ const CreatePost = forwardRef((props, ref) => {
         { method: 'POST' },
       )
       if (resp.status === 201) {
-        setMystate({ defaultState })
+        setMystate({
+          open: false,
+          value: '**Hello world!!!**',
+          selectedTab: 'write',
+          title: '',
+        })
       } else {
         setMystate({ ...mystate, title: 'Something went wrong' })
       }
