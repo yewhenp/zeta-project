@@ -80,7 +80,9 @@ class UsersAPI(Resource):
 
 class PostAPI(Resource):
     parser = reqparse.RequestParser()
-    # parser.add_argument("from", type=int, help="from what post to search for", required=False)
+    parser.add_argument("from", type=int, help="from what post to search for", required=False)
+    parser.add_argument("to", type=int, help="to what post to search for", required=False)
+
     parser.add_argument("many", type=bool, help="if true then get many posts, else get info about one post",
                         required=False)
 
@@ -92,6 +94,10 @@ class PostAPI(Resource):
     parser.add_argument("time_last_active", type=str, help="time_last_active", required=False)
     parser.add_argument("views", type=str, help="views", required=False)
     parser.add_argument("author_id", type=str, help="author_id", required=False)
+
+    post_required_args = [
+        "title", "content", "time_created", "time_last_active", "author_id"
+    ]
 
     def get(self, num_id):
         args = self.parser.parse_args()
@@ -119,14 +125,49 @@ class PostAPI(Resource):
                 "title": post.title,
                 "content": post.content,
                 "votes": post.votes,
-                "timeCreated": post.time_created,
-                "timeLastActive": post.time_last_active,
+                "timeCreated": post.time_created.strftime("%m-%d-%Y"),
+                "timeLastActive": post.time_last_active.strftime("%m-%d-%Y"),
                 "views": post.views,
                 "tags": tags,
                 "comments": comments
             }}
             resp_data = str(resp_data).replace("'", "\"")
             resp.data = resp_data
+            resp.status = '200'
+            return resp
+
+        else:
+            from_ = args["from"] if args["from"] is not None else 0
+            to_ = args["to"] if args["to"] is not None else from_ + 10
+
+            resp = Response('many posts information')
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            q_res = db_session.execute(f"""
+select * from posts where id > {from_} AND id < {to_}
+""")
+            resp_data = {
+                "response": []
+            }
+            for row in q_res:
+                entry = {
+                    "id": row[0],
+                    "title": row[1],
+                    "content": row[2],
+                    "votes": row[3],
+                    "timeCreated": row[4].strftime("%m-%d-%Y"),
+                    "timeLastActive": row[5].strftime("%m-%d-%Y"),
+                    "views": row[6],
+                }
+                user = db_session.query(Users).filter(Users.id == row[7]).all()[0]
+                entry["icon"] = user.avatat_icon
+                entry["username"] = user.username
+                entry["userrating"] = user.user_rating
+
+                q_res = db_session.query(PostsTags).filter(PostsTags.post_id == row[0]).all()
+                tags_ids = [tag.tag_id for tag in q_res]
+                entry["tags"] = tags_ids
+                resp_data["response"].append(entry)
+            resp.data = str(resp_data).replace("'", "\"")
             resp.status = '200'
             return resp
 
@@ -144,12 +185,26 @@ class PostAPI(Resource):
         return resp
 
     def post(self, num_id):
+        resp = Response("create post")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+
         args = self.parser.parse_args()
         not_none_args = {k: v for k, v in args.items() if v is not None}
-        new_entry = Posts()
-        post_id = db_session.query(func.max(new_entry.id)).scalar() + 1
-        new_entry.__dict__ |= not_none_args | {'id': post_id}
+        for arg in self.post_required_args:
+            if arg not in not_none_args:
+                resp.status = '404'
+                resp.data = '{"response": "' + str(arg) + ' column is required"'
+                return resp
 
+        new_entry = Posts()
+        post_id = db_session.query(func.max(Posts.id)).scalar() + 1
+        new_entry.__dict__ |= not_none_args | {'id': post_id}
+        try:
+            db_session.commit()
+        except Exception:
+            resp.status = '405'
+            resp.data = '{"response": "error occured while commiting changes"'
+            return resp
         print(new_entry)
 
     def options(self, username):
