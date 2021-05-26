@@ -120,7 +120,6 @@ class PostAPI(Resource):
             q_res = db_session.query(Comments).filter(Comments.post_id == num_id).all()
             comments = [comment.id for comment in q_res]
 
-
             resp_data = {"response": {
                 "title": post.title,
                 "content": post.content,
@@ -193,19 +192,21 @@ select * from posts where id > {from_} AND id < {to_}
         for arg in self.post_required_args:
             if arg not in not_none_args:
                 resp.status = '404'
-                resp.data = '{"response": "' + str(arg) + ' column is required"'
+                resp.data = '{"response": "' + str(arg) + ' column is required"}'
                 return resp
 
         new_entry = Posts()
         post_id = db_session.query(func.max(Posts.id)).scalar() + 1
         new_entry.__dict__ |= not_none_args | {'id': post_id}
         try:
+            db_session.add(new_entry)
             db_session.commit()
         except Exception:
             resp.status = '405'
-            resp.data = '{"response": "error occured while commiting changes"'
+            resp.data = '{"response": "error occured while commiting changes"}'
             return resp
-        print(new_entry)
+        resp.status = '201'
+        return resp
 
     def options(self, username):
         resp = Response("allowed-methods")
