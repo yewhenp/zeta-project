@@ -30,22 +30,34 @@ import TextField from '@material-ui/core/TextField'
 // my exports
 import useStyles from './styles'
 
-const allTags = [
-  { id: 0, label: 'Angular' },
-  { id: 1, label: 'jQuery' },
-  { id: 2, label: 'Polymer' },
-  { id: 3, label: 'React' },
-  { id: 4, label: 'Vue.js' },
-  { id: 5, label: 'StepanJS The Best Framework Ever' },
-]
+// const allTags = [
+//   { id: 0, label: 'Angular' },
+//   { id: 1, label: 'jQuery' },
+//   { id: 2, label: 'Polymer' },
+//   { id: 3, label: 'React' },
+//   { id: 4, label: 'Vue.js' },
+//   { id: 5, label: 'StepanJS The Best Framework Ever' },
+// ]
 
 const CreatePost = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
+  const [chipData, updatechipData] = React.useState([])
+  const getChipData = async () => {
+    const resp = await fetch(`${BASE_API}/tags/1`)
+    let data = await resp.json()
+    data = data.response
+    updatechipData(data)
+  }
+  React.useEffect(() => {
+    getChipData()
+    console.log('===============', chipData)
+  }, [])
   const defaultState = {
     open: false,
     value: '**Hello world!!!**',
     selectedTab: 'write',
     title: '',
+    selectedTags: [],
   }
   // State
   const [mystate, setMystate] = React.useState({ defaultState })
@@ -72,6 +84,10 @@ const CreatePost = forwardRef((props, ref) => {
   }
 
   const handleCreatePost = async () => {
+    const tags = []
+    mystate.selectedTags.forEach(item => {
+      tags.push(item.label)
+    })
     if (!mystate.title || !mystate.value) {
       setMystate({ ...mystate, title: 'Something went wrong' })
     } else {
@@ -79,8 +95,20 @@ const CreatePost = forwardRef((props, ref) => {
         `${BASE_API}/posts/0?title=${mystate.title}&content=${mystate.value}&author_id=${userID}`,
         { method: 'POST' },
       )
+      const postID = await resp.json()
       if (resp.status === 201) {
-        setMystate({ defaultState })
+        const resp2 = await fetch(`${BASE_API}/tags/${postID.response}`, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ tags }),
+        })
+        if (resp2.status === 200) {
+          setMystate({ defaultState })
+        } else {
+          setMystate({ ...mystate, title: 'Something went wrong' })
+        }
       } else {
         setMystate({ ...mystate, title: 'Something went wrong' })
       }
@@ -139,7 +167,10 @@ const CreatePost = forwardRef((props, ref) => {
             <Autocomplete
               multiple
               id="tags-outlined"
-              options={allTags}
+              options={chipData}
+              onChange={(event, value) => {
+                setMystate({ ...mystate, selectedTags: value })
+              }} // prints the selected value
               getOptionLabel={option => option.label}
               filterSelectedOptions
               className={classes.inputForm}
