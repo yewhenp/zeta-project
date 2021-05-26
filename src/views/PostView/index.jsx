@@ -6,6 +6,7 @@ import Header from '../../modules/Header/components/Header'
 import Post from '../../modules/Posts/components/Post'
 import Comment from '../../modules/Posts/components/Comment'
 /// eslint-disable-next-line no-unused-vars (for better times)
+
 const useStyles = makeStyles({
   element: {
     paddingTop: '10px',

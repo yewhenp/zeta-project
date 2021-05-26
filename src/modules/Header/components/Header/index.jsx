@@ -39,11 +39,14 @@ const Header = () => {
     childRefLogin.current.handleClickOpen()
   }
 
-  const handleLogin = () => {
+  const handleLogin = (username, userID) => {
     dispatch({
       type: LOGIN,
+      payload: {
+        username,
+        userID,
+      },
     })
-    // handleMenuClose()
   }
 
   const handleLogout = () => {
@@ -57,11 +60,7 @@ const Header = () => {
   return (
     <div className={classes.grow}>
       <ThemeProvider theme={theme}>
-        <AppBar
-          position="static"
-          className={classes.mainAppBar}
-          color="primary"
-        >
+        <AppBar position="static" color="primary">
           <Toolbar>
             <IconButton
               edge="start"

@@ -1,7 +1,9 @@
 from flask_restful import Api, Resource, reqparse, abort
-from flask import Response, make_response
+from flask import Response, make_response, request
 from sqlalchemy import func
+import datetime
 from database import *
+import json
 
 
 db_session = loadSession()
@@ -85,6 +87,8 @@ class PostAPI(Resource):
 
     parser.add_argument("many", type=bool, help="if true then get many posts, else get info about one post",
                         required=False)
+    parser.add_argument("count", type=bool, help="if true then returns number of posts",
+                        required=False)
 
     # parser.add_argument("id", type=str, help="id", required=False)
     parser.add_argument("title", type=str, help="title", required=False)
@@ -96,53 +100,12 @@ class PostAPI(Resource):
     parser.add_argument("author_id", type=str, help="author_id", required=False)
 
     post_required_args = [
-        "title", "content", "time_created", "time_last_active", "author_id"
+        "title", "content", "author_id"
     ]
 
     def get(self, num_id):
         args = self.parser.parse_args()
-        if args["many"] is None:
-            resp = Response('post information')
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            try:
-                q_res = db_session.query(Posts).filter(Posts.id == num_id).all()
-                post = q_res[0]
-            except Exception:
-                resp.status = '404'
-                resp.data = '{"response": "There is no id ' + str(num_id) + '"'
-                return resp
-            q_res = db_session.query(PostsTags).filter(PostsTags.post_id == num_id).all()
-            tags_ids = [tag.tag_id for tag in q_res]
-            tags = [tag.content for tag in
-                    [db_session.query(Tags).filter(Tags.id == tag_id).all()[0] for tag_id in tags_ids]
-                    ]
-
-            q_res = db_session.query(Comments).filter(Comments.post_id == num_id).all()
-            comments = [comment.id for comment in q_res]
-
-            resp_data = {"response": {
-                "title": post.title,
-                "content": post.content,
-                "votes": post.votes,
-                "timeCreated": post.time_created.strftime("%m-%d-%Y"),
-                "timeLastActive": post.time_last_active.strftime("%m-%d-%Y"),
-                "views": post.views,
-                "tags": tags,
-                "comments": comments
-            }}
-            user = db_session.query(Users).filter(Users.id == post.author_id).all()[0]
-            resp_data['response']['author'] = {
-                'avatarIcon': user.avatat_icon,
-                'nickname': user.username,
-                'userRating': user.user_rating
-            }
-
-            resp_data = str(resp_data).replace("'", "\"")
-            resp.data = resp_data
-            resp.status = '200'
-            return resp
-
-        else:
+        if args["many"] is not None:
             from_ = args["from"] if args["from"] is not None else 0
             to_ = args["to"] if args["to"] is not None else from_ + 10
 
@@ -185,6 +148,54 @@ select * from posts where id > {from_} AND id < {to_}
             resp.data = str(resp_data).replace("'", "\"")
             resp.status = '200'
             return resp
+        elif args["count"] is not None:
+            resp = Response('number of posts')
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            n = list(db_session.execute("select count(*) from posts"))[0][0]
+            resp.data = '{"response": ' + str(n) + '}'
+            resp.status = '200'
+            return resp
+
+        else:
+            resp = Response('post information')
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            try:
+                q_res = db_session.query(Posts).filter(Posts.id == num_id).all()
+                post = q_res[0]
+            except Exception:
+                resp.status = '404'
+                resp.data = '{"response": "There is no id ' + str(num_id) + '"'
+                return resp
+            q_res = db_session.query(PostsTags).filter(PostsTags.post_id == num_id).all()
+            tags_ids = [tag.tag_id for tag in q_res]
+            tags = [tag.content for tag in
+                    [db_session.query(Tags).filter(Tags.id == tag_id).all()[0] for tag_id in tags_ids]
+                    ]
+
+            q_res = db_session.query(Comments).filter(Comments.post_id == num_id).all()
+            comments = [comment.id for comment in q_res]
+
+            resp_data = {"response": {
+                "title": post.title,
+                "content": post.content,
+                "votes": post.votes,
+                "timeCreated": post.time_created.strftime("%m-%d-%Y"),
+                "timeLastActive": post.time_last_active.strftime("%m-%d-%Y"),
+                "views": post.views,
+                "tags": tags,
+                "comments": comments
+            }}
+            user = db_session.query(Users).filter(Users.id == post.author_id).all()[0]
+            resp_data['response']['author'] = {
+                'avatarIcon': user.avatat_icon,
+                'nickname': user.username,
+                'userRating': user.user_rating
+            }
+
+            resp_data = str(resp_data).replace("'", "\"")
+            resp.data = resp_data
+            resp.status = '200'
+            return resp
 
     def put(self, num_id):
         args = self.parser.parse_args()
@@ -205,6 +216,11 @@ select * from posts where id > {from_} AND id < {to_}
 
         args = self.parser.parse_args()
         not_none_args = {k: v for k, v in args.items() if v is not None}
+        not_none_args["time_created"] = not_none_args["time_created"] \
+            if "time_created" in not_none_args else datetime.date.today().strftime("%m-%d-%Y")
+        not_none_args["time_last_active"] = not_none_args["time_last_active"] \
+            if "time_last_active" in not_none_args else datetime.date.today().strftime("%m-%d-%Y")
+
         for arg in self.post_required_args:
             if arg not in not_none_args:
                 resp.status = '404'
@@ -222,6 +238,7 @@ select * from posts where id > {from_} AND id < {to_}
             resp.data = '{"response": "error occured while commiting changes"}'
             return resp
         resp.status = '201'
+        resp.data = '{"response": ' + str(post_id) + '}'
         return resp
 
     def options(self, username):
@@ -280,6 +297,53 @@ class CommentAPI(Resource):
         return resp
 
     def options(self, username):
+        resp = Response("allowed-methods")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
+        resp.headers['Access-Control-Allow-Headers'] = 'content-type'
+        resp.status = '204'
+        return resp
+
+
+class TagAPI(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument("tags", help="new tags", required=False)
+    parser.add_argument("aa", help="new tags", required=False)
+
+
+    def get(self, post_id):
+        resp = Response("All tags response")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        q_res = db_session.query(Tags).all()
+        resp_data = {
+            "response": []
+        }
+        for tag in q_res:
+            resp_data["response"].append({"id": tag.id, "label": tag.content})
+        resp.data = str(resp_data).replace("'", "\"")
+        resp.status = '200'
+        return resp
+
+    def post(self, post_id):
+        resp = Response("add new post-tag conection")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        posted_data = request.get_json(force=True)
+        for tagname in posted_data["tags"]:
+            tag_id = db_session.query(Tags).filter(Tags.content == tagname).all()[0].id
+            new_entry = PostsTags()
+            new_entry.post_id = post_id
+            new_entry.tag_id = tag_id
+            try:
+                db_session.add(new_entry)
+                db_session.commit()
+            except Exception:
+                resp.status = '405'
+                resp.data = '{"response": "error occured while commiting changes"}'
+                return resp
+            resp.status = '201'
+            return resp
+
+    def options(self, post_id):
         resp = Response("allowed-methods")
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
