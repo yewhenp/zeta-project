@@ -296,7 +296,7 @@ class CommentAPI(Resource):
         resp.status = '200'
         return resp
 
-    def options(self, username):
+    def options(self, comment_id):
         resp = Response("allowed-methods")
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT'
