@@ -44,7 +44,7 @@ const PostOverview = ({
   return (
     <div className={classes.container}>
       <Grid container spacing={4}>
-        <Grid item xs="auto">
+        <Grid item xs={2}>
           <Grid
             container
             direction="column"
@@ -99,7 +99,7 @@ const PostOverview = ({
           </Grid>
         </Grid>
 
-        <Grid item xs>
+        <Grid item xs={10}>
           <Grid
             container
             direction="column"
@@ -116,7 +116,11 @@ const PostOverview = ({
             </Typography>
           </Grid>
           <Grid item xs className={classes.grigFullWigthItem}>
-            <Typography variant="body2">{postText}</Typography>
+            <Typography variant="body2">
+              {postText.length < 200
+                ? postText
+                : `${postText.substring(0, 200)}...`}
+            </Typography>
           </Grid>
           <Grid item xs className={classes.grigFullWigthItem}>
             <Grid
