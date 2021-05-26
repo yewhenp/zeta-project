@@ -5,25 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Header from '../../modules/Header/components/Header'
 import Post from '../../modules/Posts/components/Post'
 import Comment from '../../modules/Posts/components/Comment'
+/// eslint-disable-next-line no-unused-vars (for better times)
 
-// const text = `
-// ###Explanation
-// Paracetamol is metabolized in the liver.
-
-// In the setting of acute overdose, **liver conjugation** (Phase 2 reaction) **is overloaded** leading to paracetamol being metabolized by an alternative pathway.
-
-// This alternative pathway leads to a toxic- metabolite: **NAPQI** (N-acetyl-p-benzoquinone imine).
-
-// This is usually **inactivated by glutathione**.
-
-// If the paracetamol overdose is severe, glutathione is depleted leading to accumulation of NAPQI and subsquent necrosis of liver and kidney tissue.
-
-// *Acetaminophen* is another name for *paracetamol*.
-
-// Glucoronyl is an example of a chemical group added onto a drug during conjugation.
-
-// N-acetyl cysteine is used to treat paracetamol overdose to replenish glutathione levels.
-// `
 const useStyles = makeStyles({
   element: {
     paddingTop: '10px',
@@ -34,13 +17,14 @@ const PostView = () => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const classes = useStyles()
   const { ID } = useParams()
+
   const [postData, updatePostData] = useState({
     id: ID,
     title: '',
     content: '',
-    timeCreated: '1970-01-01',
-    timeLastActive: '1970-01-01',
-    views: 0,
+    timeCreated: '1-1-1',
+    timeLastActive: '1-1-1',
+    views: 1,
     author: {
       nickname: '',
       avatarIcon: '',
@@ -51,97 +35,36 @@ const PostView = () => {
   })
   const [commentsData, updateCommentsData] = useState([])
   useEffect(async () => {
-    const request = await fetch(`${BASE_API}/posts/${ID}`).json()
-    updatePostData(...request.response)
-    updateCommentsData(
-      ...(await Promise.all(
-        request.comments.map(id => fetch(`${BASE_API}/comments/${id}`).json()),
-      )),
-    )
-  })
+    const { response } = await (await fetch(`${BASE_API}/posts/${ID}`)).json()
+    updatePostData(response)
+    const comments = (
+      await Promise.all(
+        response.comments.map(async id =>
+          (await fetch(`${BASE_API}/comments/${id}`)).json(),
+        ),
+      )
+    ).map(value => value.response)
+    comments.sort((a, b) => b.votes - a.votes)
+    updateCommentsData(comments)
+  }, [])
+  const updateVotes = count => {
+    updatePostData({ ...postData, votes: count })
+    fetch(`${BASE_API}/posts/${ID}?votes=${count}`)
+  }
+  const updateContent = text => updatePostData({ ...postData, content: text })
+  const updateCommentVotes = index => count => {
+    const newCommentsData = [...commentsData]
+    newCommentsData[index] = { ...newCommentsData[index], votes: count }
+    newCommentsData.sort((a, b) => b.votes - a.votes)
+    updateCommentsData(newCommentsData)
+    fetch(`${BASE_API}/comments/${newCommentsData[index].id}?votes=${count}`)
+  }
+  const updateCommentContent = index => text => {
+    const newCommentsData = [...commentsData]
+    newCommentsData[index] = { ...newCommentsData[index], content: text }
+    updateCommentsData(newCommentsData)
+  }
 
-  // will be used by requesting data from backend
-  // eslint-disable-next-line no-unused-vars
-  // const [postData, updatePostData] = useState({
-  //   id: ID,
-  //   title: 'What is a NullPointerException, and how do I fix it?',
-  //   content: text,
-  //   timeCreated: '2008-10-20',
-  //   timeLastActive: '2021-04-25',
-  //   views: 3298407,
-  //   author: {
-  //     nickname: 'Anton Antonov',
-  //     avatarIcon: 'https://data.whicdn.com/images/341606254/original.jpg',
-  //     userRating: 4000,
-  //   },
-  //   votes: 10,
-  //   tags: [
-  //     { id: 0, label: 'Angular' },
-  //     { id: 1, label: 'jQuery' },
-  //     { id: 2, label: 'Polymer' },
-  //     { id: 3, label: 'React' },
-  //     { id: 4, label: 'Vue.js' },
-  //     { id: 5, label: 'StepanJS The Best Framework Ever' },
-  //     { id: 6, label: 'JavaScrip' },
-  //     { id: 7, label: 'C++' },
-  //     { id: 8, label: 'Python' },
-  //   ],
-  // })
-
-  // will be used by requesting data from backend
-  // eslint-disable-next-line no-unused-vars
-  // const [commentsData, updateCommentsData] = useState([
-  //   {
-  //     id: ID + 1,
-  //     title: 'What is a NullPointerException, and how do I fix it?',
-  //     content: text,
-  //     timeCreated: '2008-10-20',
-  //     timeLastActive: '2021-04-25',
-  //     views: 3298407,
-  //     author: {
-  //       nickname: 'Anton Antonov',
-  //       avatarIcon: 'https://data.whicdn.com/images/341606254/original.jpg',
-  //       userRating: 4000,
-  //     },
-  //     votes: 10,
-  //     tags: [
-  //       { id: 0, label: 'Angular' },
-  //       { id: 1, label: 'jQuery' },
-  //       { id: 2, label: 'Polymer' },
-  //       { id: 3, label: 'React' },
-  //       { id: 4, label: 'Vue.js' },
-  //       { id: 5, label: 'StepanJS The Best Framework Ever' },
-  //       { id: 6, label: 'JavaScrip' },
-  //       { id: 7, label: 'C++' },
-  //       { id: 8, label: 'Python' },
-  //     ],
-  //   },
-  //   {
-  //     id: ID + 2,
-  //     title: 'What is a NullPointerException, and how do I fix it?',
-  //     content: text,
-  //     timeCreated: '2008-10-20',
-  //     timeLastActive: '2021-04-25',
-  //     views: 3298407,
-  //     author: {
-  //       nickname: 'Anton Antonov',
-  //       avatarIcon: 'https://data.whicdn.com/images/341606254/original.jpg',
-  //       userRating: 4000,
-  //     },
-  //     votes: 10,
-  //     tags: [
-  //       { id: 0, label: 'Angular' },
-  //       { id: 1, label: 'jQuery' },
-  //       { id: 2, label: 'Polymer' },
-  //       { id: 3, label: 'React' },
-  //       { id: 4, label: 'Vue.js' },
-  //       { id: 5, label: 'StepanJS The Best Framework Ever' },
-  //       { id: 6, label: 'JavaScrip' },
-  //       { id: 7, label: 'C++' },
-  //       { id: 8, label: 'Python' },
-  //     ],
-  //   },
-  // ])
   return (
     <Grid container justify="center" alignItems="center">
       <Grid item xs={12}>
@@ -155,11 +78,22 @@ const PostView = () => {
         alignItems="center"
       >
         <Grid item xs={8} className={classes.element}>
-          <Post postData={postData} />
+          <Post
+            postData={postData}
+            votesCount={[postData.votes, updateVotes]}
+            postContent={[postData.content, updateContent]}
+          />
         </Grid>
-        {commentsData.map(data => (
+        {commentsData.map((data, id) => (
           <Grid key={data.id} item xs={8} className={classes.element}>
-            <Comment commentData={data} />
+            <Comment
+              commentData={data}
+              votesCount={[commentsData[id].votes, updateCommentVotes(id)]}
+              commentContent={[
+                commentsData[id].content,
+                updateCommentContent(id),
+              ]}
+            />
           </Grid>
         ))}
       </Grid>
