@@ -120,7 +120,6 @@ class PostAPI(Resource):
             q_res = db_session.query(Comments).filter(Comments.post_id == num_id).all()
             comments = [comment.id for comment in q_res]
 
-
             resp_data = {"response": {
                 "title": post.title,
                 "content": post.content,
@@ -131,6 +130,13 @@ class PostAPI(Resource):
                 "tags": tags,
                 "comments": comments
             }}
+            user = db_session.query(Users).filter(Users.id == post.author_id).all()[0]
+            resp_data['author'] = {
+                'icon': user.avatat_icon,
+                'username': user.username,
+                'userrating': user.user_rating
+            }
+
             resp_data = str(resp_data).replace("'", "\"")
             resp.data = resp_data
             resp.status = '200'
@@ -165,7 +171,16 @@ select * from posts where id > {from_} AND id < {to_}
 
                 q_res = db_session.query(PostsTags).filter(PostsTags.post_id == row[0]).all()
                 tags_ids = [tag.tag_id for tag in q_res]
-                entry["tags"] = tags_ids
+                tags = [tag.content for tag in
+                        [db_session.query(Tags).filter(Tags.id == tag_id).all()[0] for tag_id in tags_ids]
+                        ]
+                entry["tags"] = []
+                for idx, tag_id in enumerate(tags_ids):
+                    entry["tags"].append({'id': tag_id, 'label': tags[idx]})
+
+                q_res = db_session.query(Comments).filter(Comments.post_id == row[0]).all()
+                comments = [comment.id for comment in q_res]
+                entry["comments"] = comments
                 resp_data["response"].append(entry)
             resp.data = str(resp_data).replace("'", "\"")
             resp.status = '200'
@@ -193,19 +208,21 @@ select * from posts where id > {from_} AND id < {to_}
         for arg in self.post_required_args:
             if arg not in not_none_args:
                 resp.status = '404'
-                resp.data = '{"response": "' + str(arg) + ' column is required"'
+                resp.data = '{"response": "' + str(arg) + ' column is required"}'
                 return resp
 
         new_entry = Posts()
         post_id = db_session.query(func.max(Posts.id)).scalar() + 1
         new_entry.__dict__ |= not_none_args | {'id': post_id}
         try:
+            db_session.add(new_entry)
             db_session.commit()
         except Exception:
             resp.status = '405'
-            resp.data = '{"response": "error occured while commiting changes"'
+            resp.data = '{"response": "error occured while commiting changes"}'
             return resp
-        print(new_entry)
+        resp.status = '201'
+        return resp
 
     def options(self, username):
         resp = Response("allowed-methods")
@@ -235,10 +252,15 @@ class CommentAPI(Resource):
         resp_data = {"response": {
             "id": comment.id,
             "post_id": comment.post_id,
-            "author_id": comment.author_id,
             "content": comment.content,
             "votes": comment.votes,
         }}
+        user = db_session.query(Users).filter(Users.id == comment.author_id).all()[0]
+        resp_data['author'] = {
+            'icon': user.avatat_icon,
+            'username': user.username,
+            'userrating': user.user_rating
+        }
         resp_data = str(resp_data).replace("'", "\"")
         resp.data = resp_data
         resp.status = '200'

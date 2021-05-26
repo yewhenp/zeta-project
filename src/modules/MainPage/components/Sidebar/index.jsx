@@ -38,12 +38,12 @@ const Sidebar = () => {
   // will be used by requesting data from backend
   // eslint-disable-next-line no-unused-vars
   const [chipData, updatechipData] = useState([
-    { id: 0, label: 'Angular' },
-    { id: 1, label: 'jQuery' },
-    { id: 2, label: 'Polymer' },
-    { id: 3, label: 'React' },
-    { id: 4, label: 'Vue.js' },
-    { id: 5, label: 'StepanJS The Best Framework Ever' },
+    { id: 1, label: 'Angular' },
+    { id: 2, label: 'jQuery' },
+    { id: 3, label: 'Polymer' },
+    { id: 4, label: 'React' },
+    { id: 5, label: 'Vue.js' },
+    { id: 6, label: 'StepanJS The Best Framework Ever' },
   ])
 
   const handleClick = clickedValue => {

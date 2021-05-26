@@ -18,7 +18,7 @@ import Comment from '../../modules/Posts/components/Comment'
 
 // If the paracetamol overdose is severe, glutathione is depleted leading to accumulation of NAPQI and subsquent necrosis of liver and kidney tissue.
 
-// *Acetaminophen* is another name for *paracetamol*. 
+// *Acetaminophen* is another name for *paracetamol*.
 
 // Glucoronyl is an example of a chemical group added onto a drug during conjugation.
 
