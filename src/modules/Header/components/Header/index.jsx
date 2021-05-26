@@ -60,11 +60,7 @@ const Header = () => {
   return (
     <div className={classes.grow}>
       <ThemeProvider theme={theme}>
-        <AppBar
-          position="static"
-          className={classes.mainAppBar}
-          color="primary"
-        >
+        <AppBar position="static" color="primary">
           <Toolbar>
             <IconButton
               edge="start"

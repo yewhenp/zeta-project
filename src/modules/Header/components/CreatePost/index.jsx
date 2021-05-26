@@ -48,7 +48,12 @@ const CreatePost = forwardRef((props, ref) => {
     title: '',
   }
   // State
-  const [mystate, setMystate] = React.useState({ defaultState })
+  const [mystate, setMystate] = React.useState({
+    open: false,
+    value: '**Hello world!!!**',
+    selectedTab: 'write',
+    title: '',
+  })
   const userID = useSelector(state => state.userID)
 
   const classes = useStyles()
