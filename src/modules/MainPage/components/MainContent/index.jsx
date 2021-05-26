@@ -18,18 +18,17 @@ const MainPage = () => {
   const [postData, updatePostData] = useState([])
   const getPostData = async (from, to) => {
     const resp = await fetch(
-      `${BASE_API}/posts/1?many=true&from=${from}&to=${to}`,
+      `${BASE_API}/posts/1?many=true&from=${from}&to=${to + 1}`,
     )
     let data = await resp.json()
     data = data.response
     updatePostData(data)
   }
 
-  const perPage = 5
+  const perPage = 3
   const [pageCount, updatePageCount] = useState(1)
-  // eslint-disable-next-line no-unused-vars
   const getPageCount = async () => {
-    const resp = await fetch(`${BASE_API}/posts/1?count=1`)
+    const resp = await fetch(`${BASE_API}/posts/1?count=true`)
     let data = await resp.json()
     data = data.response
     let tempPageCount = Math.floor(data / perPage)
@@ -43,11 +42,17 @@ const MainPage = () => {
   const [page, updatePage] = useState(1)
   const setPage = val => {
     updatePage(val)
-    getPostData(val * pageCount, (val + 1) * pageCount)
+    if (perPage % 2 === 0) {
+      getPostData((val - 1) * pageCount, val * pageCount)
+    } else if (val - 1 === 0) {
+      getPostData((val - 1) * pageCount, val * pageCount + 1)
+    } else {
+      getPostData((val - 1) * pageCount + 1, val * pageCount + 1)
+    }
   }
 
   useEffect(() => {
-    // getPageCount()
+    getPageCount()
     getPostData(0, perPage)
   }, [])
 
