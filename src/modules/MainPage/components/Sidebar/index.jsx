@@ -5,17 +5,40 @@ import Typography from '@material-ui/core/Typography'
 import { List, ListItem } from '@material-ui/core'
 import useStyles from './styles'
 
+const CHIP_MAX_WIDTH = 70
+
+const ChipText = props => {
+  // eslint-disable-next-line react/prop-types
+  const { children } = props
+
+  return (
+    <div
+      style={{
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        maxWidth: CHIP_MAX_WIDTH,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
 // eslint-disable-next-line react/prop-types
 const Sidebar = ({ updateFilter }) => {
   const classes = useStyles()
-  const chipData = [
+
+  // will be used by requesting data from backend
+  // eslint-disable-next-line no-unused-vars
+  const [chipData, updatechipData] = useState([
     { id: 0, label: 'Angular' },
     { id: 1, label: 'jQuery' },
     { id: 2, label: 'Polymer' },
     { id: 3, label: 'React' },
     { id: 4, label: 'Vue.js' },
     { id: 5, label: 'StepanJS The Best Framework Ever' },
-  ]
+  ])
   const [selectedValues, updateSelectedValues] = useState([])
 
   const handleClick = clickedValue => {
@@ -42,7 +65,7 @@ const Sidebar = ({ updateFilter }) => {
         {chipData.map(data => (
           <ListItem key={data.id} className={classes.chipLi}>
             <Chip
-              label={data.label}
+              label={<ChipText>{data.label}</ChipText>}
               className={classes.chip}
               color="primary"
               variant={

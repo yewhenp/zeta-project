@@ -30,11 +30,11 @@ ReactDOM.render(
       <CssBaseline />
       <Router>
         <Switch>
-          <Route path="/post">
-            <PostView />
-          </Route>
-          <Route path="/">
+          <Route exact path="/">
             <MainPageView />
+          </Route>
+          <Route path="/post/:ID">
+            <PostView />
           </Route>
         </Switch>
       </Router>

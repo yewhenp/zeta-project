@@ -1,6 +1,6 @@
 import SvgIcon from '@material-ui/core/SvgIcon'
 import React, { useRef } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -21,12 +21,6 @@ import { styles, theme } from './styles'
 const useStyles = makeStyles(styles)
 
 const Header = () => {
-  const history = useHistory()
-
-  const redirectToMain = () => {
-    history.replace('/')
-  }
-
   const classes = useStyles()
   const [logined, setLogin] = React.useState(false)
 
@@ -65,7 +59,8 @@ const Header = () => {
               className={classes.logoButton}
               color="inherit"
               aria-label="Zeta project"
-              onClick={redirectToMain}
+              component={RouterLink}
+              to="/"
             >
               <LogoIcon edge="start" style={{ fontSize: 80 }} />
             </IconButton>
@@ -120,9 +115,7 @@ const Header = () => {
           </Toolbar>
           <CreatePost ref={childRefCreatePost} />
           <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
-          {/* <RegisterForm ref={childRefRegister} loginHandle={handleLogin} /> */}
         </AppBar>
-        {/* {renderMenu} */}
       </ThemeProvider>
     </div>
   )

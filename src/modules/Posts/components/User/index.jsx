@@ -14,7 +14,7 @@ const User = ({ nickname, avatarIcon, userRating }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={1.3}>
+      <Grid item xs="auto">
         <Avatar alt="User" src={avatarIcon} className={classes.jojoIcon} />
       </Grid>
       <Grid item xs>

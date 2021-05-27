@@ -7,6 +7,8 @@ import useStyles from './styles'
 
 const MainPage = forwardRef((props, ref) => {
   const classes = useStyles()
+
+  // will be used by requesting data from backend
   const [postData, updatePostData] = useState([
     {
       id: 0,
@@ -96,9 +98,10 @@ const MainPage = forwardRef((props, ref) => {
         {postData.map(
           data =>
             data.show && (
-              <div>
-                <ListItem key={data.id} className={classes.postItem}>
+              <div key={data.id}>
+                <ListItem className={classes.postItem}>
                   <PostOverview
+                    postId={data.id}
                     postHeading={data.heading}
                     postText={data.text}
                     postTags={data.tags}
