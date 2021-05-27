@@ -59,7 +59,7 @@ table_names = {
 
 
 def loadSession():
-    engine = create_engine('postgresql://postgres::postgres@localhost:5432/ZETA_PROJECT')
+    engine = create_engine('postgresql://postgres::postgres@localhost:5432/zeta_project')
     metadata = MetaData(engine)
 
     for table_name in table_names:
