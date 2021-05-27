@@ -71,19 +71,14 @@ const LoginForm = forwardRef((props, ref) => {
     setFormState(defaultState)
   }
 
-  // handler for parent to open the dialog login page
-  useImperativeHandle(ref, () => ({
-    handleClickOpen() {
-      setFormState({ ...formState, open: true })
-    },
-  }))
-
   // login button
   const handleOnClickLogin = async () => {
     let updateStateFields = {}
     if (formState.password && formState.username) {
+      // retrieve info about user from backend
       const resp = await fetch(`${BASE_API}/users/${formState.username}`)
       const hashed = await resp.json()
+      // if password is correct
       if (
         resp.status === 200 &&
         verify(formState.password, hashed.response.hashed)
@@ -103,6 +98,7 @@ const LoginForm = forwardRef((props, ref) => {
         }
       }
     } else {
+      // some fields are empty - error
       updateStateFields = {
         ...updateStateFields,
         usernameError: !formState.username,
@@ -138,13 +134,20 @@ const LoginForm = forwardRef((props, ref) => {
     }))
   }
 
-  // should be called after successfull register to come back to login page
+  // should be called by register form after successfull register to come back to login page
   const handleRegister = () => {
     setFormState(prevState => ({
       ...prevState,
       open: true,
     }))
   }
+
+  // handler for parent to open the dialog login page
+  useImperativeHandle(ref, () => ({
+    handleClickOpen() {
+      setFormState({ ...formState, open: true })
+    },
+  }))
 
   return (
     <div>
@@ -157,7 +160,7 @@ const LoginForm = forwardRef((props, ref) => {
           aria-describedby="scroll-dialog-description"
           maxWidth="xs"
         >
-          {/* If errir */}
+          {/* If no error */}
           {(!formState.invalidUserNameOrPassword && (
             <DialogTitle id="login-title"> Log In</DialogTitle>
           )) || (

@@ -1,10 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
-import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
-import Checkbox from '@material-ui/core/Checkbox'
 import { generate } from 'password-hash'
-
-// import TextField from '@material-ui/core/TextField'
 
 // dialog related stuff
 import Dialog from '@material-ui/core/Dialog'
@@ -16,7 +12,10 @@ import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
+import Button from '@material-ui/core/Button'
 
+// my imports
 import useStyles from './styles'
 
 const RegisterForm = forwardRef((props, ref) => {
@@ -43,31 +42,10 @@ const RegisterForm = forwardRef((props, ref) => {
     accept: false,
   }
 
-  const defaultState2 = {
-    open: false,
-
-    username: '',
-    usernameError: false,
-    usernameLabel: 'Username',
-
-    email: '',
-    emailError: false,
-    emailLabel: 'Email',
-
-    password: '',
-    passwordError: false,
-    passwordLabel: 'Password',
-
-    password2: '',
-    passwordError2: false,
-    passwordLabel2: 'Repeat password',
-
-    accept: false,
-  }
-
   const [formState, setFormState] = React.useState(defaultState)
   const classes = useStyles()
 
+  // function that validates email (https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript)
   const validateEmail = email => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(String(email).toLowerCase())
@@ -115,16 +93,10 @@ const RegisterForm = forwardRef((props, ref) => {
 
   // close/open handlers
   const handleClose = () => {
-    setFormState({ ...defaultState2 })
+    setFormState({ ...defaultState })
   }
 
-  useImperativeHandle(ref, () => ({
-    handleClickOpen() {
-      setFormState({ ...formState, open: true })
-    },
-  }))
-
-  // button
+  // register button
   const handleOnClickRegister = async () => {
     let updateStateFields = {}
 
@@ -144,6 +116,7 @@ const RegisterForm = forwardRef((props, ref) => {
           emailLabel: 'Email validation is not passed',
         }
       } else {
+        // register user in backend
         const requestData = {
           username: formState.username,
           email: formState.email,
@@ -180,6 +153,7 @@ const RegisterForm = forwardRef((props, ref) => {
         }
       }
     } else {
+      // some of the fields are empty
       updateStateFields = {
         ...updateStateFields,
         usernameError: !formState.username,
@@ -207,6 +181,13 @@ const RegisterForm = forwardRef((props, ref) => {
       accept: event.target.checked,
     }))
   }
+
+  // this function should be called by parent to open the dialog register window
+  useImperativeHandle(ref, () => ({
+    handleClickOpen() {
+      setFormState({ ...formState, open: true })
+    },
+  }))
 
   return (
     <form>
