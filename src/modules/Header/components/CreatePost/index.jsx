@@ -5,39 +5,25 @@ import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
-// Dialog relared stuff
+// Dialog related stuff
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-// import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
 // Form related stuff
 import FormControl from '@material-ui/core/FormControl'
 import OutlinedInput from '@material-ui/core/OutlinedInput'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import TextField from '@material-ui/core/TextField'
 
 // markdown
 import ReactMde from 'react-mde'
 import * as Showdown from 'showdown'
 import 'react-mde/lib/styles/css/react-mde-all.css'
 
-// Tags related stuff
-// import Chip from '@material-ui/core/Chip'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import TextField from '@material-ui/core/TextField'
-// import Chip from '@material-ui/core/Chip'
-
 // my exports
 import useStyles from './styles'
-
-// const allTags = [
-//   { id: 0, label: 'Angular' },
-//   { id: 1, label: 'jQuery' },
-//   { id: 2, label: 'Polymer' },
-//   { id: 3, label: 'React' },
-//   { id: 4, label: 'Vue.js' },
-//   { id: 5, label: 'StepanJS The Best Framework Ever' },
-// ]
 
 const CreatePost = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
@@ -48,10 +34,6 @@ const CreatePost = forwardRef((props, ref) => {
     data = data.response
     updatechipData(data)
   }
-  React.useEffect(() => {
-    getChipData()
-    console.log('===============', chipData)
-  }, [])
   const defaultState = {
     open: false,
     value: '**Hello world!!!**',
@@ -61,8 +43,9 @@ const CreatePost = forwardRef((props, ref) => {
   }
   // State
   const [mystate, setMystate] = React.useState({ defaultState })
-  const userID = useSelector(state => state.userID)
 
+  // userID from redux - used for adding post
+  const userID = useSelector(state => state.userID)
   const classes = useStyles()
 
   // handlers
@@ -71,32 +54,43 @@ const CreatePost = forwardRef((props, ref) => {
     // setTitle(event.target.value)
   }
 
+  const handleClose = () => {
+    setMystate({ ...mystate, open: false })
+  }
+
+  // parent calls this function when want to open the dialog
   useImperativeHandle(ref, () => ({
     handleClickOpen() {
       setMystate({ ...mystate, open: true })
-      // setOpen(true)
     },
   }))
 
-  const handleClose = () => {
-    setMystate({ ...mystate, open: false })
-    // setOpen(false)
-  }
+  // Extract information about all tags from backend
+  React.useEffect(() => {
+    getChipData()
+  }, [])
 
+  // create post button
   const handleCreatePost = async () => {
+    // extract names of tags
     const tags = []
     mystate.selectedTags.forEach(item => {
       tags.push(item.label)
     })
+
+    // empty fields TODO: add adequate error message
     if (!mystate.title || !mystate.value) {
       setMystate({ ...mystate, title: 'Something went wrong' })
     } else {
+      // add post to database
       const resp = await fetch(
         `${BASE_API}/posts/0?title=${mystate.title}&content=${mystate.value}&author_id=${userID}`,
         { method: 'POST' },
       )
+      // now retrieve id of the added post from db
       const postID = await resp.json()
       if (resp.status === 201) {
+        // now add tags for this post
         const resp2 = await fetch(`${BASE_API}/tags/${postID.response}`, {
           method: 'POST',
           headers: {
@@ -105,6 +99,7 @@ const CreatePost = forwardRef((props, ref) => {
           body: JSON.stringify({ tags }),
         })
         if (resp2.status === 201) {
+          // everything OK - close dialog
           setMystate({ defaultState })
         } else {
           setMystate({ ...mystate, title: 'Something went wrong' })
@@ -142,7 +137,8 @@ const CreatePost = forwardRef((props, ref) => {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle id="scroll-dialog-title">Post creation</DialogTitle>
+      <DialogTitle id="create-post-dialog-title">Post creation</DialogTitle>
+
       <DialogContent dividers>
         <Grid container spacing={1}>
           <Grid item xs={6} className={classes.root}>
@@ -152,7 +148,7 @@ const CreatePost = forwardRef((props, ref) => {
               </Typography>
               <FormControl variant="outlined" className={classes.inputForm}>
                 <OutlinedInput
-                  id="component-outlined"
+                  id="title-input"
                   value={mystate.title}
                   onChange={handleTextChangeTitle}
                   placeholder="What's your problem?"
@@ -160,17 +156,18 @@ const CreatePost = forwardRef((props, ref) => {
               </FormControl>
             </form>
           </Grid>
+
           <Grid item xs={6} className={classes.root}>
             <Typography variant="h5" gutterBottom className={classes.heading}>
               Tags
             </Typography>
             <Autocomplete
               multiple
-              id="tags-outlined"
+              id="tags-input"
               options={chipData}
               onChange={(event, value) => {
                 setMystate({ ...mystate, selectedTags: value })
-              }} // prints the selected value
+              }}
               getOptionLabel={option => option.label}
               filterSelectedOptions
               className={classes.inputForm}
@@ -184,11 +181,13 @@ const CreatePost = forwardRef((props, ref) => {
               )}
             />
           </Grid>
+
           <Grid item xs={12}>
             <Typography variant="h5" gutterBottom className={classes.heading}>
               Question
             </Typography>
             <ReactMde
+              id="problem-markdown-input"
               value={mystate.value}
               onChange={value_ => {
                 setMystate({ ...mystate, value: value_ })
@@ -210,6 +209,7 @@ const CreatePost = forwardRef((props, ref) => {
           </Grid>
         </Grid>
       </DialogContent>
+
       <DialogActions className={classes.dialogButton}>
         <Button onClick={handleCreatePost} color="primary">
           Add post

@@ -19,8 +19,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 
-// import env from 'react-dotenv'
-
+// my imports
 import useStyles from './styles'
 import RegisterForm from '../RegisterForm'
 
@@ -72,7 +71,7 @@ const LoginForm = forwardRef((props, ref) => {
     setFormState(defaultState)
   }
 
-  // handler for dashboard to open the login page
+  // handler for parent to open the dialog login page
   useImperativeHandle(ref, () => ({
     handleClickOpen() {
       setFormState({ ...formState, open: true })
