@@ -340,8 +340,8 @@ class TagAPI(Resource):
                 resp.status = '405'
                 resp.data = '{"response": "error occured while commiting changes"}'
                 return resp
-            resp.status = '201'
-            return resp
+        resp.status = '201'
+        return resp
 
     def options(self, post_id):
         resp = Response("allowed-methods")
