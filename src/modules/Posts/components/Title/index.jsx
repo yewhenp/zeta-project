@@ -10,7 +10,7 @@ const convertNumber = number => {
     ['million', 1e6],
     ['billion', 1e9],
   ]
-  const index = Math.floor(Math.log10(number) / 3)
+  const index = number > 0 ? Math.floor(Math.log10(number) / 3) : 0
   return `${(number / options[index][1]).toFixed(1)} ${options[index][0]} times`
 }
 
