@@ -1,10 +1,12 @@
-import { RUN_FILTER, LOGIN, LOGOUT } from '../actions'
+import { RUN_FILTER, LOGIN, LOGOUT, GET_POST_LIST_SUCCESS } from '../actions'
 
 const initialState = {
   selectedValues: [],
   isLogined: false,
   username: '',
   userID: null,
+  postList: [],
+  postCount: 0,
 }
 
 const filterReducer = (state = initialState, action) => {
@@ -29,6 +31,13 @@ const filterReducer = (state = initialState, action) => {
         isLogined: false,
         username: '',
         userID: null,
+      }
+    }
+    case GET_POST_LIST_SUCCESS: {
+      return {
+        ...state,
+        postList: action.payload,
+        postCount: action.payload.length,
       }
     }
     default:
