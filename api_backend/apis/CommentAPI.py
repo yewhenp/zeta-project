@@ -59,7 +59,6 @@ class CommentAPI(Resource):
         resp.headers['Access-Control-Allow-Origin'] = '*'
         posted_data = request.get_json(force=True)
         new_comment = Comments()
-        print(">>> ", posted_data)
         new_comment.author_id = posted_data['author_id']
         new_comment.post_id = posted_data['post_id']
         new_comment.content = posted_data['content']

@@ -39,9 +39,11 @@ class PostAPI(Resource):
             from_ = args["from"] if args["from"] is not None else 0
             to_ = args["to"] if args["to"] is not None else from_ + 10
 
-            q_res = db_session.execute(f"""
-select * from posts where id > {from_} AND id < {to_}
-""")
+            if to_ > 0:
+                q_res = db_session.execute(f"select * from posts where id > {from_} AND id < {to_}")
+            else:
+                q_res = db_session.execute(f"select * from posts where id > {from_}")
+
             resp_data = {
                 "response": []
             }
