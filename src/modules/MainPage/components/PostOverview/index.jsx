@@ -7,7 +7,19 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import { PropTypes } from 'prop-types'
 import StarOutlineIcon from '@material-ui/icons/StarOutline'
+
+import ReactMde from 'react-mde'
+import * as Showdown from 'showdown'
+import 'react-mde/lib/styles/css/react-mde-all.css'
+
 import useStyles from './styles'
+
+const converter = new Showdown.Converter({
+  tables: true,
+  simplifiedAutoLink: true,
+  strikethrough: true,
+  tasklists: true,
+})
 
 const PostOverview = ({
   postId,
@@ -116,11 +128,23 @@ const PostOverview = ({
             </Typography>
           </Grid>
           <Grid item xs className={classes.grigFullWigthItem}>
-            <Typography variant="body2">
-              {postText.length < 200
-                ? postText
-                : `${postText.substring(0, 200)}...`}
-            </Typography>
+            <ReactMde
+              value={
+                postText.length < 150
+                  ? postText
+                  : `${postText.substring(0, 150).replace('\n', '')}...`
+              }
+              classes={{
+                toolbar: classes.toolbar,
+                preview: classes.preview,
+                reactMde: classes.reactMde,
+              }}
+              minPreviewHeight={0}
+              selectedTab="preview"
+              generateMarkdownPreview={markdown =>
+                Promise.resolve(converter.makeHtml(markdown))
+              }
+            />
           </Grid>
           <Grid item xs className={classes.grigFullWigthItem}>
             <Grid
