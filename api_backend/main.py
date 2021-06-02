@@ -11,6 +11,7 @@ api.add_resource(UsersAPI, "/users/<string:username>")
 api.add_resource(PostAPI, "/posts/<int:num_id>")
 api.add_resource(CommentAPI, "/comments/<int:comment_id>")
 api.add_resource(TagAPI, "/tags/<int:post_id>")
+api.add_resource(VoteAPI, "/votes/<int:user_id>")
 
 
 if __name__ == '__main__':

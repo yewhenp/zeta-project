@@ -49,12 +49,21 @@ class Tags:
         return f"Tags(id={self.id}, content={self.content})"
 
 
+class Votes:
+    pass
+
+    def __repr__(self):
+        return f"Votes(id={self.id}, post_id={self.post_id}, comment_id={self.comment_id}, " \
+               f"user_id={self.user_id}, vote={self.vote})"
+
+
 table_names = {
     'users': Users,
     'posts': Posts,
     'post_tags': PostsTags,
     'comments': Comments,
-    'tags': Tags
+    'tags': Tags,
+    'votes': Votes
 }
 
 
