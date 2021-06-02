@@ -20,7 +20,7 @@ import LoginForm from '../../../Auth/components/LoginForm'
 
 import { styles, theme } from './styles'
 
-import { LOGIN, LOGOUT } from '../../../../actions'
+import { LOGIN, LOGOUT, SET_SEARCH_STRING } from '../../../../actions'
 
 const useStyles = makeStyles(styles)
 
@@ -94,6 +94,12 @@ const Header = () => {
                   input: classes.inputInput,
                 }}
                 inputProps={{ 'aria-label': 'search' }}
+                onChange={event => {
+                  dispatch({
+                    type: SET_SEARCH_STRING,
+                    payload: event.target.value,
+                  })
+                }}
               />
             </div>
             {logined && (

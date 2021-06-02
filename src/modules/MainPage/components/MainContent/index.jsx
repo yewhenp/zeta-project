@@ -77,9 +77,11 @@ const MainPage = () => {
     return containAllTags
   }
 
+  const searchString = useSelector(state => state.searchString)
   const [reducedPostData, updateReducedPostData] = useState([])
   useEffect(() => {
     let tempData = []
+    let tempData2 = []
     if (selectedValues.length === 0) {
       tempData = [...postData]
     } else {
@@ -89,9 +91,21 @@ const MainPage = () => {
         }
       })
     }
-    updateReducedPostData(tempData.slice((page - 1) * perPage, page * perPage))
-    getPageCount(tempData.length)
-  }, [postData, page, selectedValues])
+    if (searchString.length === 0) {
+      tempData2 = [...tempData]
+    } else {
+      tempData.forEach(data => {
+        if (
+          data.title.includes(searchString) ||
+          data.content.includes(searchString)
+        ) {
+          tempData2.push(data)
+        }
+      })
+    }
+    updateReducedPostData(tempData2.slice((page - 1) * perPage, page * perPage))
+    getPageCount(tempData2.length)
+  }, [postData, page, selectedValues, searchString])
 
   return (
     <div className={classes.root}>
