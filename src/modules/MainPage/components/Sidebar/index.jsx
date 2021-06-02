@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import { List, ListItem } from '@material-ui/core'
 import useStyles from './styles'
 
-import { RUN_FILTER } from '../../../../actions'
+import { RUN_FILTER } from '../../../../actions/index'
 
 const CHIP_MAX_WIDTH = 70
 

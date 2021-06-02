@@ -3,7 +3,7 @@ import {
   SETUP_POST,
   UPDATE_POST_VOTES,
   UPDATE_COMMENT_VOTES,
-} from '../actions'
+} from '../actions/index'
 
 const setUpComments = comments => ({
   type: SETUP_COMMENTS,

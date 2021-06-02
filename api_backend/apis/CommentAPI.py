@@ -12,6 +12,7 @@ class CommentAPI(Resource):
     parser.add_argument("time_last_active", type=str, help="time_last_active", required=False)
     parser.add_argument("views", type=str, help="views", required=False)
     parser.add_argument("author_id", type=str, help="author_id", required=False)
+    required_args_post = ["author_id", "post_id", "content"]
 
     def get(self, comment_id):
         # GET BASE/comments/comment_id - get info about the comment
@@ -58,6 +59,12 @@ class CommentAPI(Resource):
         resp = Response("Add new comment")
         resp.headers['Access-Control-Allow-Origin'] = '*'
         posted_data = request.get_json(force=True)
+        for arg in self.required_args_post:
+            if arg not in posted_data:
+                resp.status = '400'
+                resp.data = '{"response": "missing required argument: ' + arg + '"}'
+                return resp
+
         new_comment = Comments()
         new_comment.author_id = posted_data['author_id']
         new_comment.post_id = posted_data['post_id']

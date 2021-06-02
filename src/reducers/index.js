@@ -6,6 +6,8 @@ import {
   SETUP_POST,
   UPDATE_COMMENT_VOTES,
   UPDATE_POST_VOTES,
+  GET_POST_LIST_SUCCESS,
+  SET_SEARCH_STRING,
 } from '../actions'
 
 const initialState = {
@@ -29,6 +31,9 @@ const initialState = {
     tags: [],
   },
   comments: [],
+  postList: [],
+  postCount: 0,
+  searchString: '',
 }
 
 const filterReducer = (state = initialState, action) => {
@@ -77,6 +82,19 @@ const filterReducer = (state = initialState, action) => {
       return {
         ...state,
         post: { ...state.post, votes: action.payload },
+      }
+    }
+    case GET_POST_LIST_SUCCESS: {
+      return {
+        ...state,
+        postList: action.payload,
+        postCount: action.payload.length,
+      }
+    }
+    case SET_SEARCH_STRING: {
+      return {
+        ...state,
+        searchString: action.payload,
       }
     }
     default:

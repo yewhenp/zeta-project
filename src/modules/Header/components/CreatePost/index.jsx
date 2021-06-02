@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, forwardRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
@@ -24,9 +24,12 @@ import 'react-mde/lib/styles/css/react-mde-all.css'
 
 // my exports
 import useStyles from './styles'
+import fetchPostList from '../../../../actions/thunkActions'
 
 const CreatePost = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
+  const dispatch = useDispatch()
+
   const [chipData, updatechipData] = React.useState([])
   const getChipData = async () => {
     const resp = await fetch(`${BASE_API}/tags/1`)
@@ -42,7 +45,7 @@ const CreatePost = forwardRef((props, ref) => {
     selectedTags: [],
   }
   // State
-  const [mystate, setMystate] = React.useState({ defaultState })
+  const [mystate, setMystate] = React.useState(defaultState)
 
   // userID from redux - used for adding post
   const userID = useSelector(state => state.userID)
@@ -74,6 +77,7 @@ const CreatePost = forwardRef((props, ref) => {
   const handleCreatePost = async () => {
     // extract names of tags
     const tags = []
+    console.log(mystate)
     mystate.selectedTags.forEach(item => {
       tags.push(item.label)
     })
@@ -100,7 +104,8 @@ const CreatePost = forwardRef((props, ref) => {
         })
         if (resp2.status === 201) {
           // everything OK - close dialog
-          setMystate({ defaultState })
+          dispatch(fetchPostList())
+          setMystate({ ...defaultState })
         } else {
           setMystate({ ...mystate, title: 'Something went wrong' })
         }
