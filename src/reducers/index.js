@@ -1,4 +1,10 @@
-import { RUN_FILTER, LOGIN, LOGOUT, GET_POST_LIST_SUCCESS } from '../actions'
+import {
+  RUN_FILTER,
+  LOGIN,
+  LOGOUT,
+  GET_POST_LIST_SUCCESS,
+  SET_SEARCH_STRING,
+} from '../actions'
 
 const initialState = {
   selectedValues: [],
@@ -7,6 +13,7 @@ const initialState = {
   userID: null,
   postList: [],
   postCount: 0,
+  searchString: '',
 }
 
 const filterReducer = (state = initialState, action) => {
@@ -38,6 +45,12 @@ const filterReducer = (state = initialState, action) => {
         ...state,
         postList: action.payload,
         postCount: action.payload.length,
+      }
+    }
+    case SET_SEARCH_STRING: {
+      return {
+        ...state,
+        searchString: action.payload,
       }
     }
     default:
