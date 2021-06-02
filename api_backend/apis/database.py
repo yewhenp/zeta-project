@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Table, MetaData
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, mapper
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -70,7 +70,4 @@ def loadSession():
     return session
 
 
-if __name__ == '__main__':
-    session = loadSession()
-    res = session.query(Users).filter(Users.id == 2).all()
-    print(res)
+db_session = loadSession()
