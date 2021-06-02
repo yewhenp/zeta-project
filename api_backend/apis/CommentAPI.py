@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from flask import Response
+from flask import Response, request
 from apis.database import *
 
 
@@ -40,9 +40,9 @@ class CommentAPI(Resource):
         return resp
 
     def put(self, comment_id):
-        # PUT BASE/comments/0?arg=val - add comment
+        # PUT BASE/comments/0?arg=val - update info
         args = self.parser.parse_args()
-        resp = Response("update comment info")
+        resp = Response("Update comment info")
         resp.headers['Access-Control-Allow-Origin'] = '*'
         not_none_args = {k: v for k, v in args.items() if v is not None}
         comment = db_session.query(Comments).filter(Comments.id == comment_id).all()[0]
@@ -51,6 +51,27 @@ class CommentAPI(Resource):
 
         db_session.commit()
         resp.status = '200'
+        return resp
+
+    def post(self, comment_id):
+        # POST BASE/comments/0 + attach in body {'author_id': author_id, 'post_id': post_id,  'content': content}
+        resp = Response("Add new comment")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        posted_data = request.get_json(force=True)
+        new_comment = Comments()
+        print(">>> ", posted_data)
+        new_comment.author_id = posted_data['author_id']
+        new_comment.post_id = posted_data['post_id']
+        new_comment.content = posted_data['content']
+        new_comment.votes = 0
+        try:
+            db_session.add(new_comment)
+            db_session.commit()
+        except Exception:
+            resp.status = '405'
+            resp.data = '{"response": "error occured while commiting changes"}'
+            return resp
+        resp.status = '201'
         return resp
 
     def options(self, comment_id):
