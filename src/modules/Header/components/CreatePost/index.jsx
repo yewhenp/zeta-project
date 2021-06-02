@@ -45,7 +45,7 @@ const CreatePost = forwardRef((props, ref) => {
     selectedTags: [],
   }
   // State
-  const [mystate, setMystate] = React.useState({ defaultState })
+  const [mystate, setMystate] = React.useState(defaultState)
 
   // userID from redux - used for adding post
   const userID = useSelector(state => state.userID)
@@ -77,6 +77,7 @@ const CreatePost = forwardRef((props, ref) => {
   const handleCreatePost = async () => {
     // extract names of tags
     const tags = []
+    console.log(mystate)
     mystate.selectedTags.forEach(item => {
       tags.push(item.label)
     })
@@ -104,7 +105,7 @@ const CreatePost = forwardRef((props, ref) => {
         if (resp2.status === 201) {
           // everything OK - close dialog
           dispatch(fetchPostList())
-          setMystate({ defaultState })
+          setMystate({ ...defaultState })
         } else {
           setMystate({ ...mystate, title: 'Something went wrong' })
         }
