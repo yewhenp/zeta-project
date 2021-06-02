@@ -1,25 +1,28 @@
-import { useState } from 'react'
+// import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { PropTypes } from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
+// import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
-
+import { updateVotes } from '../../../../async_actions'
 import styles from './styles'
 
 const updateColor = votes => {
   if (votes > 50) return 'green'
-  else if (votes > 20) return 'orange'
-  else if (votes > -1) return 'grey'
+  if (votes > 20) return 'orange'
+  if (votes > -1) return 'grey'
   return 'red'
 }
 
-const Votes = props => {
-  const {
-    count: [count, setCount],
-  } = {
-    count: useState(0),
-    ...(props.state || {}),
+const Votes = ({ id }) => {
+  Votes.propTypes = {
+    id: PropTypes.number.isRequired,
   }
+  const count = useSelector(state =>
+    id != null ? state.comments[id].votes : state.post.votes,
+  )
+  const dispatch = useDispatch()
   styles.count.color = updateColor(count)
   const classes = makeStyles(styles)()
 
@@ -34,7 +37,7 @@ const Votes = props => {
         color="primary"
         size="medium"
         className={classes.button}
-        onClick={() => setCount(count + 1)}
+        onClick={() => dispatch(updateVotes(id, count + 1))}
       >
         <i className={classes.upVote} />
       </Button>
@@ -50,7 +53,7 @@ const Votes = props => {
         color="primary"
         size="medium"
         className={classes.button}
-        onClick={() => setCount(count - 1)}
+        onClick={() => dispatch(updateVotes(id, count - 1))}
       >
         <i className={classes.downVote} />
       </Button>

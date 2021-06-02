@@ -21,10 +21,10 @@ const converter = new Showdown.Converter({
   tasklists: true,
 })
 
-const Content = ({ votesCount, author, tags, postContent }) => {
+const Content = ({ id, author, tags, content }) => {
   Content.propTypes = {
-    votesCount: PropTypes.arrayOf().isRequired,
-    postContent: PropTypes.arrayOf().isRequired,
+    id: PropTypes.number.isRequired,
+    content: PropTypes.arrayOf().isRequired,
     author: PropTypes.shape({
       nickname: PropTypes.string.isRequired,
       avatarIcon: PropTypes.string.isRequired,
@@ -35,25 +35,23 @@ const Content = ({ votesCount, author, tags, postContent }) => {
   }
 
   const classes = useStyles()
-  const [votes, setVotes] = votesCount
-  const [value, setValue] = postContent
 
   return (
     <Grid container className={classes.gridContainer}>
       <Grid item xs={1} className={classes.gridItem}>
-        <Sidebar votes={votes} setVotes={setVotes} />
+        <Sidebar id={id} />
       </Grid>
       <Grid item xs={11} className={classes.gridItem}>
         <div className={classes.container}>
           <ReactMde
-            value={value}
+            value={content}
             classes={{
               toolbar: classes.toolbar,
               preview: classes.preview,
               reactMde: classes.reactMde,
             }}
             minPreviewHeight={0}
-            onChange={setValue}
+            onChange={() => {}}
             selectedTab="preview"
             generateMarkdownPreview={markdown =>
               Promise.resolve(converter.makeHtml(markdown))

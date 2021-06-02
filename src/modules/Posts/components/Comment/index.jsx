@@ -6,12 +6,12 @@ import CardContent from '@material-ui/core/CardContent'
 import useStyles from './styles'
 import Content from '../Content'
 
-const Comment = ({ commentData, commentContent, votesCount }) => {
+const Comment = ({ commentData, id }) => {
   const classes = useStyles()
   Comment.propTypes = {
-    votesCount: PropTypes.arrayOf().isRequired,
-    commentContent: PropTypes.arrayOf().isRequired,
+    id: PropTypes.number.isRequired,
     commentData: PropTypes.shape({
+      content: PropTypes.string.isRequired,
       author: PropTypes.shape({
         nickname: PropTypes.string.isRequired,
         avatarIcon: PropTypes.string.isRequired,
@@ -24,10 +24,10 @@ const Comment = ({ commentData, commentContent, votesCount }) => {
     <Card className={classes.container}>
       <CardContent>
         <Content
-          postContent={commentContent}
+          content={commentData.content}
           tags={[]}
           author={commentData.author}
-          votesCount={votesCount}
+          id={id}
         />
       </CardContent>
     </Card>
