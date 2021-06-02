@@ -36,7 +36,7 @@ if __name__ == '__main__':
     # create tables and fill data
     print("Filling database")
     try:
-        subprocess.run(f'psql -U postgres -d zeta_project -f db.sql ', shell=True)
+            subprocess.run(f'psql -U postgres -d zeta_project -f db.sql ', shell=True)
     except Exception as err:
         print("Error while filling database...")
         print(err)
