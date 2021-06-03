@@ -51,20 +51,36 @@ class VoteAPI(Resource):
                 resp.status = '400'
                 resp.data = '{"response": "missing required argument: ' + arg + '"}'
                 return resp
-
-        new_vote = Votes()
-        new_vote.user_id = posted_data['user_id']
-        new_vote.post_id = posted_data['post_id']
-        new_vote.comment_id = posted_data['comment_id']
-        new_vote.vote = True if posted_data['vote'] == 1 else False
-        try:
-            db_session.add(new_vote)
-            db_session.commit()
-        except Exception as err:
-            print(err)
-            resp.status = '405'
-            resp.data = '{"response": "error occured while commiting changes"}'
-            return resp
+        if posted_data["vote"] == 0:
+            if posted_data["post_id"] is None:
+                q_res = db_session.query(Votes).filter(Votes.user_id == posted_data["user_id"]).\
+                    filter(Votes.comment_id == posted_data["comment_id"]).all()
+            else:
+                q_res = db_session.query(Votes).filter(Votes.user_id == posted_data["user_id"]).\
+                    filter(Votes.post_id == posted_data["post_id"]).all()
+            try:
+                for row in q_res:
+                    db_session.delete(row)
+                    db_session.commit()
+            except Exception as err:
+                print(err)
+                resp.status = '405'
+                resp.data = '{"response": "error occured while commiting changes"}'
+                return resp
+        else:
+            new_vote = Votes()
+            new_vote.user_id = posted_data['user_id']
+            new_vote.post_id = posted_data['post_id']
+            new_vote.comment_id = posted_data['comment_id']
+            new_vote.vote = True if posted_data['vote'] == 1 else False
+            try:
+                db_session.add(new_vote)
+                db_session.commit()
+            except Exception as err:
+                print(err)
+                resp.status = '405'
+                resp.data = '{"response": "error occured while commiting changes"}'
+                return resp
         resp.status = '201'
         return resp
 
