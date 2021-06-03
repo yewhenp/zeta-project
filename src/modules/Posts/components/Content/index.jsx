@@ -1,4 +1,3 @@
-// import { useState } from 'react'
 import { Grid } from '@material-ui/core'
 import Divider from '@material-ui/core/Divider'
 import { PropTypes } from 'prop-types'
@@ -23,15 +22,21 @@ const converter = new Showdown.Converter({
 
 const Content = ({ id, author, tags, content }) => {
   Content.propTypes = {
-    id: PropTypes.number.isRequired,
-    content: PropTypes.arrayOf().isRequired,
+    id: PropTypes.number,
+    content: PropTypes.string,
     author: PropTypes.shape({
       nickname: PropTypes.string.isRequired,
       avatarIcon: PropTypes.string.isRequired,
       userRating: PropTypes.number.isRequired,
-    }).isRequired,
+    }),
 
-    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    tags: PropTypes.arrayOf(PropTypes.string),
+  }
+  Content.defaultProps = {
+    id: null,
+    content: null,
+    author: null,
+    tags: null,
   }
 
   const classes = useStyles()

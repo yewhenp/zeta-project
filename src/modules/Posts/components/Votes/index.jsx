@@ -1,8 +1,6 @@
-// import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
-// import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import { updateVotes } from '../../../../async_actions'
@@ -17,7 +15,11 @@ const updateColor = votes => {
 
 const Votes = ({ id }) => {
   Votes.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
+  }
+
+  Votes.defaultProps = {
+    id: null,
   }
   const count = useSelector(state =>
     id != null ? state.comments[id].votes : state.post.votes,

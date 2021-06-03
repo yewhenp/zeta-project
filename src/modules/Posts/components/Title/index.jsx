@@ -45,7 +45,6 @@ const Title = ({ title, timeCreated, timeLastActive, views }) => {
     views: PropTypes.number.isRequired,
   }
   const logined = useSelector(state => state.isLogined)
-  // const postID = useSelector(state => state.post.id)
   const dispatch = useDispatch()
   const onClickCreateComment = () => dispatch(handleCommentDialog(true))
 
@@ -58,7 +57,7 @@ const Title = ({ title, timeCreated, timeLastActive, views }) => {
             <Button
               onClick={onClickCreateComment}
               variant="contained"
-              color="#000000"
+              color="default"
               endIcon={<AddIcon />}
             >
               Create comment

@@ -9,7 +9,11 @@ import useStyles from './styles'
 const Sidebar = ({ id }) => {
   const classes = useStyles()
   Sidebar.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
+  }
+
+  Sidebar.defaultProps = {
+    id: null,
   }
 
   return (
