@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 
   reactMde: {
     border: 'none !important',
+    width: '100vw !important',
   },
   preview: {
     height: '100%',
