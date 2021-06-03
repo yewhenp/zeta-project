@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
 import Grid from '@material-ui/core/Grid'
 import { generate } from 'password-hash'
+import { PropTypes } from 'prop-types'
 
 // dialog related stuff
 import Dialog from '@material-ui/core/Dialog'
@@ -19,6 +20,9 @@ import Button from '@material-ui/core/Button'
 import useStyles from './styles'
 
 const RegisterForm = forwardRef((props, ref) => {
+  RegisterForm.propTypes = {
+    registerHandle: PropTypes.func.isRequired,
+  }
   const BASE_API = process.env.REACT_APP_BASE_URL
   const defaultState = {
     open: false,
@@ -137,7 +141,6 @@ const RegisterForm = forwardRef((props, ref) => {
           email: '',
         }
         if (resp.status === 201) {
-          // eslint-disable-next-line react/prop-types
           props.registerHandle()
           updateStateFields = {
             ...updateStateFields,

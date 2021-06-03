@@ -1,12 +1,6 @@
-import {
-  GET_POST_LIST,
-  GET_POST_LIST_SUCCESS,
-  GET_POST_LIST_ERROR,
-} from './index'
+import { GET_POST_LIST_SUCCESS, GET_POST_LIST_ERROR } from './index'
 
 const fetchPostList = () => dispatch => {
-  dispatch({ type: GET_POST_LIST })
-
   const BASE_API = process.env.REACT_APP_BASE_URL
   const postUrl = `${BASE_API}/posts/1?many=true&from=0&to=-1`
 

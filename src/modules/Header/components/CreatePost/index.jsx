@@ -31,12 +31,14 @@ const CreatePost = forwardRef((props, ref) => {
   const dispatch = useDispatch()
 
   const [chipData, updatechipData] = React.useState([])
+
+  // used during loading, to get all tags
   const getChipData = async () => {
     const resp = await fetch(`${BASE_API}/tags/1`)
-    let data = await resp.json()
-    data = data.response
-    updatechipData(data)
+    const data = await resp.json()
+    return data.response
   }
+
   const defaultState = {
     open: false,
     value: '**Hello world!!!**',
@@ -44,6 +46,7 @@ const CreatePost = forwardRef((props, ref) => {
     title: '',
     selectedTags: [],
   }
+
   // State
   const [mystate, setMystate] = React.useState(defaultState)
 
@@ -51,27 +54,9 @@ const CreatePost = forwardRef((props, ref) => {
   const userID = useSelector(state => state.userID)
   const classes = useStyles()
 
-  // handlers
-  const handleTextChangeTitle = event => {
-    setMystate({ ...mystate, title: event.target.value })
-    // setTitle(event.target.value)
-  }
-
   const handleClose = () => {
     setMystate({ ...mystate, open: false })
   }
-
-  // parent calls this function when want to open the dialog
-  useImperativeHandle(ref, () => ({
-    handleClickOpen() {
-      setMystate({ ...mystate, open: true })
-    },
-  }))
-
-  // Extract information about all tags from backend
-  React.useEffect(() => {
-    getChipData()
-  }, [])
 
   // create post button
   const handleCreatePost = async () => {
@@ -132,6 +117,18 @@ const CreatePost = forwardRef((props, ref) => {
     tasklists: true,
   })
 
+  // parent calls this function when want to open the dialog
+  useImperativeHandle(ref, () => ({
+    handleClickOpen() {
+      setMystate({ ...mystate, open: true })
+    },
+  }))
+
+  // Extract information about all tags from backend
+  React.useEffect(async () => {
+    updatechipData(await getChipData())
+  }, [])
+
   return (
     <Dialog
       open={mystate.open}
@@ -155,7 +152,9 @@ const CreatePost = forwardRef((props, ref) => {
                 <OutlinedInput
                   id="title-input"
                   value={mystate.title}
-                  onChange={handleTextChangeTitle}
+                  onChange={event => {
+                    setMystate({ ...mystate, title: event.target.value })
+                  }}
                   placeholder="What's your problem?"
                 />
               </FormControl>

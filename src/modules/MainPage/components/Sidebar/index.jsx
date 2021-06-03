@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { PropTypes } from 'prop-types'
 
 import Chip from '@material-ui/core/Chip'
 import Paper from '@material-ui/core/Paper'
@@ -12,7 +13,9 @@ import { RUN_FILTER } from '../../../../actions/index'
 const CHIP_MAX_WIDTH = 70
 
 const ChipText = props => {
-  // eslint-disable-next-line react/prop-types
+  ChipText.propTypes = {
+    children: PropTypes.string.isRequired,
+  }
   const { children } = props
 
   return (
@@ -39,13 +42,9 @@ const Sidebar = () => {
   const [chipData, updatechipData] = useState([])
   const getChipData = async () => {
     const resp = await fetch(`${BASE_API}/tags/1`)
-    let data = await resp.json()
-    data = data.response
-    updatechipData(data)
+    const data = await resp.json()
+    return data.response
   }
-  useEffect(() => {
-    getChipData()
-  }, [])
 
   const handleClick = clickedValue => {
     if (selectedValues.find(e => e === clickedValue)) {
@@ -65,6 +64,10 @@ const Sidebar = () => {
       })
     }
   }
+
+  useEffect(async () => {
+    updatechipData(await getChipData())
+  }, [])
 
   return (
     <Paper className={classes.paper}>

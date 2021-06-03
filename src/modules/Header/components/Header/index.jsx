@@ -18,7 +18,6 @@ import AddIcon from '@material-ui/icons/Add'
 import CreatePost from '../CreatePost'
 import LoginForm from '../../../Auth/components/LoginForm'
 import CreateComment from '../../../Posts/components/CreateComment'
-// import { handleCommentDialog } from '../../../../async_actions'
 
 import { styles, theme } from './styles'
 
@@ -42,8 +41,7 @@ const Header = () => {
     childRefLogin.current.handleClickOpen()
   }
 
-  // const onClickCreateComment = () => dispatch(handleCommentDialog(true))
-
+  // is called by login dialog when logging
   const handleLogin = (username, userID) => {
     dispatch({
       type: LOGIN,
@@ -88,16 +86,6 @@ const Header = () => {
                 Create post
               </Button>
             )}
-            {/* {logined && postID != null && (
-              <Button
-                onClick={onClickCreateComment}
-                variant="contained"
-                color="secondary"
-                endIcon={<AddIcon />}
-              >
-                Create comment
-              </Button>
-            )} */}
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />

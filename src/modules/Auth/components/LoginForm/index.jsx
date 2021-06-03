@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Link from '@material-ui/core/Link'
+import { PropTypes } from 'prop-types'
 
 import { verify } from 'password-hash'
 
@@ -24,6 +25,10 @@ import useStyles from './styles'
 import RegisterForm from '../RegisterForm'
 
 const LoginForm = forwardRef((props, ref) => {
+  LoginForm.propTypes = {
+    loginHandle: PropTypes.func.isRequired,
+  }
+
   const BASE_API = process.env.REACT_APP_BASE_URL
   const defaultState = {
     open: false,
@@ -83,7 +88,6 @@ const LoginForm = forwardRef((props, ref) => {
         resp.status === 200 &&
         verify(formState.password, hashed.response.hashed)
       ) {
-        // eslint-disable-next-line react/prop-types
         props.loginHandle(formState.username, hashed.response.id)
         updateStateFields = {
           ...updateStateFields,

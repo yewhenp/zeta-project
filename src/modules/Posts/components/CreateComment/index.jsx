@@ -18,7 +18,7 @@ import 'react-mde/lib/styles/css/react-mde-all.css'
 import { addPostComment, handleCommentDialog } from '../../../../async_actions'
 import useStyles from './styles'
 
-const CreateСomment = () => {
+const CreateComment = () => {
   const open = useSelector(state => state.isCommentDialogOpen)
   const dispatch = useDispatch()
   const defaultState = {
@@ -106,4 +106,4 @@ const CreateСomment = () => {
   )
 }
 
-export default CreateСomment
+export default CreateComment
