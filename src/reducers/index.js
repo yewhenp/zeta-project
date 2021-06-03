@@ -33,6 +33,7 @@ const initialState = {
     tags: [],
   },
   isCommentDialogOpen: false,
+  userVotes: null,
   comments: [],
   postList: [],
   postCount: 0,
