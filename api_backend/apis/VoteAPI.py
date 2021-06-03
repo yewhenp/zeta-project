@@ -63,6 +63,21 @@ class VoteAPI(Resource):
                     filter(Votes.post_id == posted_data["post_id"]).all()
             try:
                 for row in q_res:
+                    # firstly change rating of the post creator
+                    if posted_data["post_id"]:
+                        q_res_post = db_session.query(Posts).filter(Posts.id == posted_data["post_id"]).all()[0]
+                        q_res_user = db_session.query(Users).filter(Users.id == q_res_post["author_id"]).all()[0]
+                    else:
+                        q_res_comment = db_session.query(Comments).filter(Comments.id == posted_data["comment_id"]).all()[0]
+                        q_res_user = db_session.query(Users).filter(Users.id == q_res_comment["author_id"]).all()[0]
+
+                    if row.vote:
+                        q_res_user.user_rating = q_res_user.user_rating - 1
+                    else:
+                        q_res_user.user_rating = q_res_user.user_rating + 1
+                    print(q_res_user.user_rating)
+
+                    # delete vote
                     db_session.delete(row)
                     db_session.commit()
             except Exception as err:
@@ -78,6 +93,19 @@ class VoteAPI(Resource):
             new_vote.vote = True if posted_data['vote'] == 1 else False
             try:
                 db_session.add(new_vote)
+
+                if posted_data["post_id"]:
+                    q_res_post = db_session.query(Posts).filter(Posts.id == posted_data["post_id"]).all()[0]
+                    q_res_user = db_session.query(Users).filter(Users.id == q_res_post.author_id).all()[0]
+                else:
+                    q_res_comment = db_session.query(Comments).filter(Comments.id == posted_data["comment_id"]).all()[0]
+                    q_res_user = db_session.query(Users).filter(Users.id == q_res_comment.author_id).all()[0]
+
+                if new_vote.vote:
+                    q_res_user.user_rating = q_res_user.user_rating + 1
+                else:
+                    q_res_user.user_rating = q_res_user.user_rating - 1
+
                 db_session.commit()
             except Exception as err:
                 print(err)

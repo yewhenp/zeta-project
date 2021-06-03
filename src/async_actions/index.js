@@ -86,19 +86,13 @@ const updateVotes = (id, votes) => (dispatch, getState) => {
         dispatch(updateCommentVotes(newCommentsData))
       })
     }
-  } else {
-    console.log('Unknown user')
   }
 }
 
 const addPostComment = (content, handleOnClose) => (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const currState = getState()
-  if (currState.userID == null) {
-    console.log('Unknown user')
-  } else if (currState.post.id == null) {
-    console.log("Post for commenting hasn't been selected")
-  } else {
+  if (currState.userID !== null && currState.post.id !== null) {
     fetch(`${BASE_API}/comments/0`, {
       method: 'POST',
       headers: {
