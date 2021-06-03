@@ -7,6 +7,7 @@ import {
   UPDATE_COMMENT_VOTES,
   UPDATE_POST_VOTES,
   ADD_COMMENT,
+  UPDATE_USER_VOTES,
   COMMENT_CREATE_DIALOG,
   GET_POST_LIST_SUCCESS,
   SET_SEARCH_STRING,
@@ -92,6 +93,12 @@ const filterReducer = (state = initialState, action) => {
       return {
         ...state,
         comments: [...state.comments, action.payload],
+      }
+    }
+    case UPDATE_USER_VOTES: {
+      return {
+        ...state,
+        userVotes: action.payload,
       }
     }
     case COMMENT_CREATE_DIALOG: {
