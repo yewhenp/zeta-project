@@ -77,7 +77,7 @@ const CreatePost = forwardRef((props, ref) => {
   const handleCreatePost = async () => {
     // extract names of tags
     const tags = []
-    console.log(mystate)
+    // console.log(mystate)
     mystate.selectedTags.forEach(item => {
       tags.push(item.label)
     })

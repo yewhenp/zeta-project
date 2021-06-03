@@ -55,7 +55,6 @@ const setUpPostView = ID => dispatch => {
       ),
     )
     .then(comments => {
-      console.log(comments)
       dispatch(
         setUpComments(
           comments
@@ -69,7 +68,6 @@ const setUpPostView = ID => dispatch => {
 const updateVotes = (id, votes) => (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const currState = getState()
-  // console.log(currState)
   if (currState.isLogined) {
     if (id == null) {
       fetch(`${BASE_API}/posts/${currState.post.id}?votes=${votes}`, {
@@ -113,10 +111,7 @@ const addPostComment = content => (dispatch, getState) => {
       }),
     })
       .then(response => response.json())
-      .then(response => {
-        console.log(response.response)
-        return fetch(`${BASE_API}/comments/${response.response}`)
-      })
+      .then(response => fetch(`${BASE_API}/comments/${response.response}`))
       .then(response => response.json())
       .then(response => dispatch(addComment(response.response)))
       .then(dispatch(handleCommentDialog(false)))
