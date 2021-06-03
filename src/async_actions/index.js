@@ -115,7 +115,7 @@ const addPostComment = content => (dispatch, getState) => {
       .then(response => response.json())
       .then(response => {
         console.log(response.response)
-        return fetch(`${BASE_API}/comments/${response.response.id}`)
+        return fetch(`${BASE_API}/comments/${response.response}`)
       })
       .then(response => response.json())
       .then(response => dispatch(addComment(response.response)))
