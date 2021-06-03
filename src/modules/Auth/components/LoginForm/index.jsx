@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Link from '@material-ui/core/Link'
-import { PropTypes } from 'prop-types'
 
 import { verify } from 'password-hash'
 
@@ -19,16 +18,13 @@ import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import useLogin from '../../../../custom_hooks/index'
 
 // my imports
 import useStyles from './styles'
 import RegisterForm from '../RegisterForm'
 
 const LoginForm = forwardRef((props, ref) => {
-  LoginForm.propTypes = {
-    loginHandle: PropTypes.func.isRequired,
-  }
-
   const BASE_API = process.env.REACT_APP_BASE_URL
   const defaultState = {
     open: false,
@@ -46,6 +42,8 @@ const LoginForm = forwardRef((props, ref) => {
     invalidUserNameOrPassword: false,
   }
   const [formState, setFormState] = React.useState(defaultState)
+  // eslint-disable-next-line no-unused-vars
+  const [logined, setLogined] = useLogin()
 
   const classes = useStyles()
   const refForRegister = useRef()
@@ -88,7 +86,7 @@ const LoginForm = forwardRef((props, ref) => {
         resp.status === 200 &&
         verify(formState.password, hashed.response.hashed)
       ) {
-        props.loginHandle(formState.username, hashed.response.id)
+        setLogined(true, formState.username, hashed.response.id)
         updateStateFields = {
           ...updateStateFields,
           open: false,

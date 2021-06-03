@@ -5,10 +5,11 @@ import AddIcon from '@material-ui/icons/Add'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { PropTypes } from 'prop-types'
 import { Typography, Grid } from '@material-ui/core'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { handleCommentDialog } from '../../../../async_actions'
 
 import theme from './styles'
+import useLogin from '../../../../custom_hooks'
 
 const convertNumber = number => {
   const options = [
@@ -44,7 +45,7 @@ const Title = ({ title, timeCreated, timeLastActive, views }) => {
     timeLastActive: PropTypes.string.isRequired,
     views: PropTypes.number.isRequired,
   }
-  const logined = useSelector(state => state.isLogined)
+  const logined = useLogin()[0]
   const dispatch = useDispatch()
   const onClickCreateComment = () => dispatch(handleCommentDialog(true))
 

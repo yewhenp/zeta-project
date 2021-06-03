@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import SvgIcon from '@material-ui/core/SvgIcon'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
@@ -21,14 +21,14 @@ import CreateComment from '../../../Posts/components/CreateComment'
 
 import { styles, theme } from './styles'
 
-import { LOGIN, LOGOUT, SET_SEARCH_STRING } from '../../../../actions'
+import { SET_SEARCH_STRING } from '../../../../actions'
+import useLogin from '../../../../custom_hooks'
 
 const useStyles = makeStyles(styles)
 
 const Header = () => {
   const classes = useStyles()
-  const logined = useSelector(state => state.isLogined)
-  // const postID = useSelector(state => state.post.id)
+  const [logined, setLogined] = useLogin()
   const dispatch = useDispatch()
 
   const childRefCreatePost = useRef()
@@ -39,23 +39,6 @@ const Header = () => {
   const childRefLogin = useRef()
   const onClickHandleLogin = () => {
     childRefLogin.current.handleClickOpen()
-  }
-
-  // is called by login dialog when logging
-  const handleLogin = (username, userID) => {
-    dispatch({
-      type: LOGIN,
-      payload: {
-        username,
-        userID,
-      },
-    })
-  }
-
-  const handleLogout = () => {
-    dispatch({
-      type: LOGOUT,
-    })
   }
 
   const menuId = 'primary-search-account-menu'
@@ -111,7 +94,9 @@ const Header = () => {
                 aria-label="Logout button"
                 aria-controls={menuId}
                 aria-haspopup="true"
-                onClick={handleLogout}
+                onClick={() => {
+                  setLogined(false, null, null)
+                }}
                 color="inherit"
               >
                 <ExitToAppIcon />
@@ -132,7 +117,7 @@ const Header = () => {
           </Toolbar>
           <CreatePost ref={childRefCreatePost} />
           <CreateComment />
-          <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
+          <LoginForm ref={childRefLogin} />
         </AppBar>
       </ThemeProvider>
     </div>
