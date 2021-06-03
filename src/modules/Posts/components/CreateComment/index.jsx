@@ -25,11 +25,12 @@ const CreateComment = () => {
     content: '**Empty**',
     selectedTab: 'write',
   }
-  const [commentState, setCommentState] = React.useState({ defaultState })
+  const [commentState, setCommentState] = React.useState({ ...defaultState })
   const classes = useStyles()
 
   const handleClose = () => {
     dispatch(handleCommentDialog(false))
+    setCommentState({ ...defaultState })
   }
 
   const descriptionElementRef = React.useRef(null)
@@ -93,7 +94,9 @@ const CreateComment = () => {
 
       <DialogActions className={classes.dialogButton}>
         <Button
-          onClick={() => dispatch(addPostComment(commentState.content))}
+          onClick={() =>
+            dispatch(addPostComment(commentState.content, handleClose))
+          }
           color="primary"
         >
           Add comment

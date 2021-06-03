@@ -89,7 +89,7 @@ const updateVotes = (id, votes) => (dispatch, getState) => {
   }
 }
 
-const addPostComment = content => (dispatch, getState) => {
+const addPostComment = (content, handleOnClose) => (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const currState = getState()
   if (currState.userID !== null && currState.post.id !== null) {
@@ -108,7 +108,7 @@ const addPostComment = content => (dispatch, getState) => {
       .then(response => fetch(`${BASE_API}/comments/${response.response}`))
       .then(response => response.json())
       .then(response => dispatch(addComment(response.response)))
-      .then(dispatch(handleCommentDialog(false)))
+      .then(handleOnClose())
   }
 }
 
