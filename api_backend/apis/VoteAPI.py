@@ -22,18 +22,21 @@ class VoteAPI(Resource):
 
         comments_ids_str = str(posted_data['comments_id']).replace("[", "").replace("]", "")
         post_id_str = str(posted_data['post_id'])
-        q_res_comments = db_session.execute("select * from votes where user_id=" + str(
-            user_id) + " AND comment_id=ANY('{" + comments_ids_str + "}'::int[])")
-        q_res_post = list(db_session.execute(
-            "select * from votes where user_id=" + str(user_id) + " AND post_id=" + post_id_str))
+        resp_data = {'response': {'post_id': {posted_data['post_id']: 0},
+                                  'comments': {comment_id: 0 for comment_id in (posted_data['comments_id'])}}}
 
-        resp_data = {'response': {'post': 0, 'comments': [0 for _ in range(len(posted_data['comments_id']))]}}
-        for row in q_res_comments:
-            idx = posted_data['comments_id'].index(row.comment_id)
-            resp_data['response']['comments'][idx] = 1 if row.vote else -1
-
-        if len(q_res_post) > 0:
-            resp_data['response']['post'] = 1 if q_res_post[0].vote else -1
+        if len(posted_data['comments_id']) > 0:
+            print("select * from votes where user_id=" + str(
+                user_id) + " AND comment_id=ANY('{" + comments_ids_str + "}'::int[])")
+            q_res_comments = db_session.execute("select * from votes where user_id=" + str(
+                user_id) + " AND comment_id=ANY('{" + comments_ids_str + "}'::int[])")
+            for row in q_res_comments:
+                print(row)
+                resp_data['response']['comments'][row.comment_id] = 1 if row.vote else -1
+        if posted_data['post_id'] is not None:
+            q_res_post = list(db_session.execute(
+                "select * from votes where user_id=" + str(user_id) + " AND post_id=" + post_id_str))
+            resp_data['response']['post_id'][posted_data['post_id']] = 1 if q_res_post[0].vote else -1
 
         resp_data = str(resp_data).replace("'", "\"")
         resp.data = resp_data
