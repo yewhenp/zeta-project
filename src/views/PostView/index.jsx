@@ -12,6 +12,7 @@ import { setUpPostView } from '../../async_actions'
 const useStyles = makeStyles({
   element: {
     paddingTop: '10px',
+    width: '100%',
   },
 })
 
