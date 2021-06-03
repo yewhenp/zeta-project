@@ -1,5 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { forwardRef, useImperativeHandle, useRef } from 'react'
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useEffect,
+} from 'react'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -93,6 +99,16 @@ const LoginForm = forwardRef((props, ref) => {
           password: '',
           username: '',
         }
+        if (formState.rememberMe) {
+          // eslint-disable-next-line no-undef
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              username: formState.username,
+              password: formState.password,
+            }),
+          )
+        }
       } else {
         updateStateFields = {
           ...updateStateFields,
@@ -150,6 +166,29 @@ const LoginForm = forwardRef((props, ref) => {
       setFormState({ ...formState, open: true })
     },
   }))
+
+  // use local storage to save user
+  const checkLocalUser = async () => {
+    // eslint-disable-next-line no-undef
+    const user = localStorage.getItem('user')
+    if (user) {
+      const userData = JSON.parse(user)
+      // retrieve info about user from backend
+      const resp = await fetch(`${BASE_API}/users/${userData.username}`)
+      const hashed = await resp.json()
+      // if password is correct
+      if (
+        resp.status === 200 &&
+        verify(userData.password, hashed.response.hashed)
+      ) {
+        setLogined(true, userData.username, hashed.response.id)
+      } else {
+        // eslint-disable-next-line no-undef
+        localStorage.removeItem('user')
+      }
+    }
+  }
+  useEffect(() => checkLocalUser(), [])
 
   return (
     <div>

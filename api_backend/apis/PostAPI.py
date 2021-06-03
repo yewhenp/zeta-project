@@ -87,6 +87,9 @@ class PostAPI(Resource):
             return resp
         # else - info about one post
         try:
+            post = db_session.query(Posts).filter(Posts.id == num_id).all()[0]
+            post.views = post.views + 1
+            db_session.commit()
             q_res = db_session.query(Posts).filter(Posts.id == num_id).all()
             post = q_res[0]
         except Exception:

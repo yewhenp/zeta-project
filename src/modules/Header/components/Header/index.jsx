@@ -96,6 +96,8 @@ const Header = () => {
                 aria-haspopup="true"
                 onClick={() => {
                   setLogined(false, null, null)
+                  // eslint-disable-next-line no-undef
+                  localStorage.removeItem('user')
                 }}
                 color="inherit"
               >
