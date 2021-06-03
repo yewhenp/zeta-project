@@ -6,6 +6,8 @@ import {
   SETUP_POST,
   UPDATE_COMMENT_VOTES,
   UPDATE_POST_VOTES,
+  ADD_COMMENT,
+  COMMENT_CREATE_DIALOG,
   GET_POST_LIST_SUCCESS,
   SET_SEARCH_STRING,
 } from '../actions'
@@ -30,6 +32,7 @@ const initialState = {
     votes: 0,
     tags: [],
   },
+  isCommentDialogOpen: false,
   comments: [],
   postList: [],
   postCount: 0,
@@ -82,6 +85,18 @@ const filterReducer = (state = initialState, action) => {
       return {
         ...state,
         post: { ...state.post, votes: action.payload },
+      }
+    }
+    case ADD_COMMENT: {
+      return {
+        ...state,
+        comments: [...state.comments, action.payload],
+      }
+    }
+    case COMMENT_CREATE_DIALOG: {
+      return {
+        ...state,
+        isCommentDialogOpen: action.payload,
       }
     }
     case GET_POST_LIST_SUCCESS: {

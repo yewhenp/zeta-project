@@ -73,11 +73,13 @@ class CommentAPI(Resource):
         try:
             db_session.add(new_comment)
             db_session.commit()
+            post_id = db_session.query(func.max(Comments.id)).scalar()
         except Exception:
             resp.status = '405'
             resp.data = '{"response": "error occured while commiting changes"}'
             return resp
         resp.status = '201'
+        resp.data = '{"response": ' + str(post_id) + '}'
         return resp
 
     def options(self, comment_id):

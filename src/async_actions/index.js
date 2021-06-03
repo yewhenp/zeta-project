@@ -3,6 +3,8 @@ import {
   SETUP_POST,
   UPDATE_POST_VOTES,
   UPDATE_COMMENT_VOTES,
+  ADD_COMMENT,
+  COMMENT_CREATE_DIALOG,
 } from '../actions/index'
 
 const setUpComments = comments => ({
@@ -25,6 +27,18 @@ const updatePostVotes = votes => ({
   payload: votes,
 })
 
+const addComment = comment => ({
+  type: ADD_COMMENT,
+  payload: comment,
+})
+
+const handleCommentDialog = open => dispatch => {
+  dispatch({
+    type: COMMENT_CREATE_DIALOG,
+    payload: open,
+  })
+}
+
 const setUpPostView = ID => dispatch => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   fetch(`${BASE_API}/posts/${ID}`)
@@ -40,28 +54,33 @@ const setUpPostView = ID => dispatch => {
         ),
       ),
     )
-    .then(comments =>
+    .then(comments => {
+      console.log(comments)
       dispatch(
         setUpComments(
           comments
             .map(value => value.response)
             .sort((a, b) => b.votes - a.votes),
         ),
-      ),
-    )
+      )
+    })
 }
 
 const updateVotes = (id, votes) => (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const currState = getState()
+  // console.log(currState)
   if (currState.isLogined) {
     if (id == null) {
-      fetch(`${BASE_API}/posts/${currState.post.id}?votes=${votes}`).then(
-        dispatch(updatePostVotes(votes)),
-      )
+      fetch(`${BASE_API}/posts/${currState.post.id}?votes=${votes}`, {
+        method: 'PUT',
+      }).then(dispatch(updatePostVotes(votes)))
     } else {
       fetch(
         `${BASE_API}/comments/${currState.comments[id].id}?votes=${votes}`,
+        {
+          method: 'PUT',
+        },
       ).then(() => {
         const newCommentsData = [...currState.comments]
         newCommentsData[id] = { ...newCommentsData[id], votes }
@@ -74,4 +93,34 @@ const updateVotes = (id, votes) => (dispatch, getState) => {
   }
 }
 
-export { setUpPostView, updateVotes }
+const addPostComment = content => (dispatch, getState) => {
+  const BASE_API = process.env.REACT_APP_BASE_URL
+  const currState = getState()
+  if (currState.userID == null) {
+    console.log('Unknown user')
+  } else if (currState.post.id == null) {
+    console.log("Post for commenting hasn't been selected")
+  } else {
+    fetch(`${BASE_API}/comments/0`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        content,
+        post_id: currState.post.id,
+        author_id: currState.userID,
+      }),
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log(response.response)
+        return fetch(`${BASE_API}/comments/${response.response.id}`)
+      })
+      .then(response => response.json())
+      .then(response => dispatch(addComment(response.response)))
+      .then(dispatch(handleCommentDialog(false)))
+  }
+}
+
+export { setUpPostView, updateVotes, addPostComment, handleCommentDialog }

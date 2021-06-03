@@ -102,6 +102,7 @@ class PostAPI(Resource):
         comments = [comment.id for comment in q_res]
 
         resp_data = {"response": {
+            "id": post.id,
             "title": post.title,
             "content": post.content,
             "votes": post.votes,

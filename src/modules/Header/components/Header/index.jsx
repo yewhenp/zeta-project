@@ -17,6 +17,8 @@ import AddIcon from '@material-ui/icons/Add'
 
 import CreatePost from '../CreatePost'
 import LoginForm from '../../../Auth/components/LoginForm'
+import CreateComment from '../../../Posts/components/CreateComment'
+import { handleCommentDialog } from '../../../../async_actions'
 
 import { styles, theme } from './styles'
 
@@ -27,6 +29,7 @@ const useStyles = makeStyles(styles)
 const Header = () => {
   const classes = useStyles()
   const logined = useSelector(state => state.isLogined)
+  const postID = useSelector(state => state.post.id)
   const dispatch = useDispatch()
 
   const childRefCreatePost = useRef()
@@ -38,6 +41,8 @@ const Header = () => {
   const onClickHandleLogin = () => {
     childRefLogin.current.handleClickOpen()
   }
+
+  const onClickCreateComment = () => dispatch(handleCommentDialog(true))
 
   const handleLogin = (username, userID) => {
     dispatch({
@@ -81,6 +86,16 @@ const Header = () => {
                 endIcon={<AddIcon />}
               >
                 Create post
+              </Button>
+            )}
+            {logined && postID != null && (
+              <Button
+                onClick={onClickCreateComment}
+                variant="contained"
+                color="secondary"
+                endIcon={<AddIcon />}
+              >
+                Create comment
               </Button>
             )}
             <div className={classes.search}>
@@ -128,6 +143,7 @@ const Header = () => {
             )}
           </Toolbar>
           <CreatePost ref={childRefCreatePost} />
+          <CreateComment />
           <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
         </AppBar>
       </ThemeProvider>

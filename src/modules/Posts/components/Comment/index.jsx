@@ -7,6 +7,8 @@ import useStyles from './styles'
 import Content from '../Content'
 
 const Comment = ({ commentData, id }) => {
+  console.log(commentData)
+  console.log(id)
   const classes = useStyles()
   Comment.propTypes = {
     id: PropTypes.number.isRequired,

@@ -19,7 +19,7 @@ const PostView = () => {
   const classes = useStyles()
   const { ID } = useParams()
   const postData = useSelector(state => state.post)
-  const commentsData = useSelector(state => state.comments)
+  const comments = useSelector(state => state.comments)
   const dispatch = useDispatch()
 
   // const [postData, updatePostData] = useState({
@@ -59,7 +59,7 @@ const PostView = () => {
   //   newCommentsData[index] = { ...newCommentsData[index], content: text }
   //   updateCommentsData(newCommentsData)
   // }
-
+  // console.log(comments)
   return (
     <Grid container justify="center" alignItems="center">
       <Grid item xs={12}>
@@ -75,9 +75,9 @@ const PostView = () => {
         <Grid item xs={8} className={classes.element}>
           <Post postData={postData} />
         </Grid>
-        {commentsData.map((comment, id) => (
+        {comments.map((comment, id) => (
           <Grid key={() => id} item xs={8} className={classes.element}>
-            <Comment commentsData={comment} id={id} />
+            <Comment commentData={comment} id={id} />
           </Grid>
         ))}
       </Grid>
