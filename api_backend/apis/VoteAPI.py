@@ -7,7 +7,7 @@ class VoteAPI(Resource):
     get_required_args = ['post_id', 'comments_id']
     post_required_args = ['user_id', 'post_id', 'comment_id', 'vote']
 
-    def get(self, user_id):
+    def put(self, user_id):
         # GET BASE/votes/user_id  + attach {"post_id": id, comments_id: [id1, id2, ...]}
         # - get all posts/comments, where user upvoted/downvoted
 
@@ -36,7 +36,8 @@ class VoteAPI(Resource):
         if posted_data['post_id'] is not None:
             q_res_post = list(db_session.execute(
                 "select * from votes where user_id=" + str(user_id) + " AND post_id=" + post_id_str))
-            resp_data['response']['post_id'][posted_data['post_id']] = 1 if q_res_post[0].vote else -1
+            if len(q_res_post) > 0:
+                resp_data['response']['post_id'][posted_data['post_id']] = 1 if q_res_post[0].vote else -1
 
         resp_data = str(resp_data).replace("'", "\"")
         resp.data = resp_data
