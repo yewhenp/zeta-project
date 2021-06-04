@@ -33,11 +33,12 @@ class TagAPI(Resource):
             resp.status = '400'
             resp.data = '{"response": "missing required argument: label"}'
             return resp
-
-        new_tag = Tags()
-        new_tag.content = posted_data['label']
-        db_session.add(new_tag)
-        db_session.commit()
+        q_res = db_session.query(Tags).filter(Tags.content == posted_data['label']).all()
+        if not q_res:
+            new_tag = Tags()
+            new_tag.content = posted_data['label']
+            db_session.add(new_tag)
+            db_session.commit()
 
         resp.status = '201'
         return resp
