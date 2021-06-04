@@ -61,10 +61,7 @@ const fetchUserVotes = () => async (dispatch, getState) => {
     }),
   })
     .then(response => response.json())
-    .then(response => {
-      console.log(response.response)
-      dispatch(updateUserVotes(response.response))
-    })
+    .then(response => dispatch(updateUserVotes(response.response)))
 }
 
 const setUpPostView = ID => dispatch => {
@@ -96,10 +93,7 @@ const setUpPostView = ID => dispatch => {
 const updateVotes = (id, votes) => async (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   let currState = getState()
-  // {"post_id": id, comments_id: [id1, id2, ...]}
   if (currState.isLogined) {
-    // {'user_id': user_id, 'post_id': post_id, 'comment_id': comment_id, 'vote': vote}
-
     await (!currState.userVotes &&
       fetch(`${BASE_API}/votes/${currState.userID}`, {
         method: 'PUT',
@@ -112,20 +106,13 @@ const updateVotes = (id, votes) => async (dispatch, getState) => {
         }),
       })
         .then(response => response.json())
-        .then(response => {
-          console.log(response.response)
-          dispatch(updateUserVotes(response.response))
-        }))
+        .then(response => dispatch(updateUserVotes(response.response))))
     currState = getState()
     if (id == null) {
-      console.log(currState.userVotes)
-      // {'user_id': user_id, 'post_id': post_id, 'comment_id': comment_id, 'vote': vote}
       let voteState = currState.userVotes.post_id[currState.post.id]
-      console.log(voteState, votes, currState.post.votes)
 
       if (votes - currState.post.votes === -voteState || !voteState) {
         voteState += votes - currState.post.votes
-        console.log(voteState)
         Promise.all([
           fetch(`${BASE_API}/posts/${currState.post.id}?votes=${votes}`, {
             method: 'PUT',
@@ -143,12 +130,6 @@ const updateVotes = (id, votes) => async (dispatch, getState) => {
             }),
           }).then(
             (() => {
-              console.log({
-                user_id: currState.userID,
-                post_id: currState.post.id,
-                comment_id: null,
-                vote: voteState,
-              })
               const userVotes = { ...currState.userVotes }
               userVotes.post_id[currState.post.id] = voteState
               dispatch(updateUserVotes(userVotes))
@@ -157,17 +138,46 @@ const updateVotes = (id, votes) => async (dispatch, getState) => {
         ])
       }
     } else {
-      fetch(
-        `${BASE_API}/comments/${currState.comments[id].id}?votes=${votes}`,
-        {
-          method: 'PUT',
-        },
-      ).then(() => {
-        const newCommentsData = [...currState.comments]
-        newCommentsData[id] = { ...newCommentsData[id], votes }
-        newCommentsData.sort((a, b) => b.votes - a.votes)
-        dispatch(updateCommentVotes(newCommentsData))
-      })
+      const commentId = currState.comments[id].id
+      const currVotes = currState.comments[id].votes
+      let voteState = currState.userVotes.comments[commentId]
+
+      if (votes - currVotes === -voteState || !voteState) {
+        voteState += votes - currVotes
+        Promise.all([
+          fetch(
+            `${BASE_API}/comments/${currState.comments[id].id}?votes=${votes}`,
+            {
+              method: 'PUT',
+            },
+          ).then(
+            (() => {
+              const newCommentsData = [...currState.comments]
+              newCommentsData[id] = { ...newCommentsData[id], votes }
+              newCommentsData.sort((a, b) => b.votes - a.votes)
+              dispatch(updateCommentVotes(newCommentsData))
+            })(),
+          ),
+          fetch(`${BASE_API}/votes/${currState.userID}`, {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              user_id: currState.userID,
+              post_id: null,
+              comment_id: commentId,
+              vote: voteState,
+            }),
+          }).then(
+            (() => {
+              const userVotes = { ...currState.userVotes }
+              userVotes.comments[commentId] = voteState
+              dispatch(updateUserVotes(userVotes))
+            })(),
+          ),
+        ])
+      }
     }
   }
 }
