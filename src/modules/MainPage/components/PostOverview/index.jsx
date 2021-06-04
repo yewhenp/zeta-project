@@ -131,8 +131,10 @@ const PostOverview = ({
             <ReactMde
               value={
                 postText.length < 150
-                  ? postText
-                  : `${postText.substring(0, 150).replace('\n', '')}...`
+                  ? `${postText.replace(/!\[{1}.*\]{1}\({1}.*\){1}/g, '')}`
+                  : `${postText
+                      .replace(/!\[{1}.*\]{1}\({1}.*\){1}/g, '')
+                      .substring(0, 150)}...`
               }
               classes={{
                 toolbar: classes.toolbar,
