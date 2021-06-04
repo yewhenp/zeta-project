@@ -94,19 +94,18 @@ const updateVotes = (id, votes) => async (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   let currState = getState()
   if (currState.isLogined) {
-    await (!currState.userVotes &&
-      fetch(`${BASE_API}/votes/${currState.userID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          post_id: currState.post.id,
-          comments_id: currState.comments.map(comment => comment.id),
-        }),
-      })
-        .then(response => response.json())
-        .then(response => dispatch(updateUserVotes(response.response))))
+    await fetch(`${BASE_API}/votes/${currState.userID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        post_id: currState.post.id,
+        comments_id: currState.comments.map(comment => comment.id),
+      }),
+    })
+      .then(response => response.json())
+      .then(response => dispatch(updateUserVotes(response.response)))
     currState = getState()
     if (id == null) {
       let voteState = currState.userVotes.post_id[currState.post.id]
@@ -141,7 +140,6 @@ const updateVotes = (id, votes) => async (dispatch, getState) => {
       const commentId = currState.comments[id].id
       const currVotes = currState.comments[id].votes
       let voteState = currState.userVotes.comments[commentId]
-
       if (votes - currVotes === -voteState || !voteState) {
         voteState += votes - currVotes
         Promise.all([
