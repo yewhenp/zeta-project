@@ -3,6 +3,7 @@ from flask import Response
 from sqlalchemy import func
 import datetime
 from apis.database import *
+import json
 
 
 class PostAPI(Resource):
@@ -78,7 +79,7 @@ class PostAPI(Resource):
                 comments = [comment.id for comment in q_res]
                 entry["comments"] = comments
                 resp_data["response"].append(entry)
-            resp.data = str(resp_data).replace("'", "\"")
+            resp.data = json.dumps(resp_data)
             return resp
         # count - get number of all posts
         if args["count"] is not None:
