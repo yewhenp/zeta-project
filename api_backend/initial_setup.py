@@ -8,7 +8,7 @@ if __name__ == '__main__':
         # create venv
         print("Creating python venv")
         try:
-            subprocess.run(f"python3 -m venv venv", shell=True)
+            subprocess.run(f"python3 -m venv venv; source venv/bin/activate", shell=True)
         except Exception:
             print("Are you sure you have installed python3?")
             sys.exit(1)
