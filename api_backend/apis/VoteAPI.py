@@ -67,10 +67,10 @@ class VoteAPI(Resource):
                     # firstly change rating of the post creator
                     if posted_data["post_id"]:
                         q_res_post = db_session.query(Posts).filter(Posts.id == posted_data["post_id"]).all()[0]
-                        q_res_user = db_session.query(Users).filter(Users.id == q_res_post["author_id"]).all()[0]
+                        q_res_user = db_session.query(Users).filter(Users.id == q_res_post.author_id).all()[0]
                     else:
                         q_res_comment = db_session.query(Comments).filter(Comments.id == posted_data["comment_id"]).all()[0]
-                        q_res_user = db_session.query(Users).filter(Users.id == q_res_comment["author_id"]).all()[0]
+                        q_res_user = db_session.query(Users).filter(Users.id == q_res_comment.author_id).all()[0]
 
                     if row.vote:
                         q_res_user.user_rating = q_res_user.user_rating - 1
