@@ -23,6 +23,25 @@ class TagAPI(Resource):
         resp.status = '200'
         return resp
 
+    def put(self, post_id):
+        # PUT BASE?posts/0 + attach {label: label}
+        resp = Response("Add new tag")
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        posted_data = request.get_json(force=True)
+
+        if 'label' not in posted_data:
+            resp.status = '400'
+            resp.data = '{"response": "missing required argument: label"}'
+            return resp
+
+        new_tag = Tags()
+        new_tag.content = posted_data['label']
+        db_session.add(new_tag)
+        db_session.commit()
+
+        resp.status = '201'
+        return resp
+
     def post(self, post_id):
         # POST BASE/posts/post_id + atatch in body {'tags': [tag1_name, tag2_name...]} -
         # add tags for given post
