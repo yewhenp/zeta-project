@@ -123,8 +123,7 @@ class PostAPI(Resource):
             'userRating': user.user_rating
         }
 
-        resp_data = str(resp_data).replace("'", "\"")
-        resp.data = resp_data
+        resp.data = json.dumps(resp_data)
         return resp
 
     def put(self, num_id):
