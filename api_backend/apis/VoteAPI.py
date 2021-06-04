@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from flask import Response, request
 from apis.database import *
+import json
 
 
 class VoteAPI(Resource):
@@ -39,8 +40,7 @@ class VoteAPI(Resource):
             if len(q_res_post) > 0:
                 resp_data['response']['post_id'][posted_data['post_id']] = 1 if q_res_post[0].vote else -1
 
-        resp_data = str(resp_data).replace("'", "\"")
-        resp.data = resp_data
+        resp.data = json.dumps(resp_data)
         resp.status = '200'
         return resp
 
