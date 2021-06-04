@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { PropTypes } from 'prop-types'
 
@@ -9,6 +9,7 @@ import { List, ListItem } from '@material-ui/core'
 import useStyles from './styles'
 
 import { RUN_FILTER } from '../../../../actions/index'
+import { loadTags } from '../../../../actions/thunkActions'
 
 const CHIP_MAX_WIDTH = 70
 
@@ -33,18 +34,11 @@ const ChipText = props => {
 }
 
 const Sidebar = () => {
-  const BASE_API = process.env.REACT_APP_BASE_URL
   const classes = useStyles()
 
   const selectedValues = useSelector(state => state.selectedValues)
+  const chipData = useSelector(state => state.tags)
   const dispatch = useDispatch()
-
-  const [chipData, updatechipData] = useState([])
-  const getChipData = async () => {
-    const resp = await fetch(`${BASE_API}/tags/1`)
-    const data = await resp.json()
-    return data.response
-  }
 
   const handleClick = clickedValue => {
     if (selectedValues.find(e => e === clickedValue)) {
@@ -66,7 +60,7 @@ const Sidebar = () => {
   }
 
   useEffect(async () => {
-    updatechipData(await getChipData())
+    dispatch(loadTags())
   }, [])
 
   return (

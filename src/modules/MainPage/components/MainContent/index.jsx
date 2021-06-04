@@ -9,7 +9,7 @@ import Pagination from '@material-ui/lab/Pagination'
 import PostOverview from '../PostOverview'
 import useStyles from './styles'
 
-import fetchPostList from '../../../../actions/thunkActions'
+import { fetchPostList } from '../../../../actions/thunkActions'
 
 const MainPage = () => {
   const classes = useStyles()
@@ -88,6 +88,10 @@ const MainPage = () => {
     updateReducedPostData(tempData2.slice((page - 1) * perPage, page * perPage))
     getPageCount(tempData2.length)
   }, [postData, page, selectedValues, searchString])
+
+  useEffect(() => {
+    updatePage(1)
+  }, [selectedValues])
 
   useEffect(() => {
     dispatch(fetchPostList())

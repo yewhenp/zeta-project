@@ -31,14 +31,6 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1),
     },
   },
-  createTagButtonContainer: {
-    display: 'flex',
-  },
-  createTagButton: {
-    maxHeight: '3.5em',
-    alignSelf: 'center',
-    marginTop: '3.5em',
-  },
 }))
 
 export default useStyles

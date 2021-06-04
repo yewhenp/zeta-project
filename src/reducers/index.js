@@ -11,6 +11,7 @@ import {
   COMMENT_CREATE_DIALOG,
   GET_POST_LIST_SUCCESS,
   SET_SEARCH_STRING,
+  LOAD_TAGS,
 } from '../actions'
 
 const initialState = {
@@ -39,6 +40,7 @@ const initialState = {
   postList: [],
   postCount: 0,
   searchString: '',
+  tags: [],
 }
 
 const filterReducer = (state = initialState, action) => {
@@ -118,6 +120,12 @@ const filterReducer = (state = initialState, action) => {
       return {
         ...state,
         searchString: action.payload,
+      }
+    }
+    case LOAD_TAGS: {
+      return {
+        ...state,
+        tags: action.payload,
       }
     }
     default:
