@@ -9,9 +9,7 @@
 # install packages
 yarn add package.json
 # database and backend setup
-cd ./api_backend
-python3 initial_setup.py
-cd ..
+source ./initial_setup.sh
 # start backend server
 python3 ./api_backend/main.py
 # flask will start rest api server, and wil print you an api base address, 
