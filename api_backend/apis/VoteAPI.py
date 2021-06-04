@@ -7,7 +7,7 @@ class VoteAPI(Resource):
     get_required_args = ['post_id', 'comments_id']
     post_required_args = ['user_id', 'post_id', 'comment_id', 'vote']
 
-    def get(self, user_id):
+    def put(self, user_id):
         # GET BASE/votes/user_id  + attach {"post_id": id, comments_id: [id1, id2, ...]}
         # - get all posts/comments, where user upvoted/downvoted
 
