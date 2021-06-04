@@ -10,6 +10,11 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     backgroundColor: theme.palette.background.paper,
   },
+  pagination: {
+    '& .MuiPagination-ul': {
+      justifyContent: 'center',
+    },
+  },
 }))
 
 export default useStyles

@@ -131,12 +131,9 @@ const PostOverview = ({
             <ReactMde
               value={
                 postText.length < 150
-                  ? `${postText
-                      .replace(/!\[{1}.*\]{1}\({1}.*\){1}/g, '')
-                      .replace('\n', '')}`
+                  ? `${postText.replace(/!\[{1}.*\]{1}\({1}.*\){1}/g, '')}`
                   : `${postText
                       .replace(/!\[{1}.*\]{1}\({1}.*\){1}/g, '')
-                      .replace('\n', '')
                       .substring(0, 150)}...`
               }
               classes={{

@@ -121,6 +121,7 @@ const MainPage = () => {
           count={pageCount}
           page={page}
           onChange={(event, val) => updatePage(val)}
+          className={classes.pagination}
           color="primary"
         />
       )}
