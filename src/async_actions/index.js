@@ -93,6 +93,24 @@ const setUpPostView = ID => dispatch => {
     })
 }
 
+const fetchUserVotes = () => (dispatch, getState) => {
+  const BASE_API = process.env.REACT_APP_BASE_URL
+  const currState = getState()
+
+  return fetch(`${BASE_API}/votes/${currState.userID}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      post_id: currState.post.id,
+      comments_id: currState.comments.map(comment => comment.id),
+    }),
+  })
+    .then(response => response.json())
+    .then(response => dispatch(updateUserVotes(response.response)))
+}
+
 const updateVotes = (id, votes) => async (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   let currState = getState()

@@ -32,6 +32,10 @@ const useStyles = makeStyles(theme => ({
   },
   preview: {
     height: '100%',
+    '& img': {
+      maxWidth: '100%',
+      maxHeight: '100%',
+    },
   },
   user: {
     paddingTop: '10px',

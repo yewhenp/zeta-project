@@ -1,8 +1,9 @@
 from flask_restful import Resource, reqparse
-from flask import Response
+from flask import Response, request
 from sqlalchemy import func
 import datetime
 from apis.database import *
+import json
 
 
 class PostAPI(Resource):
@@ -78,7 +79,7 @@ class PostAPI(Resource):
                 comments = [comment.id for comment in q_res]
                 entry["comments"] = comments
                 resp_data["response"].append(entry)
-            resp.data = str(resp_data).replace("'", "\"")
+            resp.data = json.dumps(resp_data)
             return resp
         # count - get number of all posts
         if args["count"] is not None:
@@ -122,8 +123,7 @@ class PostAPI(Resource):
             'userRating': user.user_rating
         }
 
-        resp_data = str(resp_data).replace("'", "\"")
-        resp.data = resp_data
+        resp.data = json.dumps(resp_data)
         return resp
 
     def put(self, num_id):
@@ -141,28 +141,26 @@ class PostAPI(Resource):
 
     def post(self, num_id):
         # POST BASE/posts/0?title={}&content={}?author_id={} - add new post
+        # attach { "title": title, "content": content, "author_id": author_id}
         resp = Response("create post")
         resp.headers['Access-Control-Allow-Origin'] = '*'
 
-        args = self.parser.parse_args()
-        not_none_args = {k: v for k, v in args.items() if v is not None}
-
-        # set default time as now
-        not_none_args["time_created"] = not_none_args["time_created"] \
-            if "time_created" in not_none_args else datetime.date.today().strftime("%m-%d-%Y")
-        not_none_args["time_last_active"] = not_none_args["time_last_active"] \
-            if "time_last_active" in not_none_args else datetime.date.today().strftime("%m-%d-%Y")
-
-        # if absent some required arguments
+        posted_data = request.get_json(force=True)
         for arg in self.post_required_args:
-            if arg not in not_none_args:
+            if arg not in posted_data:
                 resp.status = '404'
                 resp.data = '{"response": "' + str(arg) + ' column is required"}'
                 return resp
 
+        # set default time as now
+        posted_data["time_created"] = posted_data["time_created"] \
+            if "time_created" in posted_data else datetime.date.today().strftime("%m-%d-%Y")
+        posted_data["time_last_active"] = posted_data["time_last_active"] \
+            if "time_last_active" in posted_data else datetime.date.today().strftime("%m-%d-%Y")
+
         new_entry = Posts()
         post_id = db_session.query(func.max(Posts.id)).scalar() + 1
-        new_entry.__dict__ |= not_none_args | {'id': post_id}
+        new_entry.__dict__ |= posted_data | {'id': post_id}
         try:
             db_session.add(new_entry)
             db_session.commit()

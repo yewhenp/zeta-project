@@ -17,7 +17,7 @@ import AddIcon from '@material-ui/icons/Add'
 
 import CreatePost from '../CreatePost'
 import LoginForm from '../../../Auth/components/LoginForm'
-import CreateComment from '../../../Posts/components/CreateComment'
+import CreateComment from '../../../../modules/Posts/components/CreateComment'
 
 import { styles, theme } from './styles'
 

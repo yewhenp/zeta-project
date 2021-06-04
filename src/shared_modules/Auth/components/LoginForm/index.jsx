@@ -5,6 +5,7 @@ import React, {
   useImperativeHandle,
   useRef,
   useEffect,
+  useState,
 } from 'react'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
@@ -47,7 +48,7 @@ const LoginForm = forwardRef((props, ref) => {
 
     invalidUserNameOrPassword: false,
   }
-  const [formState, setFormState] = React.useState(defaultState)
+  const [formState, setFormState] = useState(defaultState)
   // eslint-disable-next-line no-unused-vars
   const [logined, setLogined] = useLogin()
 

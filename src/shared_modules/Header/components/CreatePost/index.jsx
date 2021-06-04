@@ -1,4 +1,10 @@
-import React, { useImperativeHandle, forwardRef } from 'react'
+import React, {
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Grid from '@material-ui/core/Grid'
@@ -30,7 +36,7 @@ const CreatePost = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const dispatch = useDispatch()
 
-  const [chipData, updatechipData] = React.useState([])
+  const [chipData, updatechipData] = useState([])
 
   // used during loading, to get all tags
   const getChipData = async () => {
@@ -48,7 +54,7 @@ const CreatePost = forwardRef((props, ref) => {
   }
 
   // State
-  const [mystate, setMystate] = React.useState(defaultState)
+  const [mystate, setMystate] = useState(defaultState)
 
   // userID from redux - used for adding post
   const userID = useSelector(state => state.userID)
@@ -72,10 +78,17 @@ const CreatePost = forwardRef((props, ref) => {
       setMystate({ ...mystate, title: 'Something went wrong' })
     } else {
       // add post to database
-      const resp = await fetch(
-        `${BASE_API}/posts/0?title=${mystate.title}&content=${mystate.value}&author_id=${userID}`,
-        { method: 'POST' },
-      )
+      const resp = await fetch(`${BASE_API}/posts/0`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: mystate.title,
+          content: mystate.value,
+          author_id: userID,
+        }),
+      })
       // now retrieve id of the added post from db
       const postID = await resp.json()
       if (resp.status === 201) {
@@ -100,8 +113,8 @@ const CreatePost = forwardRef((props, ref) => {
     }
   }
 
-  const descriptionElementRef = React.useRef(null)
-  React.useEffect(() => {
+  const descriptionElementRef = useRef(null)
+  useEffect(() => {
     if (mystate.open) {
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
@@ -125,7 +138,7 @@ const CreatePost = forwardRef((props, ref) => {
   }))
 
   // Extract information about all tags from backend
-  React.useEffect(async () => {
+  useEffect(async () => {
     updatechipData(await getChipData())
   }, [])
 

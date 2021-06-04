@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Grid from '@material-ui/core/Grid'
@@ -25,7 +25,7 @@ const CreateComment = () => {
     content: '**Empty**',
     selectedTab: 'write',
   }
-  const [commentState, setCommentState] = React.useState({ ...defaultState })
+  const [commentState, setCommentState] = useState({ ...defaultState })
   const classes = useStyles()
 
   const handleClose = () => {
@@ -33,8 +33,8 @@ const CreateComment = () => {
     setCommentState({ ...defaultState })
   }
 
-  const descriptionElementRef = React.useRef(null)
-  React.useEffect(() => {
+  const descriptionElementRef = useRef(null)
+  useEffect(() => {
     if (open) {
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {

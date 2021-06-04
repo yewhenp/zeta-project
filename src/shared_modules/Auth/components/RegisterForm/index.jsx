@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import Grid from '@material-ui/core/Grid'
 import { generate } from 'password-hash'
 import { PropTypes } from 'prop-types'
@@ -46,7 +46,7 @@ const RegisterForm = forwardRef((props, ref) => {
     accept: false,
   }
 
-  const [formState, setFormState] = React.useState(defaultState)
+  const [formState, setFormState] = useState(defaultState)
   const classes = useStyles()
 
   // function that validates email (https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript)
