@@ -23,6 +23,9 @@ import OutlinedInput from '@material-ui/core/OutlinedInput'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import TextField from '@material-ui/core/TextField'
 
+// icons
+import AddIcon from '@material-ui/icons/Add'
+
 // markdown
 import ReactMde from 'react-mde'
 import * as Showdown from 'showdown'
@@ -30,20 +33,13 @@ import 'react-mde/lib/styles/css/react-mde-all.css'
 
 // my exports
 import useStyles from './styles'
-import fetchPostList from '../../../../actions/thunkActions'
+import { fetchPostList, loadTags } from '../../../../actions/thunkActions'
+import CreateTag from './CreateTag'
 
 const CreatePost = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const dispatch = useDispatch()
-
-  const [chipData, updatechipData] = useState([])
-
-  // used during loading, to get all tags
-  const getChipData = async () => {
-    const resp = await fetch(`${BASE_API}/tags/1`)
-    const data = await resp.json()
-    return data.response
-  }
+  const chipData = useSelector(state => state.tags)
 
   const defaultState = {
     open: false,
@@ -62,6 +58,11 @@ const CreatePost = forwardRef((props, ref) => {
 
   const handleClose = () => {
     setMystate({ ...mystate, open: false })
+  }
+
+  const childRefCreateTag = useRef()
+  const onClickCreateTag = () => {
+    childRefCreateTag.current.handleClickOpen()
   }
 
   // create post button
@@ -132,7 +133,7 @@ const CreatePost = forwardRef((props, ref) => {
 
   // Extract information about all tags from backend
   useEffect(async () => {
-    updatechipData(await getChipData())
+    dispatch(loadTags())
   }, [])
 
   return (
@@ -167,7 +168,7 @@ const CreatePost = forwardRef((props, ref) => {
             </form>
           </Grid>
 
-          <Grid item xs={6} className={classes.root}>
+          <Grid item xs={4} className={classes.root}>
             <Typography variant="h5" gutterBottom className={classes.heading}>
               Tags
             </Typography>
@@ -190,6 +191,17 @@ const CreatePost = forwardRef((props, ref) => {
                 />
               )}
             />
+          </Grid>
+          <Grid item xs={2} className={classes.createTagButtonContainer}>
+            <Button
+              onClick={onClickCreateTag}
+              variant="contained"
+              color="secondary"
+              endIcon={<AddIcon />}
+              className={classes.createTagButton}
+            >
+              Create tag
+            </Button>
           </Grid>
 
           <Grid item xs={12}>
@@ -228,6 +240,7 @@ const CreatePost = forwardRef((props, ref) => {
           Cancel
         </Button>
       </DialogActions>
+      <CreateTag ref={childRefCreateTag} />
     </Dialog>
   )
 })
