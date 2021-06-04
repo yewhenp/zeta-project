@@ -78,10 +78,17 @@ const CreatePost = forwardRef((props, ref) => {
       setMystate({ ...mystate, title: 'Something went wrong' })
     } else {
       // add post to database
-      const resp = await fetch(
-        `${BASE_API}/posts/0?title=${mystate.title}&content=${mystate.value}&author_id=${userID}`,
-        { method: 'POST' },
-      )
+      const resp = await fetch(`${BASE_API}/posts/0`, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: mystate.title,
+          content: mystate.value,
+          author_id: userID,
+        }),
+      })
       // now retrieve id of the added post from db
       const postID = await resp.json()
       if (resp.status === 201) {
