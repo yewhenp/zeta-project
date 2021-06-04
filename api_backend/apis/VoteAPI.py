@@ -36,7 +36,8 @@ class VoteAPI(Resource):
         if posted_data['post_id'] is not None:
             q_res_post = list(db_session.execute(
                 "select * from votes where user_id=" + str(user_id) + " AND post_id=" + post_id_str))
-            resp_data['response']['post_id'][posted_data['post_id']] = 1 if q_res_post[0].vote else -1
+            if len(q_res_post) > 0:
+                resp_data['response']['post_id'][posted_data['post_id']] = 1 if q_res_post[0].vote else -1
 
         resp_data = str(resp_data).replace("'", "\"")
         resp.data = resp_data
