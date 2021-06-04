@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import Response, request
 from apis.database import *
+import json
 
 
 class TagAPI(Resource):
@@ -18,7 +19,7 @@ class TagAPI(Resource):
         }
         for tag in q_res:
             resp_data["response"].append({"id": tag.id, "label": tag.content})
-        resp.data = str(resp_data).replace("'", "\"")
+        resp.data = json.dumps(resp_data)
         resp.status = '200'
         return resp
 

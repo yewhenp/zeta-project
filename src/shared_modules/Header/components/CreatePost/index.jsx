@@ -1,4 +1,10 @@
-import React, { useImperativeHandle, forwardRef } from 'react'
+import React, {
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Grid from '@material-ui/core/Grid'
@@ -30,7 +36,7 @@ const CreatePost = forwardRef((props, ref) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   const dispatch = useDispatch()
 
-  const [chipData, updatechipData] = React.useState([])
+  const [chipData, updatechipData] = useState([])
 
   // used during loading, to get all tags
   const getChipData = async () => {
@@ -48,7 +54,7 @@ const CreatePost = forwardRef((props, ref) => {
   }
 
   // State
-  const [mystate, setMystate] = React.useState(defaultState)
+  const [mystate, setMystate] = useState(defaultState)
 
   // userID from redux - used for adding post
   const userID = useSelector(state => state.userID)
@@ -100,8 +106,8 @@ const CreatePost = forwardRef((props, ref) => {
     }
   }
 
-  const descriptionElementRef = React.useRef(null)
-  React.useEffect(() => {
+  const descriptionElementRef = useRef(null)
+  useEffect(() => {
     if (mystate.open) {
       const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
@@ -125,7 +131,7 @@ const CreatePost = forwardRef((props, ref) => {
   }))
 
   // Extract information about all tags from backend
-  React.useEffect(async () => {
+  useEffect(async () => {
     updatechipData(await getChipData())
   }, [])
 

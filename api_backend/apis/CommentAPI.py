@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from sqlalchemy import func
 from flask import Response, request
 from apis.database import *
+import json
 
 
 class CommentAPI(Resource):
@@ -36,8 +37,7 @@ class CommentAPI(Resource):
             'nickname': user.username,
             'userRating': user.user_rating
         }
-        resp_data = str(resp_data).replace("'", "\"")
-        resp.data = resp_data
+        resp.data = json.dumps(resp_data)
         resp.status = '200'
         return resp
 
