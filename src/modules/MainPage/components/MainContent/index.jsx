@@ -90,6 +90,10 @@ const MainPage = () => {
   }, [postData, page, selectedValues, searchString])
 
   useEffect(() => {
+    updatePage(1)
+  }, [selectedValues])
+
+  useEffect(() => {
     dispatch(fetchPostList())
   }, [])
 

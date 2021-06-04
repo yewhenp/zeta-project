@@ -52,6 +52,7 @@ const CreateTag = forwardRef((props, ref) => {
 
   const handleCreateTag = () => {
     dispatch(createTag(mystate.name))
+    setMystate({ ...mystate, open: false })
   }
 
   // parent calls this function when want to open the dialog
