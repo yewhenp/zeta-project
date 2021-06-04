@@ -20,6 +20,12 @@ const MainPage = () => {
 
   const perPage = 5
   const [pageCount, updatePageCount] = useState(1)
+
+  const searchString = useSelector(state => state.searchString)
+  const [reducedPostData, updateReducedPostData] = useState([])
+
+  const [page, updatePage] = useState(1)
+
   const getPageCount = postCount => {
     let tempPageCount = Math.floor(postCount / perPage)
     const tempPageCountLeft = postCount % perPage
@@ -28,8 +34,6 @@ const MainPage = () => {
     }
     updatePageCount(tempPageCount)
   }
-
-  const [page, updatePage] = useState(1)
 
   const includedInSelected = tags => {
     let containAllTags = true
@@ -47,8 +51,6 @@ const MainPage = () => {
     return containAllTags
   }
 
-  const searchString = useSelector(state => state.searchString)
-  const [reducedPostData, updateReducedPostData] = useState([])
   useEffect(() => {
     let tempData = []
     let tempData2 = []
@@ -73,6 +75,16 @@ const MainPage = () => {
         }
       })
     }
+    const compare = (a, b) => {
+      if (a.views < b.views) {
+        return 1
+      }
+      if (a.views > b.views) {
+        return -1
+      }
+      return 0
+    }
+    tempData2.sort(compare)
     updateReducedPostData(tempData2.slice((page - 1) * perPage, page * perPage))
     getPageCount(tempData2.length)
   }, [postData, page, selectedValues, searchString])
