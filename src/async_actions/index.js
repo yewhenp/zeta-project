@@ -47,6 +47,26 @@ const updateUserVotes = votes => dispatch => {
   })
 }
 
+const fetchUserVotes = () => async (dispatch, getState) => {
+  const BASE_API = process.env.REACT_APP_BASE_URL
+  const currState = getState()
+  fetch(`${BASE_API}/votes/${currState.userID}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      post_id: currState.post.id,
+      comments_id: currState.comments.map(comment => comment.id),
+    }),
+  })
+    .then(response => response.json())
+    .then(response => {
+      console.log(response.response)
+      dispatch(updateUserVotes(response.response))
+    })
+}
+
 const setUpPostView = ID => dispatch => {
   const BASE_API = process.env.REACT_APP_BASE_URL
   fetch(`${BASE_API}/posts/${ID}`)
@@ -73,43 +93,39 @@ const setUpPostView = ID => dispatch => {
     })
 }
 
-const fetchUserVotes = () => (dispatch, getState) => {
-  const BASE_API = process.env.REACT_APP_BASE_URL
-  const currState = getState()
-  console.log(
-    {
-      post_id: currState.post.id,
-      comments_id: currState.comments.map(comment => comment.id),
-    },
-    `${BASE_API}/votes/${currState.userID}`,
-  )
-  return fetch(`${BASE_API}/votes/${currState.userID}`, {
-    method: 'PUT',
-    headers: {
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      post_id: currState.post.id,
-      comments_id: currState.comments.map(comment => comment.id),
-    }),
-  })
-    .then(response => response.json())
-    .then(response => dispatch(updateUserVotes(response.response)))
-}
-
 const updateVotes = (id, votes) => async (dispatch, getState) => {
   const BASE_API = process.env.REACT_APP_BASE_URL
-  const currState = getState()
+  let currState = getState()
   // {"post_id": id, comments_id: [id1, id2, ...]}
   if (currState.isLogined) {
-    if (currState.userVotes == null) {
-      await dispatch(fetchUserVotes())
-    }
     // {'user_id': user_id, 'post_id': post_id, 'comment_id': comment_id, 'vote': vote}
+
+    await (!currState.userVotes &&
+      fetch(`${BASE_API}/votes/${currState.userID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          post_id: currState.post.id,
+          comments_id: currState.comments.map(comment => comment.id),
+        }),
+      })
+        .then(response => response.json())
+        .then(response => {
+          console.log(response.response)
+          dispatch(updateUserVotes(response.response))
+        }))
+    currState = getState()
     if (id == null) {
-      let voteState = currState.userVotes.post_id.id
+      console.log(currState.userVotes)
+      // {'user_id': user_id, 'post_id': post_id, 'comment_id': comment_id, 'vote': vote}
+      let voteState = currState.userVotes.post_id[currState.post.id]
+      console.log(voteState, votes, currState.post.votes)
+
       if (votes - currState.post.votes === -voteState || !voteState) {
         voteState += votes - currState.post.votes
+        console.log(voteState)
         Promise.all([
           fetch(`${BASE_API}/posts/${currState.post.id}?votes=${votes}`, {
             method: 'PUT',
@@ -122,16 +138,21 @@ const updateVotes = (id, votes) => async (dispatch, getState) => {
             body: JSON.stringify({
               user_id: currState.userID,
               post_id: currState.post.id,
-              comments_id: null,
+              comment_id: null,
               vote: voteState,
             }),
           }).then(
-            dispatch(
-              updateUserVotes({
-                ...currState.userVotes,
-                post_id: { ...currState.userVotes.post_id, id: voteState },
-              }),
-            ),
+            (() => {
+              console.log({
+                user_id: currState.userID,
+                post_id: currState.post.id,
+                comment_id: null,
+                vote: voteState,
+              })
+              const userVotes = { ...currState.userVotes }
+              userVotes.post_id[currState.post.id] = voteState
+              dispatch(updateUserVotes(userVotes))
+            })(),
           ),
         ])
       }
@@ -174,4 +195,10 @@ const addPostComment = (content, handleOnClose) => (dispatch, getState) => {
   }
 }
 
-export { setUpPostView, updateVotes, addPostComment, handleCommentDialog }
+export {
+  setUpPostView,
+  updateVotes,
+  addPostComment,
+  handleCommentDialog,
+  fetchUserVotes,
+}
