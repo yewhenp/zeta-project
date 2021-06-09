@@ -14,7 +14,14 @@ const useStyles = makeStyles(theme => ({
   },
   chipLi: {
     width: 'inherit',
+    backgroundColor: '#fff !important',
   },
 }))
 
-export default useStyles
+const scrollMenuStyle = {
+  overflow: 'hidden',
+  userSelect: 'none',
+  width: '100%',
+}
+
+export { useStyles, scrollMenuStyle }

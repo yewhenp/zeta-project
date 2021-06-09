@@ -1,7 +1,15 @@
 import 'react-mde/lib/styles/css/react-mde-all.css'
 import CardHeader from '@material-ui/core/CardHeader'
+import Button from '@material-ui/core/Button'
+import AddIcon from '@material-ui/icons/Add'
+import { ThemeProvider } from '@material-ui/core/styles'
 import { PropTypes } from 'prop-types'
 import { Typography, Grid } from '@material-ui/core'
+import { useDispatch } from 'react-redux'
+import { handleCommentDialog } from '../../../../async_actions'
+
+import theme from './styles'
+import useLogin from '../../../../custom_hooks'
 
 const convertNumber = number => {
   const options = [
@@ -10,7 +18,7 @@ const convertNumber = number => {
     ['million', 1e6],
     ['billion', 1e9],
   ]
-  const index = Math.floor(Math.log10(number) / 3)
+  const index = number > 0 ? Math.floor(Math.log10(number) / 3) : 0
   return `${(number / options[index][1]).toFixed(1)} ${options[index][0]} times`
 }
 
@@ -37,35 +45,52 @@ const Title = ({ title, timeCreated, timeLastActive, views }) => {
     timeLastActive: PropTypes.string.isRequired,
     views: PropTypes.number.isRequired,
   }
+  const logined = useLogin()[0]
+  const dispatch = useDispatch()
+  const onClickCreateComment = () => dispatch(handleCommentDialog(true))
 
   return (
-    <CardHeader
-      title={title}
-      subheader={
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-        >
-          <Grid item xs={3}>
-            <Typography variant="subtitle2">
-              Asked <strong>{convertDate(timeCreated)}</strong>
-            </Typography>
+    <ThemeProvider theme={theme}>
+      <CardHeader
+        title={title}
+        action={
+          logined && (
+            <Button
+              onClick={onClickCreateComment}
+              variant="contained"
+              color="default"
+              endIcon={<AddIcon />}
+            >
+              Create comment
+            </Button>
+          )
+        }
+        subheader={
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item xs={3}>
+              <Typography variant="subtitle2">
+                Asked <strong>{convertDate(timeCreated)}</strong>
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography variant="subtitle2">
+                Active <strong>{convertDate(timeLastActive)}</strong>
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography variant="subtitle2">
+                Viewed <strong>{convertNumber(views)}</strong>
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid item xs={3}>
-            <Typography variant="subtitle2">
-              Active <strong>{convertDate(timeLastActive)}</strong>
-            </Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <Typography variant="subtitle2">
-              Viewed <strong>{convertNumber(views)}</strong>
-            </Typography>
-          </Grid>
-        </Grid>
-      }
-    />
+        }
+      />
+    </ThemeProvider>
   )
 }
 

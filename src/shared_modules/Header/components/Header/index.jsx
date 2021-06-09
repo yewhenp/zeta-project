@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import SvgIcon from '@material-ui/core/SvgIcon'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
@@ -17,16 +17,18 @@ import AddIcon from '@material-ui/icons/Add'
 
 import CreatePost from '../CreatePost'
 import LoginForm from '../../../Auth/components/LoginForm'
+import CreateComment from '../../../../modules/Posts/components/CreateComment'
 
 import { styles, theme } from './styles'
 
-import { LOGIN, LOGOUT } from '../../../../actions'
+import { SET_SEARCH_STRING } from '../../../../actions'
+import useLogin from '../../../../custom_hooks'
 
 const useStyles = makeStyles(styles)
 
 const Header = () => {
   const classes = useStyles()
-  const logined = useSelector(state => state.isLogined)
+  const [logined, setLogined] = useLogin()
   const dispatch = useDispatch()
 
   const childRefCreatePost = useRef()
@@ -37,22 +39,6 @@ const Header = () => {
   const childRefLogin = useRef()
   const onClickHandleLogin = () => {
     childRefLogin.current.handleClickOpen()
-  }
-
-  const handleLogin = (username, userID) => {
-    dispatch({
-      type: LOGIN,
-      payload: {
-        username,
-        userID,
-      },
-    })
-  }
-
-  const handleLogout = () => {
-    dispatch({
-      type: LOGOUT,
-    })
   }
 
   const menuId = 'primary-search-account-menu'
@@ -94,6 +80,12 @@ const Header = () => {
                   input: classes.inputInput,
                 }}
                 inputProps={{ 'aria-label': 'search' }}
+                onChange={event => {
+                  dispatch({
+                    type: SET_SEARCH_STRING,
+                    payload: event.target.value,
+                  })
+                }}
               />
             </div>
             {logined && (
@@ -102,7 +94,11 @@ const Header = () => {
                 aria-label="Logout button"
                 aria-controls={menuId}
                 aria-haspopup="true"
-                onClick={handleLogout}
+                onClick={() => {
+                  setLogined(false, null, null)
+                  // eslint-disable-next-line no-undef
+                  localStorage.removeItem('user')
+                }}
                 color="inherit"
               >
                 <ExitToAppIcon />
@@ -122,7 +118,8 @@ const Header = () => {
             )}
           </Toolbar>
           <CreatePost ref={childRefCreatePost} />
-          <LoginForm ref={childRefLogin} loginHandle={handleLogin} />
+          <CreateComment />
+          <LoginForm ref={childRefLogin} />
         </AppBar>
       </ThemeProvider>
     </div>

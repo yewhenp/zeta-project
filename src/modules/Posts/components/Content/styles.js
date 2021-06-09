@@ -28,9 +28,14 @@ const useStyles = makeStyles(theme => ({
 
   reactMde: {
     border: 'none !important',
+    width: '100%',
   },
   preview: {
     height: '100%',
+    '& img': {
+      maxWidth: '100%',
+      maxHeight: '100%',
+    },
   },
   user: {
     paddingTop: '10px',

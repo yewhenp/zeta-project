@@ -1,8 +1,11 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-underscore-dangle */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
@@ -30,7 +33,7 @@ const theme = createMuiTheme({
   },
 })
 
-const store = createStore(filterReducer)
+const store = compose(applyMiddleware(thunk))(createStore)(filterReducer)
 
 ReactDOM.render(
   <React.StrictMode>
@@ -51,6 +54,5 @@ ReactDOM.render(
     </Provider>
   </React.StrictMode>,
 
-  // eslint-disable-next-line no-undef
   document.getElementById('root'),
 )

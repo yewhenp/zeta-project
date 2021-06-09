@@ -5,7 +5,7 @@ import ScrollMenu from 'react-horizontal-scrolling-menu'
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
 import NavigateNextIcon from '@material-ui/icons/NavigateNext'
 
-import useStyles from './styles'
+import { useStyles, scrollMenuStyle } from './styles'
 
 const Tags = ({ tags }) => {
   Tags.propTypes = {
@@ -28,12 +28,12 @@ const Tags = ({ tags }) => {
   return (
     <ScrollMenu
       data={content}
-      alignCenter
-      clickWhenDrag
+      alignCenter={false}
+      disableTabindex
       dragging
       hideArrows
       hideSingleArrow
-      translate={-1}
+      wrapperStyle={scrollMenuStyle}
       transition={0.3}
       wheel
       arrowLeft={<NavigateBeforeIcon />}

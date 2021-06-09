@@ -1,4 +1,3 @@
-// import { useState } from 'react'
 import { Grid } from '@material-ui/core'
 import Divider from '@material-ui/core/Divider'
 import { PropTypes } from 'prop-types'
@@ -21,39 +20,43 @@ const converter = new Showdown.Converter({
   tasklists: true,
 })
 
-const Content = ({ votesCount, author, tags, postContent }) => {
+const Content = ({ id, author, tags, content }) => {
   Content.propTypes = {
-    votesCount: PropTypes.arrayOf().isRequired,
-    postContent: PropTypes.arrayOf().isRequired,
+    id: PropTypes.number,
+    content: PropTypes.string,
     author: PropTypes.shape({
       nickname: PropTypes.string.isRequired,
       avatarIcon: PropTypes.string.isRequired,
       userRating: PropTypes.number.isRequired,
-    }).isRequired,
+    }),
 
-    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    tags: PropTypes.arrayOf(PropTypes.string),
+  }
+  Content.defaultProps = {
+    id: null,
+    content: null,
+    author: null,
+    tags: null,
   }
 
   const classes = useStyles()
-  const [votes, setVotes] = votesCount
-  const [value, setValue] = postContent
 
   return (
     <Grid container className={classes.gridContainer}>
       <Grid item xs={1} className={classes.gridItem}>
-        <Sidebar votes={votes} setVotes={setVotes} />
+        <Sidebar id={id} />
       </Grid>
       <Grid item xs={11} className={classes.gridItem}>
         <div className={classes.container}>
           <ReactMde
-            value={value}
+            value={content}
             classes={{
               toolbar: classes.toolbar,
               preview: classes.preview,
               reactMde: classes.reactMde,
             }}
             minPreviewHeight={0}
-            onChange={setValue}
+            onChange={() => {}}
             selectedTab="preview"
             generateMarkdownPreview={markdown =>
               Promise.resolve(converter.makeHtml(markdown))

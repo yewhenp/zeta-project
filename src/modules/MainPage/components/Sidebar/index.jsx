@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { PropTypes } from 'prop-types'
 
 import Chip from '@material-ui/core/Chip'
 import Paper from '@material-ui/core/Paper'
@@ -7,12 +8,15 @@ import Typography from '@material-ui/core/Typography'
 import { List, ListItem } from '@material-ui/core'
 import useStyles from './styles'
 
-import { RUN_FILTER } from '../../../../actions'
+import { RUN_FILTER } from '../../../../actions/index'
+import { loadTags } from '../../../../actions/thunkActions'
 
 const CHIP_MAX_WIDTH = 70
 
 const ChipText = props => {
-  // eslint-disable-next-line react/prop-types
+  ChipText.propTypes = {
+    children: PropTypes.string.isRequired,
+  }
   const { children } = props
 
   return (
@@ -30,22 +34,11 @@ const ChipText = props => {
 }
 
 const Sidebar = () => {
-  const BASE_API = process.env.REACT_APP_BASE_URL
   const classes = useStyles()
 
   const selectedValues = useSelector(state => state.selectedValues)
+  const chipData = useSelector(state => state.tags)
   const dispatch = useDispatch()
-
-  const [chipData, updatechipData] = useState([])
-  const getChipData = async () => {
-    const resp = await fetch(`${BASE_API}/tags/1`)
-    let data = await resp.json()
-    data = data.response
-    updatechipData(data)
-  }
-  useEffect(() => {
-    getChipData()
-  }, [])
 
   const handleClick = clickedValue => {
     if (selectedValues.find(e => e === clickedValue)) {
@@ -65,6 +58,10 @@ const Sidebar = () => {
       })
     }
   }
+
+  useEffect(async () => {
+    dispatch(loadTags())
+  }, [])
 
   return (
     <Paper className={classes.paper}>

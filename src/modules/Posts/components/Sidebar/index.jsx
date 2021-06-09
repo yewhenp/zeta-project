@@ -1,17 +1,19 @@
 import { Grid } from '@material-ui/core'
 import { PropTypes } from 'prop-types'
-
 import BookmarksIcon from '@material-ui/icons/Bookmarks'
 import HistoryIcon from '@material-ui/icons/History'
 import Votes from '../Votes'
 
 import useStyles from './styles'
 
-const Sidebar = ({ votes, setVotes }) => {
+const Sidebar = ({ id }) => {
   const classes = useStyles()
   Sidebar.propTypes = {
-    votes: PropTypes.number.isRequired,
-    setVotes: PropTypes.func.isRequired,
+    id: PropTypes.number,
+  }
+
+  Sidebar.defaultProps = {
+    id: null,
   }
 
   return (
@@ -24,7 +26,7 @@ const Sidebar = ({ votes, setVotes }) => {
       className={classes.container}
     >
       <Grid item xs={12}>
-        <Votes state={{ count: [votes, setVotes] }} />
+        <Votes id={id} />
       </Grid>
       <Grid item xs={12}>
         <BookmarksIcon htmlColor="#cecece" />

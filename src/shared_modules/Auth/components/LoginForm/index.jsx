@@ -1,5 +1,12 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { forwardRef, useImperativeHandle, useRef } from 'react'
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useEffect,
+  useState,
+} from 'react'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -18,9 +25,9 @@ import OutlinedInput from '@material-ui/core/OutlinedInput'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import useLogin from '../../../../custom_hooks/index'
 
-// import env from 'react-dotenv'
-
+// my imports
 import useStyles from './styles'
 import RegisterForm from '../RegisterForm'
 
@@ -41,7 +48,9 @@ const LoginForm = forwardRef((props, ref) => {
 
     invalidUserNameOrPassword: false,
   }
-  const [formState, setFormState] = React.useState(defaultState)
+  const [formState, setFormState] = useState(defaultState)
+  // eslint-disable-next-line no-unused-vars
+  const [logined, setLogined] = useLogin()
 
   const classes = useStyles()
   const refForRegister = useRef()
@@ -72,30 +81,34 @@ const LoginForm = forwardRef((props, ref) => {
     setFormState(defaultState)
   }
 
-  // handler for dashboard to open the login page
-  useImperativeHandle(ref, () => ({
-    handleClickOpen() {
-      setFormState({ ...formState, open: true })
-    },
-  }))
-
   // login button
   const handleOnClickLogin = async () => {
     let updateStateFields = {}
     if (formState.password && formState.username) {
+      // retrieve info about user from backend
       const resp = await fetch(`${BASE_API}/users/${formState.username}`)
       const hashed = await resp.json()
+      // if password is correct
       if (
         resp.status === 200 &&
         verify(formState.password, hashed.response.hashed)
       ) {
-        // eslint-disable-next-line react/prop-types
-        props.loginHandle(formState.username, hashed.response.id)
+        setLogined(true, formState.username, hashed.response.id)
         updateStateFields = {
           ...updateStateFields,
           open: false,
           password: '',
           username: '',
+        }
+        if (formState.rememberMe) {
+          // eslint-disable-next-line no-undef
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              username: formState.username,
+              password: formState.password,
+            }),
+          )
         }
       } else {
         updateStateFields = {
@@ -104,6 +117,7 @@ const LoginForm = forwardRef((props, ref) => {
         }
       }
     } else {
+      // some fields are empty - error
       updateStateFields = {
         ...updateStateFields,
         usernameError: !formState.username,
@@ -139,13 +153,43 @@ const LoginForm = forwardRef((props, ref) => {
     }))
   }
 
-  // should be called after successfull register to come back to login page
+  // should be called by register form after successfull register to come back to login page
   const handleRegister = () => {
     setFormState(prevState => ({
       ...prevState,
       open: true,
     }))
   }
+
+  // handler for parent to open the dialog login page
+  useImperativeHandle(ref, () => ({
+    handleClickOpen() {
+      setFormState({ ...formState, open: true })
+    },
+  }))
+
+  // use local storage to save user
+  const checkLocalUser = async () => {
+    // eslint-disable-next-line no-undef
+    const user = localStorage.getItem('user')
+    if (user) {
+      const userData = JSON.parse(user)
+      // retrieve info about user from backend
+      const resp = await fetch(`${BASE_API}/users/${userData.username}`)
+      const hashed = await resp.json()
+      // if password is correct
+      if (
+        resp.status === 200 &&
+        verify(userData.password, hashed.response.hashed)
+      ) {
+        setLogined(true, userData.username, hashed.response.id)
+      } else {
+        // eslint-disable-next-line no-undef
+        localStorage.removeItem('user')
+      }
+    }
+  }
+  useEffect(() => checkLocalUser(), [])
 
   return (
     <div>
@@ -158,7 +202,7 @@ const LoginForm = forwardRef((props, ref) => {
           aria-describedby="scroll-dialog-description"
           maxWidth="xs"
         >
-          {/* If errir */}
+          {/* If no error */}
           {(!formState.invalidUserNameOrPassword && (
             <DialogTitle id="login-title"> Log In</DialogTitle>
           )) || (

@@ -44,6 +44,14 @@ create table comments (
 	votes integer
 );
 
+create table votes (
+    id serial primary key,
+    post_id integer,
+    comment_id integer,
+    user_id integer not null,
+    vote bool not null
+);
+
 insert into users(username, email, hashed) values
 ('Pasha', 'pasha@gmail.com', 'sha1$7a4e8ecc$1$339f4c437a6b860194a0d86ac880d84d8526f53b'), -- password 123
 ('Misha', 'misha@gmail.com', 'sha1$600321a0$1$c59b9981b60b68fece266141aeddcf656ae82758'), -- password 321
@@ -108,3 +116,6 @@ insert into tags(content) values ('Angular'),('jQuery'),('Polymer'),('React'), (
 
 insert into post_tags(post_id, tag_id) values (1, 2), (1, 4), (1, 5);
 
+insert into votes(post_id, comment_id, user_id, vote) values
+    (null, 1, 1, true),
+    (1, null, 1, true);

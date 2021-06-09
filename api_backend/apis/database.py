@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Table, MetaData
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, mapper
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -49,17 +49,26 @@ class Tags:
         return f"Tags(id={self.id}, content={self.content})"
 
 
+class Votes:
+    pass
+
+    def __repr__(self):
+        return f"Votes(id={self.id}, post_id={self.post_id}, comment_id={self.comment_id}, " \
+               f"user_id={self.user_id}, vote={self.vote})"
+
+
 table_names = {
     'users': Users,
     'posts': Posts,
     'post_tags': PostsTags,
     'comments': Comments,
-    'tags': Tags
+    'tags': Tags,
+    'votes': Votes
 }
 
 
 def loadSession():
-    engine = create_engine('postgresql://postgres::postgres@localhost:5432/ZETA_PROJECT')
+    engine = create_engine('postgresql://postgres::postgres@localhost:5432/zeta_project')
     metadata = MetaData(engine)
 
     for table_name in table_names:
@@ -70,7 +79,4 @@ def loadSession():
     return session
 
 
-if __name__ == '__main__':
-    session = loadSession()
-    res = session.query(Users).filter(Users.id == 2).all()
-    print(res)
+db_session = loadSession()

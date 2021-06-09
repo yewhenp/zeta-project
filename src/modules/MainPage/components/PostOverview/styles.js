@@ -74,6 +74,16 @@ const useStyles = makeStyles(theme => ({
   spacer: {
     marginTop: theme.spacing(2),
   },
+  toolbar: {
+    display: 'none !important',
+  },
+
+  reactMde: {
+    border: 'none !important',
+  },
+  preview: {
+    height: '100%',
+  },
 }))
 
 export default useStyles
