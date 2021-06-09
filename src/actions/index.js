@@ -1,0 +1,5 @@
+const RUN_FILTER = 'RUN_FILTER'
+const LOGIN = 'LOGIN'
+const LOGOUT = 'LOGOUT'
+
+export { RUN_FILTER, LOGIN, LOGOUT }

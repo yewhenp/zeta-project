@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle } from 'react'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Checkbox from '@material-ui/core/Checkbox'
+import { generate } from 'password-hash'
 
 // import TextField from '@material-ui/core/TextField'
 
@@ -146,7 +147,7 @@ const RegisterForm = forwardRef((props, ref) => {
         const requestData = {
           username: formState.username,
           email: formState.email,
-          hashed: formState.password,
+          hashed: generate(formState.password),
         }
         const resp = await fetch(`${BASE_API}/users/${formState.username}`, {
           method: 'PUT',

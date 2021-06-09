@@ -7,7 +7,7 @@ import useStyles from './styles'
 import Content from '../Content'
 import Title from '../Title'
 
-const Post = ({ postData }) => {
+const Post = ({ postData, votesCount, postContent }) => {
   const classes = useStyles()
   Post.propTypes = {
     postData: PropTypes.shape({
@@ -22,13 +22,10 @@ const Post = ({ postData }) => {
         userRating: PropTypes.number.isRequired,
       }).isRequired,
       votes: PropTypes.number.isRequired,
-      tags: PropTypes.arrayOf(
-        PropTypes.shape({
-          id: PropTypes.number.isRequired,
-          label: PropTypes.string.isRequired,
-        }),
-      ).isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string).isRequired,
     }).isRequired,
+    votesCount: PropTypes.arrayOf().isRequired,
+    postContent: PropTypes.arrayOf().isRequired,
   }
 
   return (
@@ -42,10 +39,10 @@ const Post = ({ postData }) => {
       <Divider variant="middle" />
       <CardContent>
         <Content
-          content={postData.content}
+          postContent={postContent}
           tags={postData.tags}
           author={postData.author}
-          votes={postData.votes}
+          votesCount={votesCount}
         />
       </CardContent>
     </Card>

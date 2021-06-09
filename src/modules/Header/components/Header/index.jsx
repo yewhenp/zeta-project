@@ -1,6 +1,8 @@
-import SvgIcon from '@material-ui/core/SvgIcon'
 import React, { useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+
+import SvgIcon from '@material-ui/core/SvgIcon'
 import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -18,11 +20,14 @@ import LoginForm from '../../../Auth/components/LoginForm'
 
 import { styles, theme } from './styles'
 
+import { LOGIN, LOGOUT } from '../../../../actions'
+
 const useStyles = makeStyles(styles)
 
 const Header = () => {
   const classes = useStyles()
-  const [logined, setLogin] = React.useState(false)
+  const logined = useSelector(state => state.isLogined)
+  const dispatch = useDispatch()
 
   const childRefCreatePost = useRef()
   const onClickCreatePost = () => {
@@ -34,13 +39,20 @@ const Header = () => {
     childRefLogin.current.handleClickOpen()
   }
 
-  const handleLogin = () => {
-    setLogin(true)
-    // handleMenuClose()
+  const handleLogin = (username, userID) => {
+    dispatch({
+      type: LOGIN,
+      payload: {
+        username,
+        userID,
+      },
+    })
   }
 
   const handleLogout = () => {
-    setLogin(false)
+    dispatch({
+      type: LOGOUT,
+    })
   }
 
   const menuId = 'primary-search-account-menu'
@@ -48,11 +60,7 @@ const Header = () => {
   return (
     <div className={classes.grow}>
       <ThemeProvider theme={theme}>
-        <AppBar
-          position="static"
-          className={classes.mainAppBar}
-          color="primary"
-        >
+        <AppBar position="static" color="primary">
           <Toolbar>
             <IconButton
               edge="start"

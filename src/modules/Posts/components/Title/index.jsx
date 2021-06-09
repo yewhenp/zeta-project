@@ -21,7 +21,14 @@ const convertDate = (
     month: 'long',
     day: 'numeric',
   },
-) => new Date(stringDate).toLocaleDateString('en-US', options)
+) => {
+  const [month, day, year] = stringDate.split('-')
+  return new Date(
+    parseInt(year, 10),
+    parseInt(month, 10),
+    parseInt(day, 10),
+  ).toLocaleDateString('en-US', options)
+}
 
 const Title = ({ title, timeCreated, timeLastActive, views }) => {
   Title.propTypes = {

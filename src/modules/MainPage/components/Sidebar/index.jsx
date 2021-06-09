@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
 import Chip from '@material-ui/core/Chip'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import { List, ListItem } from '@material-ui/core'
 import useStyles from './styles'
+
+import { RUN_FILTER } from '../../../../actions'
 
 const CHIP_MAX_WIDTH = 70
 
@@ -25,34 +29,40 @@ const ChipText = props => {
   )
 }
 
-// eslint-disable-next-line react/prop-types
-const Sidebar = ({ updateFilter }) => {
+const Sidebar = () => {
+  const BASE_API = process.env.REACT_APP_BASE_URL
   const classes = useStyles()
 
-  // will be used by requesting data from backend
-  // eslint-disable-next-line no-unused-vars
-  const [chipData, updatechipData] = useState([
-    { id: 0, label: 'Angular' },
-    { id: 1, label: 'jQuery' },
-    { id: 2, label: 'Polymer' },
-    { id: 3, label: 'React' },
-    { id: 4, label: 'Vue.js' },
-    { id: 5, label: 'StepanJS The Best Framework Ever' },
-  ])
-  const [selectedValues, updateSelectedValues] = useState([])
+  const selectedValues = useSelector(state => state.selectedValues)
+  const dispatch = useDispatch()
+
+  const [chipData, updatechipData] = useState([])
+  const getChipData = async () => {
+    const resp = await fetch(`${BASE_API}/tags/1`)
+    let data = await resp.json()
+    data = data.response
+    updatechipData(data)
+  }
+  useEffect(() => {
+    getChipData()
+  }, [])
 
   const handleClick = clickedValue => {
     if (selectedValues.find(e => e === clickedValue)) {
       const index = selectedValues.findIndex(e => e === clickedValue)
       const arr = [...selectedValues]
       arr.splice(index, 1)
-      updateSelectedValues(arr)
-      updateFilter(arr)
+      dispatch({
+        type: RUN_FILTER,
+        payload: arr,
+      })
     } else {
       const arr = [...selectedValues]
       arr.push(clickedValue)
-      updateSelectedValues(arr)
-      updateFilter(arr)
+      dispatch({
+        type: RUN_FILTER,
+        payload: arr,
+      })
     }
   }
 
@@ -69,11 +79,9 @@ const Sidebar = ({ updateFilter }) => {
               className={classes.chip}
               color="primary"
               variant={
-                selectedValues.find(e => e === data.label)
-                  ? 'default'
-                  : 'outlined'
+                selectedValues.find(e => e === data) ? 'default' : 'outlined'
               }
-              onClick={() => handleClick(data.label)}
+              onClick={() => handleClick(data)}
             />
           </ListItem>
         ))}

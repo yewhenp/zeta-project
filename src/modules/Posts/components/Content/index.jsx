@@ -1,4 +1,4 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { Grid } from '@material-ui/core'
 import Divider from '@material-ui/core/Divider'
 import { PropTypes } from 'prop-types'
@@ -21,30 +21,27 @@ const converter = new Showdown.Converter({
   tasklists: true,
 })
 
-const Content = ({ votes, author, tags, content }) => {
+const Content = ({ votesCount, author, tags, postContent }) => {
   Content.propTypes = {
-    content: PropTypes.string.isRequired,
+    votesCount: PropTypes.arrayOf().isRequired,
+    postContent: PropTypes.arrayOf().isRequired,
     author: PropTypes.shape({
       nickname: PropTypes.string.isRequired,
       avatarIcon: PropTypes.string.isRequired,
       userRating: PropTypes.number.isRequired,
     }).isRequired,
-    votes: PropTypes.number.isRequired,
-    tags: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        label: PropTypes.string.isRequired,
-      }),
-    ).isRequired,
+
+    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   }
 
   const classes = useStyles()
-  const [value, setValue] = useState(content)
+  const [votes, setVotes] = votesCount
+  const [value, setValue] = postContent
 
   return (
     <Grid container className={classes.gridContainer}>
       <Grid item xs={1} className={classes.gridItem}>
-        <Sidebar votes={votes} />
+        <Sidebar votes={votes} setVotes={setVotes} />
       </Grid>
       <Grid item xs={11} className={classes.gridItem}>
         <div className={classes.container}>
